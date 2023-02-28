@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">
+        <!-- CDATA (character) escapes everything ! pure  cant use ]]> -->
+        <![CDATA[
+            RemindFul
+        ]]>
+    </string>
+
+    <string name="Title">
+        <![CDATA[
+           RemindFul
+        ]]>
+    </string>
+
+</resources>

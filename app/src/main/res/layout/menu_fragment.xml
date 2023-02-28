@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/MenuFragBg"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/FragBackground">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/MenuFragMenu"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginEnd="60dp"
+        android:layout_marginTop="130dp"
+        android:layout_marginBottom="130dp"
+        android:background="?attr/Background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:layout_margin="5dp"
+            android:padding="20dp"
+            android:gravity="center" android:textAlignment="center"
+            android:background="?attr/Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="MENU"
+            android:textSize="25dp"
+            android:textStyle="bold"
+
+            android:textColor="?attr/Text"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0" />
+
+        <TextView
+            android:layout_margin="5dp"
+            android:padding="20dp"
+            android:gravity="center" android:textAlignment="center"
+            android:background="@drawable/roundbordernote"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add a new note"
+            android:textSize="25dp"
+            android:textStyle="bold"
+            android:id="@+id/MenuFragNewNote"
+            android:textColor="?attr/Text"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.20" />
+
+        <TextView
+            android:textSize="25dp"
+            android:textStyle="bold"
+            android:layout_margin="5dp"
+            android:padding="20dp"
+            android:gravity="center" android:textAlignment="center"
+            android:background="@drawable/roundbordernote"
+            android:id="@+id/MenuFragWipeSel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Delete note(s)"
+            android:textColor="?attr/Text"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="119dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.40"/>
+
+        <TextView
+            android:id="@+id/MenuFragWipeAll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:background="@drawable/roundbordernote"
+            android:gravity="center"
+            android:padding="20dp"
+            android:text="Wipe all notes"
+            android:textAlignment="center"
+            android:textColor="?attr/Text"
+            android:textSize="25dp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.60" />
+
+        <TextView
+            android:id="@+id/MenuFragMusic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:background="@drawable/roundbordernote"
+            android:gravity="center"
+            android:padding="20dp"
+            android:text="BGM"
+            android:textAlignment="center"
+            android:textColor="?attr/Text"
+            android:textSize="25dp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.80" />
+
+        <TextView
+            android:id="@+id/MenuFragDataMove"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:background="@drawable/roundbordernote"
+            android:gravity="center"
+            android:padding="20dp"
+            android:text="Import/Export"
+            android:textAlignment="center"
+            android:textColor="?attr/Text"
+            android:textSize="25dp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

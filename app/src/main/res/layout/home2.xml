@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/home2Bg"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/Background"
+    >
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+
+        android:background="?attr/FragBackground"
+        android:id="@+id/home2DvBg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginRight="10dp"
+        >
+
+        <TextView
+            android:id="@+id/home2DvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Detailed View"
+            android:textColor="?attr/Title"
+            android:textStyle="bold"
+            android:textSize="30dp"
+            android:background="?attr/Interactable"
+            android:padding="5dp"
+            app:layout_constraintBottom_toTopOf="@+id/home2DvScroll"
+            app:layout_constraintLeft_toLeftOf="@+id/home2DvScroll"
+            app:layout_constraintRight_toRightOf="@+id/home2DvScroll"
+            />
+
+        <ScrollView
+            android:background="?attr/Background"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="100dp" android:layout_marginBottom="15dp" android:layout_marginRight="100dp"
+
+            android:id="@+id/home2DvScroll"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TableLayout
+                android:id="@+id/home2DvTable"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:stretchColumns="0">
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    >
+                    <TextView
+                        android:layout_weight="0"
+                        android:textColor="?attr/Text"
+                        app:autoSizeTextType="uniform"
+                        android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        android:padding="5dp"
+                        android:text="Last modification time (DD/MM/YY)"
+                        android:textAlignment="center"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        />
+                </TableRow>
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    >
+                    <TextView
+                        android:layout_weight="0"
+                        android:textColor="?attr/Text"
+                        android:textStyle="bold"
+                        app:autoSizeTextType="uniform"
+                        android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        android:paddingRight="5dp"
+                        android:paddingLeft="20dp"
+                        android:text="Note title"
+                        />
+                </TableRow>
+
+            </TableLayout>
+        </ScrollView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <FrameLayout
+        android:id="@+id/home2FragHolder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/home2Title"
+        android:layout_width="0dp"
+        android:layout_height="98dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginRight="50dp"
+        android:text="RemindFul"
+        android:textColor="?attr/Title"
+        android:textSize="48sp"
+        android:textStyle="bold"
+        app:autoSizeTextType="uniform"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/home2ViewStyle"
+        android:layout_width="104dp"
+        android:layout_height="82dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="4dp"
+        android:shadowColor="?attr/Title"
+        android:shadowDx="-3"
+        android:shadowDy="5"
+        android:shadowRadius="10"
+        android:text="Recent"
+        android:textColor="?attr/Interactable"
+        android:textStyle="bold"
+        app:autoSizeTextType="uniform"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/home2Title" />
+
+    <ScrollView
+        android:id="@+id/home2Scroll"
+        android:layout_width="355dp"
+        android:layout_height="430dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="25dp"
+        android:layout_marginBottom="50dp"
+        android:contentDescription="Grid style list of notes"
+        android:foregroundGravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/home2ViewStyle">
+
+        <TableLayout
+            android:id="@+id/home2Table"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:stretchColumns="*">
+
+        </TableLayout>
+
+    </ScrollView>
+
+    <ImageView
+        android:contentDescription="Menu"
+        android:id="@+id/home2Menu"
+        android:layout_width="50dp"
+        android:layout_height="75dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="60dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/roundbordernote"
+        app:layout_constraintBottom_toTopOf="@+id/home2Scroll"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/home2Title"
+        app:srcCompat="@drawable/cm" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
