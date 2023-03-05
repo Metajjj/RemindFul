@@ -1,5 +1,6 @@
 package com.example.remindful;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.widget.Button;
@@ -24,18 +25,20 @@ public class Home extends AppCompatActivity {
 
         new Handler().postDelayed(()->{
             ((TextView)findViewById(R.id.HomeTitle)).setText("Loaded!");
+
         },1000*10);
 
     }
 
     private void ColScheme(ConstraintLayout LL) {
         //Colour Scheme change - EDIT LATER
-        //LL.setBackgroundColor(Color.parseColor("#"));
+        LL.setBackgroundColor(Color.parseColor("#AB9866"));
         for (int i = 0; i < LL.getChildCount(); i++) {
             if ((LL.getChildAt(i)) instanceof Button) {
-                //(LL.getChildAt(i)).setBackgroundColor(Color.parseColor("#"));
+                (LL.getChildAt(i)).setBackgroundColor(Color.parseColor("#D9B453"));
+                continue;
             }
-            try { //((TextView) LL.getChildAt(i)).setTextColor(Color.parseColor("#"));
+            try { ((TextView) LL.getChildAt(i)).setTextColor(Color.parseColor("#D2B771"));
                 }
             catch (Exception e) { }
         }
