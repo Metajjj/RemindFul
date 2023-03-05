@@ -31,7 +31,6 @@ public class Home extends AppCompatActivity {
     }
 
     private void ColScheme(ConstraintLayout LL) {
-        //Colour Scheme change - EDIT LATER
         LL.setBackgroundColor(Color.parseColor("#AB9866"));
         for (int i = 0; i < LL.getChildCount(); i++) {
             if ((LL.getChildAt(i)) instanceof Button) {
