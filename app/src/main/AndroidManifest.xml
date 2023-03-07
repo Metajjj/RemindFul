@@ -20,6 +20,7 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".Home2" android:exported="true"/>
 
     </application>
 
