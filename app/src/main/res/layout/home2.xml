@@ -2,51 +2,66 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/home2Bg"
+    android:background="#AB9866"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ScrollView
-        android:id="@+id/SVTest"
-        android:layout_width="168dp"
-        android:layout_height="432dp"
+    <TextView
+        android:textColor="#f4d882"
+        android:id="@+id/home2Title"
+        android:layout_width="0dp"
+        android:layout_height="98dp"
         android:layout_marginStart="50dp"
         android:layout_marginLeft="50dp"
         android:layout_marginTop="50dp"
         android:layout_marginEnd="50dp"
         android:layout_marginRight="50dp"
-        android:layout_marginBottom="50dp"
+        android:text="RemindFul"
+        android:textSize="48sp"
+        android:textStyle="bold"
+        app:autoSizeTextType="uniform"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        android:scrollbarAlwaysDrawVerticalTrack="true"
-        android:scrollbarSize="20dp"
-        android:scrollbarStyle="outsideInset"
-        android:scrollbars="vertical"
+    <TextView
+        android:id="@+id/home2ViewStyle"
+        android:layout_width="0dp"
+        android:layout_height="92dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="150dp"
+        android:layout_marginEnd="200dp"
+        android:layout_marginRight="200dp"
+        android:shadowColor="#d4d8a2"
+        android:shadowDx="-3"
+        android:shadowDy="5"
+        android:shadowRadius="10"
+        android:text="Recent"
+        android:textColor="#db863e"
+        android:textStyle="bold"
+        app:autoSizeTextType="uniform"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ScrollView
+        android:layout_width="355dp"
+        android:layout_height="430dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="25dp"
+        android:layout_marginRight="25dp"
+        android:layout_marginBottom="50dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/home2ViewStyle">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+        <GridView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="425dp"
-                android:background="#0f0"
-                android:text="AA\n\n\n\n\n\n\n\n\n\n\n\nAAAAAAAAAAAAAAAAAAA" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="425dp"
-                android:background="#f00"
-                android:text="AA\n\n\n\n\n\n\n\n\n\n\n\nAA" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="425dp"
-                android:background="#00f"
-                android:text="AA\n\n\n\n\n\n\n\n\n\n\n\nAA" />
-        </LinearLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
