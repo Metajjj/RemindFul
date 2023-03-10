@@ -15,8 +15,5 @@ public class Home2 extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).hide(); //Hides default header
 
         setContentView(R.layout.home2);
-
-        //COL SCHEME
-        new Home().ColScheme(findViewById(R.id.home2Bg));
     }
 }
