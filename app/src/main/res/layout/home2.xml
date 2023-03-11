@@ -64,25 +64,30 @@
         <TableLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            >
+            android:stretchColumns="*">
 
-            <TableRow>
+            <TableRow android:layout_width="match_parent"
+                >
 
                 <TextView
 
-                    android:layout_width="wrap_content"
+                    android:id="@+id/NewNote"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
                     android:layout_marginLeft="5dp"
                     android:layout_marginEnd="5dp"
                     android:layout_marginRight="5dp"
-                    android:layout_weight="33"
+                    android:layout_weight="1"
                     android:background="@drawable/roundbordernote"
+                    android:ellipsize="end"
+                    android:maxLines="3"
+
                     android:padding="10dp"
-                    android:text="Note1" />
+                    android:text="Note1\nLine2..\nEnd line.." />
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
                     android:layout_marginLeft="5dp"
@@ -90,18 +95,18 @@
                     android:layout_marginRight="5dp"
                     android:background="@drawable/roundbordernote"
                     android:padding="10dp"
-                    android:layout_weight="33"
+                    android:layout_weight="1"
                     android:text="Note2"
                     />
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
                     android:layout_marginLeft="5dp"
                     android:layout_marginEnd="5dp"
                     android:layout_marginRight="5dp"
-                    android:layout_weight="33"
+                    android:layout_weight="1"
                     android:background="@drawable/roundbordernote"
                     android:padding="10dp"
                     android:text="Note3" />
@@ -110,21 +115,20 @@
             <TableRow>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="33"
-                    android:gravity="center" android:textAlignment="center"
-                    android:text="New note..." />
+                    android:gravity="center" android:textAlignment="center" android:maxLines="1" android:ellipsize="end" android:textStyle="bold" android:text="New note..." />
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="33"
                     android:gravity="center" android:textAlignment="center"
                     android:text="BB" />
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="33"
                     android:gravity="center" android:textAlignment="center"
