@@ -16,4 +16,8 @@ public class Home2 extends AppCompatActivity {
 
         setContentView(R.layout.home2);
     }
+
+    //Grab crap from DB.. 2x array store vals.. display vals..
+
+    //on Recent txt change.. grab from DB
 }

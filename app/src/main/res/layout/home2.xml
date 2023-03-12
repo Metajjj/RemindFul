@@ -26,13 +26,11 @@
 
     <TextView
         android:id="@+id/home2ViewStyle"
-        android:layout_width="0dp"
-        android:layout_height="92dp"
+        android:layout_width="104dp"
+        android:layout_height="82dp"
         android:layout_marginStart="40dp"
         android:layout_marginLeft="40dp"
-        android:layout_marginTop="150dp"
-        android:layout_marginEnd="200dp"
-        android:layout_marginRight="200dp"
+        android:layout_marginTop="4dp"
         android:shadowColor="#d4d8a2"
         android:shadowDx="-3"
         android:shadowDy="5"
@@ -41,9 +39,8 @@
         android:textColor="#db863e"
         android:textStyle="bold"
         app:autoSizeTextType="uniform"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/home2Title" />
 
     <ScrollView
         android:id="@+id/scrollView2"
@@ -52,12 +49,9 @@
         android:layout_marginStart="25dp"
         android:layout_marginLeft="25dp"
         android:layout_marginTop="20dp"
-        android:layout_marginEnd="25dp"
-        android:layout_marginRight="25dp"
         android:layout_marginBottom="50dp"
         android:contentDescription="Grid style list of notes"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/home2ViewStyle">
 
@@ -66,10 +60,10 @@
             android:layout_height="wrap_content"
             android:stretchColumns="*">
 
-            <TableRow android:layout_width="match_parent"
-                >
+            <TableRow android:layout_width="match_parent">
 
                 <TextView
+                    android:textColor="#504538"
 
                     android:id="@+id/NewNote"
                     android:layout_width="0dp"
@@ -93,11 +87,10 @@
                     android:layout_marginLeft="5dp"
                     android:layout_marginEnd="5dp"
                     android:layout_marginRight="5dp"
+                    android:layout_weight="1"
                     android:background="@drawable/roundbordernote"
                     android:padding="10dp"
-                    android:layout_weight="1"
-                    android:text="Note2"
-                    />
+                    android:text="Note2" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -115,26 +108,47 @@
             <TableRow>
 
                 <TextView
-                    android:layout_width="0dp"
+                    android:textColor="#504538"  android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="33"
-                    android:gravity="center" android:textAlignment="center" android:maxLines="1" android:ellipsize="end" android:textStyle="bold" android:text="New note..." />
+                    android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:text="New note..."
+                    android:textAlignment="center"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="33"
-                    android:gravity="center" android:textAlignment="center"
-                    android:text="BB" />
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="BB"
+                    android:textAlignment="center" />
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="33"
-                    android:gravity="center" android:textAlignment="center"
-                    android:text="CC" />
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="CC"
+                    android:textAlignment="center" />
             </TableRow>
         </TableLayout>
 
     </ScrollView>
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="50dp"
+        android:layout_height="75dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="60dp"
+        android:layout_marginRight="60dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/roundbordernote"
+        app:layout_constraintBottom_toTopOf="@+id/scrollView2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/home2Title"
+        app:srcCompat="@drawable/cm" />
 </androidx.constraintlayout.widget.ConstraintLayout>
