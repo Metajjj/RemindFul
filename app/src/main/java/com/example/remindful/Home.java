@@ -33,6 +33,10 @@ public class Home extends AppCompatActivity {
 
     }
 
+    public void WriteLine(String s){
+        System.out.println("\n======\n"+s+"\n======\n");
+    }
+
     protected void ColScheme(ConstraintLayout LL) {
         LL.setBackgroundColor(Color.parseColor("#AB9866"));
         for (int i = 0; i < LL.getChildCount(); i++) {

@@ -21,6 +21,8 @@
         </activity>
 
         <activity android:name=".Home2" android:exported="true"/>
+        <activity android:name=".NewNote" android:exported="true"/>
+        <activity android:name=".Remind" android:exported="true"/>
 
     </application>
 

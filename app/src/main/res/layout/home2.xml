@@ -25,6 +25,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:onClick="TempNoteWipe"
         android:id="@+id/home2ViewStyle"
         android:layout_width="104dp"
         android:layout_height="82dp"
@@ -139,6 +140,7 @@
     </ScrollView>
 
     <ImageView
+        android:onClick="Menu"
         android:id="@+id/imageView"
         android:layout_width="50dp"
         android:layout_height="75dp"

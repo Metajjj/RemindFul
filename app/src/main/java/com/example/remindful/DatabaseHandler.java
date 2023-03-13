@@ -12,7 +12,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     protected final String DBname = "NoteList", ID = "ID", MONTH = "Month", YEAR = "Year", TITLE = "Title", NOTE = "Note", REMIND = "Remind", R_TIME = "R_Time";
 
     public DatabaseHandler(Context c) {
-        super(c, "ClockList", null, 1);
+        super(c, "NoteList", null, 1);
     }
 
     protected void ResetTable() {
@@ -63,6 +63,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         try {
             c = db.rawQuery(query, null); //selectionArgs to replace wildcard `?` in query | error if lacking ?
             for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+                //OUTPUT = headername:value|headername2:value2|
                 output += c.getString(c.getColumnIndex(ID)) + "|" + c.getString(c.getColumnIndex(MONTH)) + "|" + c.getString(c.getColumnIndex(YEAR)) + "|" + c.getString(c.getColumnIndex(TITLE)) + "\n";
             }
             c.close();
