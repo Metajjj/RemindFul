@@ -10,6 +10,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     //ID | Month | Year | Title | Note | To be reminded? || Time to remind..
     //PK | INT   | INT  | TEXT  | TEXT | BOOL/INT        || TEXT
     protected final String DBname = "NoteList", ID = "ID", MONTH = "Month", YEAR = "Year", TITLE = "Title", NOTE = "Note", REMIND = "Remind", R_TIME = "R_Time";
+    //Dont need R bool, just check R_Time if null
 
     public DatabaseHandler(Context c) {
         super(c, "NoteList", null, 1);
@@ -41,6 +42,21 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void onDowngrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS `" + DBname + "`");
         onCreate(sqLiteDatabase);
+    }
+
+    protected String InsertBuilder(String TableName, String[] Columns, String[][]Values){
+        String cols="",vals="";
+        for(int i=0;i<Columns.length;i++){ cols += "`"+Columns[i]+"`"; if(i == Columns.length-1){ continue; } cols += ","; }
+        for(String[] S : Values){
+            vals +="(";
+            for(int i=0;i<Columns.length;i++){
+                if(i >= S.length || S[i].equals("") ){ vals+="NULL";} else { vals+= S[i]; }
+                if(i == Columns.length-1){ continue; } vals += ",";
+            }
+            vals += ")"; if(S == Values[Values.length-1]){ continue; } vals += ",";
+        }
+        //Ex: InsertHandler("TABLE NAME", new String[]{"C1","C2","C3"}, new String[][]{{"A","B","C","Y"},{"D","E","F"}});
+        return "INSERT INTO `"+TableName+"` ("+cols+") VALUES "+vals+";";
     }
 
     //execSQL = no data return

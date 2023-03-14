@@ -9,6 +9,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.Calendar;
 import java.util.Objects;
 
 public class NewNote extends AppCompatActivity {
@@ -29,11 +30,18 @@ public class NewNote extends AppCompatActivity {
     }
 
     public void Save(View v){
+        //On click.. background flashes green / toast popup to say saved
+
         TextView tv = (TextView) v;
         if( tv.getText() == "SAVE" ){
+            //PreparedStatement PreparedStatement PS = PreparedStatement().getConnection().prepareStatement("A");
+            //SqlBuilder
+            //MONTH = "Month", YEAR = "Year", TITLE = "Title", NOTE = "Note"
+            String s = DH.InsertBuilder(DH.DBname,new String[]{DH.MONTH,DH.YEAR,DH.TITLE,DH.NOTE},new String[][]{{String.valueOf(Calendar.getInstance().get(Calendar.MONTH)+1),String.valueOf(Calendar.getInstance().get(Calendar.YEAR)),((TextView)findViewById(R.id.NewNoteNoteTitle)).getText().toString(),((TextView)findViewById(R.id.NewNoteNoteDetail)).getText().toString()}});
+            new Home().WriteLine(s);
+
             //Write to db, move back
-            //DH.Writequery("INSERT INTO `"+DH.DBname+"` (a,a,a) VALUES (a,a,a);");
-            /*String c = (Calendar.getInstance().get(Calendar.MONTH)+1) +"|"+(Calendar.getInstance().get(Calendar.YEAR));
+            /*String c = String.valueOf(Calendar.getInstance().get(Calendar.MONTH)+1) +"|"+(Calendar.getInstance().get(Calendar.YEAR));
             new Home().WriteLine(""+c);//*/
         }else{
             Toast.makeText(this,"ERR no reminding fn!",Toast.LENGTH_LONG).show();
