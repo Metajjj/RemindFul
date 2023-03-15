@@ -40,16 +40,17 @@ public class NewNote extends AppCompatActivity {
             //PreparedStatement PreparedStatement PS = PreparedStatement().getConnection().prepareStatement("A");
             //SqlBuilder
             //MONTH = "Month", YEAR = "Year", TITLE = "Title", NOTE = "Note"
-            String s = DH.InsertBuilder(DH.DBname,new String[]{DH.MONTH,DH.YEAR,DH.TITLE,DH.NOTE},new String[][]{{String.valueOf(Calendar.getInstance().get(Calendar.MONTH)+1),String.valueOf(Calendar.getInstance().get(Calendar.YEAR)),((TextView)findViewById(R.id.NewNoteNoteTitle)).getText().toString(),((TextView)findViewById(R.id.NewNoteNoteDetail)).getText().toString()}});
+            String s = DH.InsertBuilder(DH.DBname,new String[]{DH.DAY,DH.MONTH,DH.YEAR,DH.TITLE,DH.NOTE},
+                    new String[][]{{""+Calendar.getInstance().get(Calendar.DAY_OF_MONTH), String.valueOf(Calendar.getInstance().get(Calendar.MONTH)+1),String.valueOf(Calendar.getInstance().get(Calendar.YEAR)),
+                       "\""+((TextView)findViewById(R.id.NewNoteNoteTitle)).getText().toString()+"\"",
+                       "\""+((TextView)findViewById(R.id.NewNoteNoteDetail)).getText().toString()+"\""}});
             new Home().WriteLine(s);
 
-            //Write to db, move back
-            /*String c = String.valueOf(Calendar.getInstance().get(Calendar.MONTH)+1) +"|"+(Calendar.getInstance().get(Calendar.YEAR));
-            new Home().WriteLine(""+c);//*/
+            DH.Writequery(s);
 
             Saved="SAVED";
         }else{
-            Toast.makeText(this,"ERR no reminding fn!",Toast.LENGTH_LONG).show();
+            Toast.makeText(this,"ERR no reminding fn!",Toast.LENGTH_SHORT).show();
 
             Saved="SAVED & REMINDED";
         }
@@ -59,13 +60,10 @@ public class NewNote extends AppCompatActivity {
         //32C95E
         tv.setBackgroundColor(Color.rgb(50,201,94));
 
-        new Handler().postDelayed(() -> { ForcedFunc(tv2); },1300);
-    }
-
-    private void ForcedFunc(String tv2){
-        ((TextView)findViewById(R.id.NewNoteSave)).setText(tv2);
-        //d9b453
-        findViewById(R.id.NewNoteSave).setBackgroundColor(Color.rgb(217,180,83));
+        new Handler().postDelayed(() -> {
+            tv.setText(tv2);
+            tv.setBackgroundResource(R.drawable.roundbordernote);
+            },1300);
     }
 
 }

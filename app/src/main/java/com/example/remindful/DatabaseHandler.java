@@ -9,8 +9,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatabaseHandler extends SQLiteOpenHelper {
     //ID | Month | Year | Title | Note | To be reminded? || Time to remind..
     //PK | INT   | INT  | TEXT  | TEXT | BOOL/INT        || TEXT
-    protected final String DBname = "NoteList", ID = "ID", MONTH = "Month", YEAR = "Year", TITLE = "Title", NOTE = "Note", REMIND = "Remind", R_TIME = "R_Time";
+    protected final String DBname = "NoteList", ID = "ID", DAY="Day", MONTH = "Month", YEAR = "Year", TITLE = "Title", NOTE = "Note", R_TIME = "R_Time";
     //Dont need R bool, just check R_Time if null
+    private final String[] ColHeads = {ID,DAY,MONTH,YEAR,TITLE,NOTE, R_TIME};
 
     public DatabaseHandler(Context c) {
         super(c, "NoteList", null, 1);
@@ -18,14 +19,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     protected void ResetTable() {
         DatabaseHandler.this.getWritableDatabase().execSQL("DROP TABLE IF EXISTS `" + DBname + "`");
-        DatabaseHandler.this.getWritableDatabase().execSQL("CREATE TABLE `" + DBname + "` (`" + ID + "` INTEGER PRIMARY KEY AUTOINCREMENT, `" + MONTH + "` INT, `" + YEAR + "` INT, `" + TITLE + "` TEXT, `"+NOTE+"` TEXT, `"+REMIND+"` INT, `"+R_TIME+"` TEXT)");
+        DatabaseHandler.this.getWritableDatabase().execSQL("CREATE TABLE `" + DBname + "` (`" + ID + "` INTEGER PRIMARY KEY AUTOINCREMENT, `" + DAY + "` INT, `" + MONTH + "` INT, `" + YEAR + "` INT, `" + TITLE + "` TEXT, `"+NOTE+"` TEXT, `"+R_TIME+"` TEXT)");
+
         DatabaseHandler.this.getWritableDatabase().close();
     }
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         //create db
-        sqLiteDatabase.execSQL("CREATE TABLE `" + DBname + "` (`" + ID + "` INTEGER PRIMARY KEY AUTOINCREMENT, `" + MONTH + "` INT, `" + YEAR + "` INT, `" + TITLE + "` TEXT, `"+NOTE+"` TEXT, `"+REMIND+"` INT, `"+R_TIME+"` TEXT)");
+        sqLiteDatabase.execSQL("CREATE TABLE `" + DBname + "` (`" + ID + "` INTEGER PRIMARY KEY AUTOINCREMENT, `"+DAY+"` INT, `" + MONTH + "` INT, `" + YEAR + "` INT, `" + TITLE + "` TEXT, `"+NOTE+"` TEXT, `"+R_TIME+"` TEXT)");
 
         //ResetTable();
     }
@@ -78,16 +80,31 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         String output = "";
         try {
             c = db.rawQuery(query, null); //selectionArgs to replace wildcard `?` in query | error if lacking ?
-            for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
-                //OUTPUT = headername:value|headername2:value2|
-                output += c.getString(c.getColumnIndex(ID)) + "|" + c.getString(c.getColumnIndex(MONTH)) + "|" + c.getString(c.getColumnIndex(YEAR)) + "|" + c.getString(c.getColumnIndex(TITLE)) + "\n";
-            }
+
+            output = CursorSorter(c);
+
             c.close();
         } catch (Exception e) {
             output = "ReadDBErr: " + e;
         }
         db.close();
         return output;
+    }
+
+    @SuppressLint("Range")
+    private String CursorSorter(Cursor c){
+        String output="";
+        for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) { //for each row
+            //OUTPUT = headername:value|headername2:value2|
+            for (String s : ColHeads){
+                if(c.getColumnIndex(s)==-1){ continue; }
+                output += s+":"+c.getString(c.getColumnIndex(s));
+                if (s == ColHeads[ColHeads.length-1]){ output += "\n"; }else{ output += "|"; }
+            }
+            //output += c.getString(c.getColumnIndex(ID)) + "|" + c.getString(c.getColumnIndex(MONTH)) + "|" + c.getString(c.getColumnIndex(YEAR)) + "|" + c.getString(c.getColumnIndex(TITLE)) + "\n";
+        }
+
+        return ""+output;
     }
 }
 

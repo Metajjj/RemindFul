@@ -7,6 +7,7 @@
     android:background="#AB9866">
 
     <TextView
+        android:onClick="TempLoad"
         android:id="@+id/home2Title"
         android:layout_width="0dp"
         android:layout_height="98dp"
