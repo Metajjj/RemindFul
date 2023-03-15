@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AlertDialogMenu" parent="ThemeOverlay.Material3.Dialog.Alert">
+        <item name="android:textColor">#F00</item>
+        <item name="autoSizeTextType">uniform</item>
+        <item name="background">@drawable/roundbordernote</item>
+    </style>
+</resources>
