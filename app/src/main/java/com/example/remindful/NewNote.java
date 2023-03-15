@@ -1,6 +1,8 @@
 package com.example.remindful;
 
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.TextView;
@@ -31,6 +33,7 @@ public class NewNote extends AppCompatActivity {
 
     public void Save(View v){
         //On click.. background flashes green / toast popup to say saved
+        String Saved;
 
         TextView tv = (TextView) v;
         if( tv.getText() == "SAVE" ){
@@ -43,10 +46,26 @@ public class NewNote extends AppCompatActivity {
             //Write to db, move back
             /*String c = String.valueOf(Calendar.getInstance().get(Calendar.MONTH)+1) +"|"+(Calendar.getInstance().get(Calendar.YEAR));
             new Home().WriteLine(""+c);//*/
+
+            Saved="SAVED";
         }else{
             Toast.makeText(this,"ERR no reminding fn!",Toast.LENGTH_LONG).show();
+
+            Saved="SAVED & REMINDED";
         }
 
+        String tv2 = tv.getText().toString();
+        tv.setText("✓"+Saved+"✓");
+        //32C95E
+        tv.setBackgroundColor(Color.rgb(50,201,94));
+
+        new Handler().postDelayed(() -> { ForcedFunc(tv2); },1300);
+    }
+
+    private void ForcedFunc(String tv2){
+        ((TextView)findViewById(R.id.NewNoteSave)).setText(tv2);
+        //d9b453
+        findViewById(R.id.NewNoteSave).setBackgroundColor(Color.rgb(217,180,83));
     }
 
 }
