@@ -65,7 +65,7 @@
             android:layout_height="wrap_content"
             android:stretchColumns="*">
 
-            <TableRow android:layout_width="match_parent">
+            <!--TableRow android:layout_width="match_parent">
 
                 <TextView
                     android:textColor="#504538"
@@ -108,9 +108,9 @@
                     android:background="@drawable/roundbordernote"
                     android:padding="10dp"
                     android:text="Note3 exmple" />
-            </TableRow>
+            </TableRow-->
 
-            <TableRow>
+            <!--TableRow>
 
                 <TextView
                     android:textColor="#504538"
@@ -139,7 +139,7 @@
                     android:gravity="center"
                     android:text="CC"
                     android:textAlignment="center" />
-            </TableRow>
+            </TableRow-->
         </TableLayout>
 
     </ScrollView>

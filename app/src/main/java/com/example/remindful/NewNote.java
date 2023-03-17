@@ -33,17 +33,33 @@ public class NewNote extends AppCompatActivity {
         ((TextView)findViewById(R.id.NewNoteSave)).setText( (b.isChecked()? "SAVE & REMIND" : "SAVE") );
     }
 
+    private String CalYMDHMS(){
+        String
+        Year =""+ Calendar.getInstance().get(Calendar.YEAR),
+        Month=""+ (Calendar.getInstance().get(Calendar.MONTH)+1),
+        Day=""+ Calendar.getInstance().get(Calendar.DAY_OF_MONTH),
+        Hour=""+ Calendar.getInstance().get(Calendar.HOUR_OF_DAY),
+        Min=""+ Calendar.getInstance().get(Calendar.MINUTE),
+        Sec=""+ Calendar.getInstance().get(Calendar.SECOND);
+
+        Month = Month.length()<2 ? "0"+Month : Month;
+        Day = Day.length()<2 ? "0"+Day : Day;
+        Hour = Hour.length()<2 ? "0"+Hour : Hour;
+        Min = Min.length()<2 ? "0"+Min : Min;
+        Sec = Sec.length()<2 ? "0"+Sec : Sec;
+
+        return Year + Month + Day + Hour + Min + Sec;
+    }
+
     public void Save(View v){
         //On click.. background flashes green / toast popup to say saved
         String Saved;
+        v.setOnClickListener(null);
 
         TextView tv = (TextView) v;
         if( tv.getText() == "SAVE" ){
-            //PreparedStatement PreparedStatement PS = PreparedStatement().getConnection().prepareStatement("A");
-            //SqlBuilder
-            //MONTH = "Month", YEAR = "Year", TITLE = "Title", NOTE = "Note"
-            String s = DH.InsertBuilder(DH.DBname,new String[]{DH.DAY,DH.MONTH,DH.YEAR,DH.TITLE,DH.NOTE},
-                    new String[][]{{""+Calendar.getInstance().get(Calendar.DAY_OF_MONTH), String.valueOf(Calendar.getInstance().get(Calendar.MONTH)+1),String.valueOf(Calendar.getInstance().get(Calendar.YEAR)),
+            String s = DH.InsertBuilder(DH.DBname,new String[]{DH.YMDHMS,DH.TITLE,DH.NOTE},
+                    new String[][]{{CalYMDHMS(),
                        "\""+((TextView)findViewById(R.id.NewNoteNoteTitle)).getText().toString()+"\"",
                        "\""+((TextView)findViewById(R.id.NewNoteNoteDetail)).getText().toString()+"\""}});
             new Home().WriteLine(s);
@@ -65,6 +81,7 @@ public class NewNote extends AppCompatActivity {
         new Handler().postDelayed(() -> {
             tv.setText(tv2);
             tv.setBackgroundResource(R.drawable.roundbordernote);
+            v.setOnClickListener(this::Save);
             },1300);
     }
 

@@ -31,8 +31,7 @@ public class Home2 extends AppCompatActivity {
 
         setContentView(R.layout.home2);
 
-        //TempLoad(new View(this));
-        NotesMissing();
+        TempLoad("ORDER BY `"+DH.YMDHMS+"` DESC, `"+DH.TITLE+"` ASC");
     }
 
     public void Switchy(View v){
@@ -40,9 +39,11 @@ public class Home2 extends AppCompatActivity {
         //new Home().WriteLine(tv.getText()+"");
         switch (tv.getText()+""){
             case "Recent":
-                tv.setText("Alphabetical"); break;
+                tv.setText("Alphabetical"); TempLoad("ORDER BY `"+DH.TITLE+"` ASC,`"+DH.YMDHMS+"` DESC");  //Sort by Title a-z
+                    break;
             case "Alphabetical":
-                tv.setText("Recent"); break;
+                tv.setText("Recent"); TempLoad("ORDER BY `"+DH.YMDHMS+"` DESC, `"+DH.TITLE+"` ASC");//Sort by Tag YMHDs 9-0
+                break;
             default:
                 Toast.makeText(this, "ERROR OCCURRED!", Toast.LENGTH_SHORT).show();
         }
@@ -51,11 +52,17 @@ public class Home2 extends AppCompatActivity {
     public void TempNoteWipe(View v){
         DatabaseHandler DH = new DatabaseHandler(Home2.this);
         DH.ResetTable();
-        Toast.makeText(this,"WIPED DB",Toast.LENGTH_SHORT).show();
+        Toast.makeText(this,"WIPED notes",Toast.LENGTH_SHORT).show();
+
+        Switchy(findViewById(R.id.home2ViewStyle));
     }
 
-    public void TempLoad(View v){
-        String catc = DH.Readquery("SELECT * FROM `"+DH.DBname+"` ORDER BY `"+DH.TITLE+"` ASC;");
+    public void TempLoad(View v){ Switchy(findViewById(R.id.home2ViewStyle)); }
+
+    private void TempLoad(String sort){
+        ((TableLayout)findViewById(R.id.NewNoteTable)).removeAllViews();
+
+        String catc = DH.Readquery("SELECT * FROM `"+DH.DBname+"` "+sort);
         new Home().WriteLine(catc);
         if(catc.equals("")){
             NotesMissing();
@@ -68,7 +75,7 @@ public class Home2 extends AppCompatActivity {
 
         new AlertDialog.Builder(Home2.this, 0).setTitle("MENU").setItems(new String[]{"Add a new note","Del a note","Wipe all notes!"},
                 ((dialogInterface, i) -> {
-                    Toast.makeText(Home2.this,""+i,Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(Home2.this,""+i,Toast.LENGTH_SHORT).show();
                     switch(i){
                         case 0:
                             startActivity(new Intent(this,NewNote.class)); break;
@@ -145,20 +152,21 @@ public class Home2 extends AppCompatActivity {
 
         TvTitle.setMaxLines(1);
         TvTitle.setEllipsize(TextUtils.TruncateAt.END);
-        TvNote.setTypeface(null, Typeface.BOLD);
+        TvTitle.setTypeface(null, Typeface.BOLD);
 
-        TvNote.setTextColor(Color.parseColor("#59453F"));
+        TvTitle.setTextColor(Color.parseColor("#59453F"));
         TvTitle.setLayoutParams(TempParam);
 
 
 
         TvNote.setText(note); TvTitle.setText(title);
         TvNote.setTag(""+TagID); TvTitle.setTag(""+TagID);
-        TvNote.setOnClickListener(this::OpenNote);
+        TvNote.setOnClickListener(this::OpenNote); TvTitle.setOnClickListener(this::OpenNote);
         return new TextView[]{TvNote,TvTitle};
     }
 
     private void DisplayNotes(String notes){
+        new Home().WriteLine("GET NOTES FOUND");
         notes=""; //regex
         //R: Img = 3 multiline
         //R: Title = 1 line
