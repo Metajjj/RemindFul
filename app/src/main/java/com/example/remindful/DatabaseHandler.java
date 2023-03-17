@@ -77,7 +77,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     protected String Readquery(String query) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c;
-        String output = "";
+        String output;
         try {
             c = db.rawQuery(query, null); //selectionArgs to replace wildcard `?` in query | error if lacking ?
 
@@ -99,7 +99,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             for (String s : ColHeads){
                 if(c.getColumnIndex(s)==-1){ continue; }
                 output += s+":"+c.getString(c.getColumnIndex(s));
-                if (s == ColHeads[ColHeads.length-1]){ output += "\n"; }else{ output += "|"; }
+                if ( s.equals(ColHeads[ColHeads.length-1]) ){ output += "\n"; }else{ output += "|"; }
             }
             //output += c.getString(c.getColumnIndex(ID)) + "|" + c.getString(c.getColumnIndex(MONTH)) + "|" + c.getString(c.getColumnIndex(YEAR)) + "|" + c.getString(c.getColumnIndex(TITLE)) + "\n";
         }
