@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -20,6 +21,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Home2 extends AppCompatActivity {
     private final DatabaseHandler DH = new DatabaseHandler(Home2.this);
@@ -31,7 +34,9 @@ public class Home2 extends AppCompatActivity {
 
         setContentView(R.layout.home2);
 
-        TempLoad("ORDER BY `"+DH.YMDHMS+"` DESC, `"+DH.TITLE+"` ASC");
+        new Handler().post(()->{
+            TempLoad("ORDER BY `"+DH.YMDHMS+"` DESC, `"+DH.TITLE+"` ASC");
+        });
     }
 
     public void Switchy(View v){
@@ -39,10 +44,12 @@ public class Home2 extends AppCompatActivity {
         //new Home().WriteLine(tv.getText()+"");
         switch (tv.getText()+""){
             case "Recent":
-                tv.setText("Alphabetical"); TempLoad("ORDER BY `"+DH.TITLE+"` ASC,`"+DH.YMDHMS+"` DESC");  //Sort by Title a-z
-                    break;
+                tv.setText("Alphabetical");
+                new Handler().post(()-> { TempLoad("ORDER BY `"+DH.TITLE+"` ASC,`"+DH.YMDHMS+"` DESC"); });
+                break;
             case "Alphabetical":
-                tv.setText("Recent"); TempLoad("ORDER BY `"+DH.YMDHMS+"` DESC, `"+DH.TITLE+"` ASC");//Sort by Tag YMHDs 9-0
+                tv.setText("Recent");
+                new Handler().post(()-> { TempLoad("ORDER BY `"+DH.YMDHMS+"` DESC, `"+DH.TITLE+"` ASC"); });
                 break;
             default:
                 Toast.makeText(this, "ERROR OCCURRED!", Toast.LENGTH_SHORT).show();
@@ -57,18 +64,12 @@ public class Home2 extends AppCompatActivity {
         Switchy(findViewById(R.id.home2ViewStyle));
     }
 
-    public void TempLoad(View v){ Switchy(findViewById(R.id.home2ViewStyle)); }
-
     private void TempLoad(String sort){
         ((TableLayout)findViewById(R.id.NewNoteTable)).removeAllViews();
 
         String catc = DH.Readquery("SELECT * FROM `"+DH.DBname+"` "+sort);
-        new Home().WriteLine(catc);
-        if(catc.equals("")){
-            NotesMissing();
-        } else{
-            DisplayNotes(catc);
-        }
+        if(catc.equals("")){ NotesMissing(); }
+        else{ DisplayNotes(catc); }
     }
 
     public void Menu(View v){
@@ -91,6 +92,9 @@ public class Home2 extends AppCompatActivity {
     public void OpenNote(View v){
         String ID = v.getTag()+"";
         if (ID.equals("")){ startActivity(new Intent(this,NewNote.class)); }
+        else{
+            //Compare against db n load intent via db // check here or newnote?
+        }
         //Tag is available... load newnote with intent and bundle extra
     }
 
@@ -166,11 +170,44 @@ public class Home2 extends AppCompatActivity {
     }
 
     private void DisplayNotes(String notes){
-        new Home().WriteLine("GET NOTES FOUND");
-        notes=""; //regex
-        //R: Img = 3 multiline
-        //R: Title = 1 line
-        // Controls height size of row easy as its based on txt size, uniformally
+        ArrayList<TextView[]> TVHldr = new ArrayList<>(); ArrayList<TextView> Notes=new ArrayList<>(),Titles=new ArrayList<>(); Matcher m1,m2,m3;
+        //new Home().WriteLine(notes); //xx:xx|yy:yy\nx2:x2|y2:y2\n
+        //new Home().WriteLine(notes);
+        for(String s : notes.split("\\n"))
+        {
+            //Split s into Title,Note,YMHSD
+            m1= Pattern.compile("Note:[\\s\\w\\d]+\\|").matcher(s);
+            m2= Pattern.compile("Title:[\\s\\w\\d]+\\|").matcher(s);
+            m3= Pattern.compile("YMDHMS:[\\s\\w\\d]+\\|").matcher(s);
+            if (m1.find() && m2.find() && m3.find()) {
+                TVHldr.add(SetupCols(
+                        s.substring(m1.start() + "Note:".length(), m1.end() - 1),
+                        s.substring(m2.start() + "Title:".length(), m2.end() - 1),
+                        s.substring(m3.start() + "YMDHMS:".length(), m3.end() - 1))
+                );
+            } else{
+                Toast.makeText(Home2.this,"Error occured when accessing db, possible corruption!",Toast.LENGTH_LONG).show();
+            }
+        }
+
+        //Splits Cols into their rows/arrays
+        for(TextView[] Tv : TVHldr){ for(int i=0;i< Tv.length;i++){
+            switch (i%2){
+                case 0: Notes.add(Tv[i]); break;
+                default: Titles.add(Tv[i]); break;
+            }
+        } }
+
+        //FIX
+        for(int i=0;i<Notes.size();i+=3){
+            ArrayList<TextView> tv1 = new ArrayList<>(), tv2 = new ArrayList<>();
+            for(int j=i;j<Notes.indexOf( Notes.get(i) )+3;j++){
+                try{ tv1.add(Notes.get(j)); tv2.add(Titles.get(j)); } catch (Exception e){}
+            }
+            AddTblRow( tv1.toArray(new TextView[tv1.size()]), tv2.toArray(new TextView[tv1.size()]) );
+            //1,2,3 notes, titles 2?1?3?
+            //new Home().WriteLine("CheckRows\n"+tv1.get(0).getText()+"|"+tv1.get(1).getText()+"\n"+tv2.get(0).getText()+"|"+tv2.get(1).getText());
+        }
     }
 
     private float DPtoPixel(int DP){
