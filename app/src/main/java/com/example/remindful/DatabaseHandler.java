@@ -7,8 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
-    //ID | Month | Year | Title | Note | To be reminded? || Time to remind..
-    //PK | INT   | INT  | TEXT  | TEXT | BOOL/INT        || TEXT
+    //ID | Month | Year | Title | Note | TimeModified || Time to remind..
+    //PK | INT   | INT  | TEXT  | TEXT | TEXT         || TEXT
     protected final String DBname = "NoteList", ID = "ID", DAY="Day", MONTH = "Month", YEAR = "Year", TITLE = "Title", NOTE = "Note", R_TIME = "R_Time";
     //Dont need R bool, just check R_Time if null
     private final String[] ColHeads = {ID,DAY,MONTH,YEAR,TITLE,NOTE, R_TIME};

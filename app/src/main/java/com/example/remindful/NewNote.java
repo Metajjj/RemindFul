@@ -24,6 +24,8 @@ public class NewNote extends AppCompatActivity {
         setContentView(R.layout.newnote);
 
         Remind(findViewById(R.id.NewNoteRemindBox));
+
+        //check for extra bundle intent crap and load it up === INSTERT => UPDATE/ALTER
     }
 
     public void Remind(View v){

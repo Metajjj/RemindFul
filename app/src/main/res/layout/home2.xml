@@ -26,6 +26,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:tag="ThisIsMyID"
 
         android:onClick="Switchy"
         android:id="@+id/home2ViewStyle"
@@ -94,7 +95,7 @@
                     android:layout_weight="1"
                     android:background="@drawable/roundbordernote"
                     android:padding="10dp"
-                    android:text="Note2" />
+                    android:text="Note2 example" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -106,7 +107,7 @@
                     android:layout_weight="1"
                     android:background="@drawable/roundbordernote"
                     android:padding="10dp"
-                    android:text="Note3" />
+                    android:text="Note3 exmple" />
             </TableRow>
 
             <TableRow>
