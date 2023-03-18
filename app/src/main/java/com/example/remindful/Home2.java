@@ -34,8 +34,15 @@ public class Home2 extends AppCompatActivity {
 
         setContentView(R.layout.home2);
 
+        Switchy(findViewById(R.id.home2ViewStyle));
+    }
+
+    //LOAD with something other than switchy
+    @Override
+    protected void onResume() {
+        super.onResume();
         new Handler().post(()->{
-            TempLoad("ORDER BY `"+DH.YMDHMS+"` DESC, `"+DH.TITLE+"` ASC");
+            Switchy(findViewById(R.id.home2ViewStyle));
         });
     }
 
@@ -93,9 +100,10 @@ public class Home2 extends AppCompatActivity {
         String ID = v.getTag()+"";
         if (ID.equals("")){ startActivity(new Intent(this,NewNote.class)); }
         else{
-            //Compare against db n load intent via db // check here or newnote?
+            String o = DH.Readquery("SELECT * FROM `"+DH.DBname+"` WHERE `"+DH.ID+"` = "+v.getTag().toString().split("-")[1]+" AND "+DH.YMDHMS+" = "+v.getTag().toString().split("-")[0]+";");
+
+            startActivity(new Intent(Home2.this,NewNote.class).putExtra("i",o));
         }
-        //Tag is available... load newnote with intent and bundle extra
     }
 
     private void NotesMissing(){
@@ -170,7 +178,7 @@ public class Home2 extends AppCompatActivity {
     }
 
     private void DisplayNotes(String notes){
-        ArrayList<TextView[]> TVHldr = new ArrayList<>(); ArrayList<TextView> Notes=new ArrayList<>(),Titles=new ArrayList<>(); Matcher m1,m2,m3;
+        ArrayList<TextView[]> TVHldr = new ArrayList<>(); ArrayList<TextView> Notes=new ArrayList<>(),Titles=new ArrayList<>(); Matcher m1,m2,m3,m4;
         //new Home().WriteLine(notes); //xx:xx|yy:yy\nx2:x2|y2:y2\n
         //new Home().WriteLine(notes);
         for(String s : notes.split("\\n"))
@@ -179,12 +187,14 @@ public class Home2 extends AppCompatActivity {
             m1= Pattern.compile("Note:[\\s\\w\\d]+\\|").matcher(s);
             m2= Pattern.compile("Title:[\\s\\w\\d]+\\|").matcher(s);
             m3= Pattern.compile("YMDHMS:[\\s\\w\\d]+\\|").matcher(s);
-            if (m1.find() && m2.find() && m3.find()) {
+            m4= Pattern.compile("ID:[\\s\\w\\d]+\\|").matcher(s);
+            if (m1.find() && m2.find() && m3.find() && m4.find()) {
                 TVHldr.add(SetupCols(
                         s.substring(m1.start() + "Note:".length(), m1.end() - 1),
                         s.substring(m2.start() + "Title:".length(), m2.end() - 1),
-                        s.substring(m3.start() + "YMDHMS:".length(), m3.end() - 1))
-                );
+                        s.substring(m3.start() + "YMDHMS:".length(), m3.end() - 1) + "-" +
+                        s.substring(m4.start() + "ID:".length(), m4.end() - 1)
+                ) );
             } else{
                 Toast.makeText(Home2.this,"Error occured when accessing db, possible corruption!",Toast.LENGTH_LONG).show();
             }
