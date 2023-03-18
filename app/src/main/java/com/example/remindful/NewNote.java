@@ -35,6 +35,7 @@ public class NewNote extends AppCompatActivity {
     }
     private void DataExists(String s){
         DataExist = true;
+        ((TextView)findViewById(R.id.NewNoteTitle)).setText("Update Note");
 
         Matcher m1= Pattern.compile("Note:[\\s\\w\\d]+\\|").matcher(s),
         m2= Pattern.compile("Title:[\\s\\w\\d]+\\|").matcher(s),

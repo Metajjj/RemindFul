@@ -34,15 +34,16 @@ public class Home2 extends AppCompatActivity {
 
         setContentView(R.layout.home2);
 
-        Switchy(findViewById(R.id.home2ViewStyle));
+        switchy();
     }
 
     //LOAD with something other than switchy
+    //mini switchy that simply loads, seperating function parts
     @Override
     protected void onResume() {
         super.onResume();
         new Handler().post(()->{
-            Switchy(findViewById(R.id.home2ViewStyle));
+            switchy();
         });
     }
 
@@ -51,11 +52,25 @@ public class Home2 extends AppCompatActivity {
         //new Home().WriteLine(tv.getText()+"");
         switch (tv.getText()+""){
             case "Recent":
+                switchy();
                 tv.setText("Alphabetical");
+                break;
+            case "Alphabetical":
+                switchy();
+                tv.setText("Recent");
+                break;
+            default:
+                Toast.makeText(this, "ERROR OCCURRED!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void switchy(){
+        TextView tv = findViewById(R.id.home2ViewStyle);
+        switch (tv.getText()+""){
+            case "Recent":
                 new Handler().post(()-> { TempLoad("ORDER BY `"+DH.TITLE+"` ASC,`"+DH.YMDHMS+"` DESC"); });
                 break;
             case "Alphabetical":
-                tv.setText("Recent");
                 new Handler().post(()-> { TempLoad("ORDER BY `"+DH.YMDHMS+"` DESC, `"+DH.TITLE+"` ASC"); });
                 break;
             default:
@@ -68,7 +83,7 @@ public class Home2 extends AppCompatActivity {
         DH.ResetTable();
         Toast.makeText(this,"WIPED notes",Toast.LENGTH_SHORT).show();
 
-        Switchy(findViewById(R.id.home2ViewStyle));
+        switchy();
     }
 
     private void TempLoad(String sort){
@@ -88,6 +103,7 @@ public class Home2 extends AppCompatActivity {
                         case 0:
                             startActivity(new Intent(this,NewNote.class)); break;
                         case 1: //Red border, onclick = del - forewarn, is perm
+                            //set background res.. del del check box del... ??
                             break;
                         case 2:
                         TempNoteWipe(new View(this)); break;
