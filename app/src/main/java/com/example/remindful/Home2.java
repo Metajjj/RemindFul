@@ -95,15 +95,14 @@ public class Home2 extends AppCompatActivity {
     }
 
     public void Menu(View v){
-
-        new AlertDialog.Builder(Home2.this, 0).setTitle("MENU").setItems(new String[]{"Add a new note","Del a note","Wipe all notes!"},
+        new AlertDialog.Builder(Home2.this, 0).setTitle("MENU").setItems(new String[]{"Add a new note","Del note(s)","Wipe all notes!\n  (permanent & instant, no confirmation!)"},
                 ((dialogInterface, i) -> {
                     //Toast.makeText(Home2.this,""+i,Toast.LENGTH_SHORT).show();
                     switch(i){
                         case 0:
                             startActivity(new Intent(this,NewNote.class)); break;
-                        case 1: //Red border, onclick = del - forewarn, is perm
-                            //set background res.. del del check box del... ??
+                        case 1:
+                            SetupDelArea();
                             break;
                         case 2:
                         TempNoteWipe(new View(this)); break;
@@ -241,7 +240,12 @@ public class Home2 extends AppCompatActivity {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,DP,getResources().getDisplayMetrics());
     }
 
-    //Grab crap from DB.. 2x array store vals.. display vals..
+    private void SetupDelArea(){
+        Toast.makeText(Home2.this,"Del time!",Toast.LENGTH_LONG).show();
+        //Red border, onclick = del - forewarn, is perm
+        //set background res.. del del check box del... ??
+        //On click checkbox tick.. entire note/col turns red background
 
-    //on Recent txt change.. grab from DB
+
+    }
 }

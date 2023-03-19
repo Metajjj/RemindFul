@@ -28,6 +28,9 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
+        android:maxLines="1"
+        android:singleLine="true"
+
         android:textColor="#504538"
         android:id="@+id/NewNoteNoteTitle"
         android:layout_width="0dp"
