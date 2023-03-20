@@ -18,6 +18,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -25,6 +26,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Home2 extends AppCompatActivity {
+    //CTRL SHIFT +   opens all brackets
+    //CTRL SHIFT -   closes all brackets
     private final DatabaseHandler DH = new DatabaseHandler(Home2.this);
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -78,7 +81,7 @@ public class Home2 extends AppCompatActivity {
         }
     }
 
-    public void TempNoteWipe(View v){
+    private void TempNoteWipe(View v){
         DatabaseHandler DH = new DatabaseHandler(Home2.this);
         DH.ResetTable();
         Toast.makeText(this,"WIPED notes",Toast.LENGTH_SHORT).show();
@@ -240,12 +243,16 @@ public class Home2 extends AppCompatActivity {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,DP,getResources().getDisplayMetrics());
     }
 
+    public void Temp(View v){ SetupDelArea(); }
     private void SetupDelArea(){
         Toast.makeText(Home2.this,"Del time!",Toast.LENGTH_LONG).show();
+
+        getSupportFragmentManager().beginTransaction().show(new Fragment(R.layout.delete_fragment)).commit();
+        //FAIL
+
         //Red border, onclick = del - forewarn, is perm
         //set background res.. del del check box del... ??
         //On click checkbox tick.. entire note/col turns red background
-
 
     }
 }

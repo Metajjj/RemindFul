@@ -6,7 +6,13 @@
     android:layout_height="match_parent"
     android:background="#AB9866">
 
+    <FrameLayout
+        android:id="@+id/FragHolder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
     <TextView
+        android:onClick="Temp"
         android:id="@+id/home2Title"
         android:layout_width="0dp"
         android:layout_height="98dp"
@@ -61,82 +67,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:stretchColumns="*">
-
-            <!--TableRow android:layout_width="match_parent">
-
-                <TextView
-                    android:textColor="#504538"
-
-                    android:id="@+id/NewNote"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/roundbordernote"
-                    android:ellipsize="end"
-                    android:maxLines="3"
-
-                    android:padding="10dp"
-                    android:text="Note1\nLine2..\nEnd line.." />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/roundbordernote"
-                    android:padding="10dp"
-                    android:text="Note2 example" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/roundbordernote"
-                    android:padding="10dp"
-                    android:text="Note3 exmple" />
-            </TableRow-->
-
-            <!--TableRow>
-
-                <TextView
-                    android:textColor="#504538"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:ellipsize="end"
-                    android:gravity="center"
-                    android:maxLines="1"
-                    android:text="New note..."
-                    android:textAlignment="center"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="BB"
-                    android:textAlignment="center" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="CC"
-                    android:textAlignment="center" />
-            </TableRow-->
         </TableLayout>
 
     </ScrollView>
@@ -156,4 +86,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/home2Title"
         app:srcCompat="@drawable/cm" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
