@@ -18,7 +18,6 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -246,9 +245,15 @@ public class Home2 extends AppCompatActivity {
     public void Temp(View v){ SetupDelArea(); }
     private void SetupDelArea(){
         Toast.makeText(Home2.this,"Del time!",Toast.LENGTH_LONG).show();
+        /*
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.home2FragHolder, new DeleteFragment());
+        ft.commit();
+        findViewById(R.id.home2FragHolder).bringToFront();*/
 
-        getSupportFragmentManager().beginTransaction().show(new Fragment(R.layout.delete_fragment)).commit();
-        //FAIL
+        View DL = getLayoutInflater().inflate(R.layout.delete_fragment,null);
+        AlertDialog.Builder b = new AlertDialog.Builder(this);
+        b.setView(DL);b.show(); b.setCancelable(true);
 
         //Red border, onclick = del - forewarn, is perm
         //set background res.. del del check box del... ??
