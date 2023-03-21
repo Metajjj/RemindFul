@@ -1,5 +1,6 @@
 package com.example.remindful;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,5 +18,11 @@ public class DeleteFragment extends DialogFragment {
 
         new Home().WriteLine(""+container.getClass().getName() );
         return inflater.inflate(R.layout.delete_fragment, container, false);
+    }
+
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        return super.onCreateDialog(savedInstanceState);
     }
 }

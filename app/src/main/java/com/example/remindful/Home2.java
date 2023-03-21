@@ -253,7 +253,8 @@ public class Home2 extends AppCompatActivity {
 
         View DL = getLayoutInflater().inflate(R.layout.delete_fragment,null);
         AlertDialog.Builder b = new AlertDialog.Builder(this);
-        b.setView(DL);b.show(); b.setCancelable(true);
+        b.setView(DL).setTitle("Choose the note(s) to delete!");
+        b.create().show(); b.setCancelable(true);
 
         //Red border, onclick = del - forewarn, is perm
         //set background res.. del del check box del... ??
