@@ -236,7 +236,7 @@ public class Home2 extends AppCompatActivity {
         }
     }
 
-    private float DPtoPixel(int DP){
+    public float DPtoPixel(int DP){
         //PixeltoDP
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,DP,getResources().getDisplayMetrics());
     }

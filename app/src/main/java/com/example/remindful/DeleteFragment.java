@@ -1,7 +1,11 @@
 package com.example.remindful;
 
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.AttributeSet;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,36 +37,59 @@ public class DeleteFragment extends DialogFragment {
 
         //Promise = new handler  -  avoid ui locking and waits
         //.always takes both reject and resolve //SyncPromise makes it wait for first function before next if multithreaded..
-        System.out.println("Promise BEGIN");
+
+        ((TextView)getActivity().findViewById(R.id.DelFragSelAll)).setText("Loading...");
+
         Promise.resolve().then((action,data)->{
-            System.out.println("Promise1 BEGIN");
 
-                System.out.println("Promise1 SLEEP - BEGIN");
-                for(int i=0;i<5;i++){
-                    try{ Thread.sleep(1000); } catch (Exception e){ System.out.println("ERR: "+e);}
-                }
-                System.out.println("Promise1 SLEEP - END");
+            //Add stuff - append click to them during creation?
 
-
-            System.out.println("Promise1 END");
             action.resolve();
         }).then((a,d)->{
-            System.out.println("Promise2 BEGIN");
 
-            TableLayout TL = getActivity().findViewById(R.id.DelFragTable);
-            for(int i=0;i<TL.getChildCount();i++){
-                TL.getChildAt(i).setOnClickListener(this::DelFragButtClicked);
+            ((TextView)getActivity().findViewById(R.id.DelFragSelAll)).setText("Select All");
+            ((View)((TextView)getActivity().findViewById(R.id.DelFragSelAll)).getParent()).setOnClickListener(this::DelFragTopButtClicked);
 
-                //TableRow TR = (TableRow) TL.getChildAt(i);
-                /*for(int j=0;j<TR.getChildCount();j++){
-                    TR.getChildAt(j).setOnClickListener(this::DelFragButtClicked);
-                }*/
-            }
-
-            System.out.println("Promise2 END");
             a.resolve();
         }).start();
-        System.out.println("Promise END");
+    }
+
+    private TableRow SetupRow(String Title){
+        TextView Tv = new TextView(getContext()); CheckBox Cb = new CheckBox(getContext()); TableRow Tr = new TableRow(getContext()); ViewGroup.LayoutParams Params;
+
+        ///app:autoSizeTextType="uniform"
+
+        //TextView
+        Params = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT,0);
+        Tv.setPadding((int)Math.floor(new Home2().DPtoPixel(3)),(int)Math.floor(new Home2().DPtoPixel(3)),(int)Math.floor(new Home2().DPtoPixel(3)),(int)Math.floor(new Home2().DPtoPixel(3)));
+
+        Tv.setSingleLine(true); Tv.setMaxLines(1);
+        Tv.setGravity(Gravity.CENTER); Tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        Tv.setTypeface(null, Typeface.BOLD);
+        Tv.setLayoutParams(Params); Tv.setText(Title);
+
+        new AttributeSet().getAttributeIntValue("","",0);
+        TypedValue;
+
+
+        //CheckBox
+        Params = new TableRow.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT,1);
+        Cb.setLayoutParams(Params); Cb.setClickable(false);
+
+        //TableRow
+        Tr.setLayoutParams(new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        Tr.addView(Tv,0);Tr.addView(Cb,1);
+        Tr.setOnClickListener(this::DelFragButtClicked);
+
+
+        return Tr;
+    }
+
+    public void DelFragTopButtClicked(View v){
+        TableLayout TL = (TableLayout) getActivity().findViewById(R.id.DelFragTable);
+        for(int i=1;i<TL.getChildCount();i++){
+            DelFragButtClicked( TL.getChildAt(i) );
+        }
     }
 
     public void DelFragButtClicked(View v){
@@ -79,12 +106,7 @@ public class DeleteFragment extends DialogFragment {
             TextCol="#6C5346";
             tr.getChildAt(0).setBackgroundResource(R.drawable.roundborderdel);
         }
-        //chvck box then ...
-        ((TextView)tr.getChildAt(0)).setTextColor(Color.parseColor(TextCol));
 
-        //if row is index 0.. set all rows to ticked... // if txt = SELECT ALL
-        if(v == ((ViewGroup)v.getParent()).getChildAt(0)){
-            new Home().WriteLine("is top row!"); //WORKS
-        }
+        ((TextView)tr.getChildAt(0)).setTextColor(Color.parseColor(TextCol));
     }
 }
