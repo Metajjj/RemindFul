@@ -40,8 +40,6 @@ public class Home2 extends AppCompatActivity {
         switchy();
     }
 
-    //LOAD with something other than switchy
-    //mini switchy that simply loads, seperating function parts
     @Override
     protected void onResume() {
         super.onResume();
@@ -248,7 +246,7 @@ public class Home2 extends AppCompatActivity {
         Toast.makeText(Home2.this,"Del time!",Toast.LENGTH_LONG).show();
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.home2FragHolder, new DeleteFragment());
+        ft.replace(R.id.home2FragHolder, DeleteFragment.class, null);
         ft.commit();
         findViewById(R.id.home2FragHolder).bringToFront();
 

@@ -29,7 +29,7 @@ public class Home extends AppCompatActivity {
             //try{Thread.sleep(2000);}catch(Exception e){}
             startActivity(new Intent(this,Home2.class));
 
-        },3000);
+        },1300);
 
     }
 
