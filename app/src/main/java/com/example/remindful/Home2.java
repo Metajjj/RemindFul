@@ -90,7 +90,7 @@ public class Home2 extends AppCompatActivity {
     private void TempLoad(String sort){
         ((TableLayout)findViewById(R.id.NewNoteTable)).removeAllViews();
 
-        String catc = DH.Readquery("SELECT * FROM `"+DH.DBname+"` "+sort);
+        String catc = DH.Readquery("SELECT * FROM `"+DH.DBname+"` "+sort+";");
         if(catc.equals("")){ NotesMissing(); }
         else{ DisplayNotes(catc); }
     }
