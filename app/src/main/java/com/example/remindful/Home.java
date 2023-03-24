@@ -19,7 +19,6 @@ public class Home extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         Objects.requireNonNull(getSupportActionBar()).hide(); //Hides default header
-
         setContentView(R.layout.home);
 
         ColScheme( findViewById(R.id.HomeLayout) );
