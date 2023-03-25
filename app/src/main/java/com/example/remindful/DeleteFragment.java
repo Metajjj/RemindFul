@@ -51,17 +51,24 @@ public class DeleteFragment extends DialogFragment {
         ((TextView)getActivity().findViewById(R.id.DelFragSelAll)).setText("Loading...");
         TableLayout TL = (getActivity().findViewById(R.id.DelFragTable));
 
+        System.out.println("P B");
         SyncPromise.resolve().always((action, data)->{
-            //GRAB ID TO USE AS TAG
+            ////GRAB ID + YMD TO USE AS TAG
             String s = DH.Readquery(
-                    MessageFormat.format("SELECT `{0}` FROM `{1}`;",
-                            DH.TITLE,DH.DBname)
+                    MessageFormat.format("SELECT `{0}`,`{2}`,`{3}` FROM `{1}`;",
+                            DH.TITLE,DH.DBname,DH.YMDHMS,DH.ID)
             );
 
+            System.out.println("====\n"+s);
+            //Figure out
             for (String x : s.split("\\|") ) {
-                Matcher m1 = Pattern.compile("Title:").matcher(x);
-                if(m1.find()){
-                    TableRow Tr = SetupRow( x.substring(m1.end()) ); TL.addView(Tr);
+                Matcher m1 = Pattern.compile("Title:").matcher(x),
+                m2 = Pattern.compile("YMDHMS:").matcher(x),
+                m3 = Pattern.compile("ID:").matcher(x);
+                if(m1.find() && m2.find() && m3.find()){
+                    TableRow Tr = SetupRow( x.substring(m1.end()) );
+                    Tr.setTag(0, x.substring(m2.end()) +"-"+ x.substring(m3.end()) );
+                    TL.addView(Tr);
                 }
             }
 
@@ -145,10 +152,10 @@ public class DeleteFragment extends DialogFragment {
             if( ((CheckBox) TR.getChildAt(1)).isChecked() ){
                 //True = del
                 ToBeDel.add(""+ ((TextView)TR.getChildAt(0)).getText() );
+                System.out.println("TAG: "+ TR.getChildAt(0).getTag(0) );
             }
         }
-        System.out.println(
-        ToBeDel.toString() );
+        System.out.println( ToBeDel );
     }
 
     public void CloseFrag(View v){

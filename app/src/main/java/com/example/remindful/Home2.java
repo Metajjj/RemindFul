@@ -91,6 +91,7 @@ public class Home2 extends AppCompatActivity {
         ((TableLayout)findViewById(R.id.NewNoteTable)).removeAllViews();
 
         String catc = DH.Readquery("SELECT * FROM `"+DH.DBname+"` "+sort+";");
+
         if(catc.equals("")){ NotesMissing(); }
         else{ DisplayNotes(catc); }
     }
@@ -196,9 +197,9 @@ public class Home2 extends AppCompatActivity {
     private void DisplayNotes(String notes){
         ArrayList<TextView[]> TVHldr = new ArrayList<>(); ArrayList<TextView> Notes=new ArrayList<>(),Titles=new ArrayList<>(); Matcher m1,m2,m3,m4;
         //new Home().WriteLine(notes); //xx:xx|yy:yy\nx2:x2|y2:y2\n
-        //new Home().WriteLine(notes);
-        for(String s : notes.split("\\n"))
+        for(String s : notes.split(DH.NewLine))
         {
+            System.out.println("==\n"+s+"\n==");
             //Split s into Title,Note,YMHSD
             m1= Pattern.compile("Note:[\\s\\w\\d]+\\|").matcher(s);
             m2= Pattern.compile("Title:[\\s\\w\\d]+\\|").matcher(s);
@@ -212,7 +213,8 @@ public class Home2 extends AppCompatActivity {
                         s.substring(m4.start() + "ID:".length(), m4.end() - 1)
                 ) );
             } else{
-                Toast.makeText(Home2.this,"Error occured when accessing db, possible corruption!",Toast.LENGTH_LONG).show();
+                Toast.makeText(Home2.this,"Error occured when accessing db, possible corruption!",Toast.LENGTH_SHORT).show();
+                //System.out.println( MessageFormat.format("ERR\nNote - {0} | Title - {1} | YMD - {2} | ID - {3}", m1.find(),m2.find(),m3.find(),m4.find()) );
             }
         }
 
@@ -224,7 +226,6 @@ public class Home2 extends AppCompatActivity {
             }
         } }
 
-        //FIX
         for(int i=0;i<Notes.size();i+=3){
             ArrayList<TextView> tv1 = new ArrayList<>(), tv2 = new ArrayList<>();
             for(int j=i;j<Notes.indexOf( Notes.get(i) )+3;j++){

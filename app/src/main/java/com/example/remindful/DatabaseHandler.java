@@ -11,7 +11,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     //PK | INT   | INT  | TEXT  | TEXT | TEXT         || TEXT
     // ID | Year + Month + Day + Hour + Min + Sec | Title | Note | Time to remind...
     // YMDHMNS : 20230201155432
-    protected final String DBname = "NoteList", ID = "ID", YMDHMS ="YMDHMS", TITLE = "Title", NOTE = "Note", R_TIME = "R_Time";
+    protected final String DBname = "NoteList", ID = "ID", YMDHMS ="YMDHMS", TITLE = "Title", NOTE = "Note", R_TIME = "R_Time", NewLine="£$€%^&*", Seperator="|";
     //Dont need R bool, just check R_Time if null
     private final String[] ColHeads = {ID, YMDHMS,TITLE,NOTE, R_TIME};
 
@@ -87,7 +87,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
             c.close();
         } catch (Exception e) {
-            output = "ReadDBErr: " + e;
+            output = "ReadDBErr: " + e; System.out.println("SRS ERR DH : "+e);
         }
         db.close();
         return output;
@@ -98,13 +98,27 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         String output="";
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) { //for each row
             //OUTPUT = headername:value|headername2:value2|
+            int i=1; //Skips first troub
             for (String s : ColHeads){
+
                 if(c.getColumnIndex(s)==-1){ continue; }
-                output += s+":"+c.getString(c.getColumnIndex(s));
-                if ( s.equals(ColHeads[ColHeads.length-1]) ){ output += "\n"; }else{ output += "|"; }
+                else {
+                    output += s + ":" + c.getString(c.getColumnIndex(s));
+                    if (
+                            i % ColHeads.length == 0 //s.equals(ColHeads[ColHeads.length-1])
+                    ) {
+                        output += NewLine;
+                        //i=1;
+                    } else {
+                        output += Seperator;
+                    }
+                }
+                i++;
             }
+
             //output += c.getString(c.getColumnIndex(ID)) + "|" + c.getString(c.getColumnIndex(MONTH)) + "|" + c.getString(c.getColumnIndex(YEAR)) + "|" + c.getString(c.getColumnIndex(TITLE)) + "\n";
         }
+        //System.out.println("DH_OUT: "+output);
 
         return ""+output;
     }
