@@ -23,13 +23,18 @@ public class Home extends AppCompatActivity {
 
         ColScheme( findViewById(R.id.HomeLayout) );
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        ((TextView)findViewById(R.id.HomeTitle)).setText("RemindFul!");
         new Handler().postDelayed(()->{
             ((TextView)findViewById(R.id.HomeTitle)).setText("Loaded!");
             //try{Thread.sleep(2000);}catch(Exception e){}
             startActivity(new Intent(this,Home2.class));
 
-        },1300);
-
+        },2000);
     }
 
     public void WriteLine(String s){

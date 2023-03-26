@@ -101,18 +101,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             int i=1; //Skips first troub
             for (String s : ColHeads){
 
-                if(c.getColumnIndex(s)==-1){ continue; }
-                else {
-                    output += s + ":" + c.getString(c.getColumnIndex(s)); //+seperator
-                    if (
-                            i % ColHeads.length == 0 //s.equals(ColHeads[ColHeads.length-1])
-                    ) {
-                        output += Seperator + NewLine;
-                        //i=1;
-                    } else {
-                        output += Seperator;
-                    }
+                if(c.getColumnIndex(s)>=0) {
+                    output += s + ":" + c.getString(c.getColumnIndex(s)) + Seperator;
                 }
+                if (
+                        i % ColHeads.length == 0 //s.equals(ColHeads[ColHeads.length-1])
+                ) { output += NewLine; }
+
                 i++;
             }
 

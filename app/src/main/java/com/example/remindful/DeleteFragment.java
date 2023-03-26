@@ -59,20 +59,38 @@ public class DeleteFragment extends DialogFragment {
                             DH.TITLE,DH.DBname,DH.YMDHMS,DH.ID)
             );
 
-            System.out.println("====\n"+s);
+            //System.out.println("====\n"+s+"\n====");
+
+            //s = s.replaceAll(DH.NewLine,"");
+            //System.out.println("\n"+s.getClass()+"\n"+s+"\n");
+            //System.out.println("Len: "+ s.split( Pattern.quote(DH.NewLine) ).length );
             //Figure out
-            for (String x : s.split(Pattern.quote(DH.Seperator)) ) {
-                Matcher m1 = Pattern.compile("Title:").matcher(x),
-                m2 = Pattern.compile("YMDHMS:").matcher(x),
-                m3 = Pattern.compile("ID:").matcher(x);
+            int i=0;
+            for (String x : s.split( Pattern.quote(DH.NewLine) )) {
+                //ONLY GRABS 1
+                System.out.println(++i+" | "+ x);
+
+                Matcher m1 = Pattern.compile(DH.TITLE+":[\\w\\d\\s]*\\|").matcher(x),
+                m2 = Pattern.compile(DH.YMDHMS+":[\\w\\d\\s]*\\|").matcher(x),
+                m3 = Pattern.compile(DH.ID+":[\\w\\d\\s]*\\|").matcher(x);
+                System.out.println("m1:"+m1.find(0)+" m2:"+m2.find(0)+" m3:"+m3.find(0));
+
                 if(m1.find(0) && m2.find(0) && m3.find(0)){
-                    TableRow Tr = SetupRow( x.substring(m1.end()) );
-                    Tr.setTag(0, x.substring(m2.end()) +"-"+ x.substring(m3.end()) );
+                    System.out.println(MessageFormat.format(
+                            "m1: {0} | m2: {1} | m3: {2}",
+                            x.substring(m1.start() + "Title:".length() ,m1.end()-1 ),
+                            x.substring(m2.start() + "YMD:".length(),m2.end()-1 ),
+                            x.substring(m3.start() + "ID:".length(),m3.end()-1 )
+                    ));
+                    TableRow Tr = SetupRow( x.substring(m1.start() + "Title:".length() ,m1.end()-1 ) );
+                    //Tr.setTag(0, x.substring(m2.end()) +"-"+ x.substring(m3.end()) );
                     TL.addView(Tr);
                 }
+                System.out.println("if - end");
             }
 
 
+            //Never resolves
             action.resolve();
         }).then((a,d)->{
 

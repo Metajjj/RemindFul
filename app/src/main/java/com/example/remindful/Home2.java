@@ -20,7 +20,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -199,7 +198,8 @@ public class Home2 extends AppCompatActivity {
     private void DisplayNotes(String notes){
         ArrayList<TextView[]> TVHldr = new ArrayList<>(); ArrayList<TextView> Notes=new ArrayList<>(),Titles=new ArrayList<>(); Matcher m1,m2,m3,m4;
         //new Home().WriteLine(notes); //xx:xx|yy:yy\nx2:x2|y2:y2\n
-        for(String s : notes.split(DH.NewLine))
+
+        for(String s : notes.split( Pattern.quote(DH.NewLine) ))
         {
             //System.out.println("==\n"+s+"\n=="); //ISNT SPLIT
             //Split s into Title,Note,YMHSD,ID
@@ -215,14 +215,6 @@ public class Home2 extends AppCompatActivity {
 
             //Has to use find(int) or it starts from last pos of last find() instead of from beginning again
             if (m1.find(0) && m2.find(0) && m3.find(0) && m4.find(0)) {
-
-                System.out.println(MessageFormat.format(
-                        "ID: {0} | Title: {1} | YMD: {2} | Note: {3}",
-                        s.substring(m4.start() + "ID:".length(), m4.end() - 1),
-                        s.substring(m2.start() + "Title:".length(), m2.end() - 1),
-                        s.substring(m3.start() + "YMDHMS:".length(), m3.end() - 1),
-                        s.substring(m1.start() + "Note:".length(), m1.end() - 1)
-                ));
 
                 TVHldr.add(SetupCols(
                         s.substring(m1.start() + "Note:".length(), m1.end() - 1),
