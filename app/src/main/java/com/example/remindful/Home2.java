@@ -20,6 +20,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -91,6 +92,7 @@ public class Home2 extends AppCompatActivity {
         ((TableLayout)findViewById(R.id.NewNoteTable)).removeAllViews();
 
         String catc = DH.Readquery("SELECT * FROM `"+DH.DBname+"` "+sort+";");
+        //System.out.println("===CATCH\n"+catc+"\n==="); WORKS FINE
 
         if(catc.equals("")){ NotesMissing(); }
         else{ DisplayNotes(catc); }
@@ -199,13 +201,29 @@ public class Home2 extends AppCompatActivity {
         //new Home().WriteLine(notes); //xx:xx|yy:yy\nx2:x2|y2:y2\n
         for(String s : notes.split(DH.NewLine))
         {
-            System.out.println("==\n"+s+"\n==");
-            //Split s into Title,Note,YMHSD
+            //System.out.println("==\n"+s+"\n=="); //ISNT SPLIT
+            //Split s into Title,Note,YMHSD,ID
             m1= Pattern.compile("Note:[\\s\\w\\d]+\\|").matcher(s);
             m2= Pattern.compile("Title:[\\s\\w\\d]+\\|").matcher(s);
             m3= Pattern.compile("YMDHMS:[\\s\\w\\d]+\\|").matcher(s);
             m4= Pattern.compile("ID:[\\s\\w\\d]+\\|").matcher(s);
-            if (m1.find() && m2.find() && m3.find() && m4.find()) {
+
+            /*System.out.println(MessageFormat.format(
+                    "ID: {0} | Title: {1} | YMD: {2} | Note: {3} | All: "+( m1.find(0) && m2.find(0) && m3.find(0) && m4.find(0) ? "TRUE" : "FALSE"),
+                    m4.find(0),m2.find(0),m3.find(0),m1.find(0)
+            ));*/
+
+            //Has to use find(int) or it starts from last pos of last find() instead of from beginning again
+            if (m1.find(0) && m2.find(0) && m3.find(0) && m4.find(0)) {
+
+                System.out.println(MessageFormat.format(
+                        "ID: {0} | Title: {1} | YMD: {2} | Note: {3}",
+                        s.substring(m4.start() + "ID:".length(), m4.end() - 1),
+                        s.substring(m2.start() + "Title:".length(), m2.end() - 1),
+                        s.substring(m3.start() + "YMDHMS:".length(), m3.end() - 1),
+                        s.substring(m1.start() + "Note:".length(), m1.end() - 1)
+                ));
+
                 TVHldr.add(SetupCols(
                         s.substring(m1.start() + "Note:".length(), m1.end() - 1),
                         s.substring(m2.start() + "Title:".length(), m2.end() - 1),

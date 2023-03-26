@@ -11,7 +11,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     //PK | INT   | INT  | TEXT  | TEXT | TEXT         || TEXT
     // ID | Year + Month + Day + Hour + Min + Sec | Title | Note | Time to remind...
     // YMDHMNS : 20230201155432
-    protected final String DBname = "NoteList", ID = "ID", YMDHMS ="YMDHMS", TITLE = "Title", NOTE = "Note", R_TIME = "R_Time", NewLine="£$€%^&*", Seperator="|";
+    protected final String DBname = "NoteList", ID = "ID", YMDHMS ="YMDHMS", TITLE = "Title", NOTE = "Note", R_TIME = "R_Time", NewLine="ACD1234", Seperator="|";
     //Dont need R bool, just check R_Time if null
     private final String[] ColHeads = {ID, YMDHMS,TITLE,NOTE, R_TIME};
 
@@ -107,7 +107,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                     if (
                             i % ColHeads.length == 0 //s.equals(ColHeads[ColHeads.length-1])
                     ) {
-                        output += NewLine;
+                        output += Seperator + NewLine;
                         //i=1;
                     } else {
                         output += Seperator;

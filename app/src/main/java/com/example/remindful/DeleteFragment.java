@@ -59,9 +59,9 @@ public class DeleteFragment extends DialogFragment {
                             DH.TITLE,DH.DBname,DH.YMDHMS,DH.ID)
             );
 
-            System.out.println("====\n"+s);
+            //System.out.println("====\n"+s);
             //Figure out
-            for (String x : s.split("\\|") ) {
+            for (String x : s.split(Pattern.quote(DH.Seperator)) ) {
                 Matcher m1 = Pattern.compile("Title:").matcher(x),
                 m2 = Pattern.compile("YMDHMS:").matcher(x),
                 m3 = Pattern.compile("ID:").matcher(x);
