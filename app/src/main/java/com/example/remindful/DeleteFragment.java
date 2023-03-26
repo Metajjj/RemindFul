@@ -59,13 +59,13 @@ public class DeleteFragment extends DialogFragment {
                             DH.TITLE,DH.DBname,DH.YMDHMS,DH.ID)
             );
 
-            //System.out.println("====\n"+s);
+            System.out.println("====\n"+s);
             //Figure out
             for (String x : s.split(Pattern.quote(DH.Seperator)) ) {
                 Matcher m1 = Pattern.compile("Title:").matcher(x),
                 m2 = Pattern.compile("YMDHMS:").matcher(x),
                 m3 = Pattern.compile("ID:").matcher(x);
-                if(m1.find() && m2.find() && m3.find()){
+                if(m1.find(0) && m2.find(0) && m3.find(0)){
                     TableRow Tr = SetupRow( x.substring(m1.end()) );
                     Tr.setTag(0, x.substring(m2.end()) +"-"+ x.substring(m3.end()) );
                     TL.addView(Tr);

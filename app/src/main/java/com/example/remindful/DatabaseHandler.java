@@ -103,7 +103,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
                 if(c.getColumnIndex(s)==-1){ continue; }
                 else {
-                    output += s + ":" + c.getString(c.getColumnIndex(s));
+                    output += s + ":" + c.getString(c.getColumnIndex(s)); //+seperator
                     if (
                             i % ColHeads.length == 0 //s.equals(ColHeads[ColHeads.length-1])
                     ) {
