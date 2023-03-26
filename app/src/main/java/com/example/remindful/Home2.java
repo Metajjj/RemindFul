@@ -187,8 +187,6 @@ public class Home2 extends AppCompatActivity {
         TvTitle.setTextColor(Color.parseColor("#59453F"));
         TvTitle.setLayoutParams(TempParam);
 
-
-
         TvNote.setText(note); TvTitle.setText(title);
         TvNote.setTag(""+TagID); TvTitle.setTag(""+TagID);
         TvNote.setOnClickListener(this::OpenNote); TvTitle.setOnClickListener(this::OpenNote);
@@ -249,6 +247,7 @@ public class Home2 extends AppCompatActivity {
 
     public float DPtoPixel(int DP){
         //PixeltoDP
+        ////get resources from frag - fix
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,DP,getResources().getDisplayMetrics());
     }
 

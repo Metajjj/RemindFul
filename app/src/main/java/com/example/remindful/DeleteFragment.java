@@ -51,7 +51,6 @@ public class DeleteFragment extends DialogFragment {
         ((TextView)getActivity().findViewById(R.id.DelFragSelAll)).setText("Loading...");
         TableLayout TL = (getActivity().findViewById(R.id.DelFragTable));
 
-        System.out.println("P B");
         SyncPromise.resolve().always((action, data)->{
             ////GRAB ID + YMD TO USE AS TAG
             String s = DH.Readquery(
@@ -65,28 +64,26 @@ public class DeleteFragment extends DialogFragment {
             //System.out.println("\n"+s.getClass()+"\n"+s+"\n");
             //System.out.println("Len: "+ s.split( Pattern.quote(DH.NewLine) ).length );
             //Figure out
-            int i=0;
+
             for (String x : s.split( Pattern.quote(DH.NewLine) )) {
-                //ONLY GRABS 1
-                System.out.println(++i+" | "+ x);
 
                 Matcher m1 = Pattern.compile(DH.TITLE+":[\\w\\d\\s]*\\|").matcher(x),
                 m2 = Pattern.compile(DH.YMDHMS+":[\\w\\d\\s]*\\|").matcher(x),
                 m3 = Pattern.compile(DH.ID+":[\\w\\d\\s]*\\|").matcher(x);
-                System.out.println("m1:"+m1.find(0)+" m2:"+m2.find(0)+" m3:"+m3.find(0));
+                //System.out.println("m1:"+m1.find(0)+" m2:"+m2.find(0)+" m3:"+m3.find(0));
 
                 if(m1.find(0) && m2.find(0) && m3.find(0)){
+                    String PureTitle= x.substring(m1.start() + DH.TITLE.length() + ":".length() ,m1.end()-1 ),
+                        PureYMD=x.substring(m2.start() + DH.YMDHMS.length() + ":".length(),m2.end()-1 ),
+                        PureID=x.substring(m3.start() + DH.ID.length() +":".length(),m3.end()-1 );
                     System.out.println(MessageFormat.format(
                             "m1: {0} | m2: {1} | m3: {2}",
-                            x.substring(m1.start() + "Title:".length() ,m1.end()-1 ),
-                            x.substring(m2.start() + "YMD:".length(),m2.end()-1 ),
-                            x.substring(m3.start() + "ID:".length(),m3.end()-1 )
-                    ));
-                    TableRow Tr = SetupRow( x.substring(m1.start() + "Title:".length() ,m1.end()-1 ) );
-                    //Tr.setTag(0, x.substring(m2.end()) +"-"+ x.substring(m3.end()) );
+                            PureTitle,PureYMD,PureID ));
+                    TableRow Tr = SetupRow( PureTitle );
+                    //Tr.setTag(0, PureYMD +"-"+ PureID );
                     TL.addView(Tr);
                 }
-                System.out.println("if - end");
+                //System.out.println("if - end");
             }
 
 
@@ -163,7 +160,7 @@ public class DeleteFragment extends DialogFragment {
         final DatabaseHandler DH = new DatabaseHandler(getContext());
 
         //Check all checked => del them from DB - exclude top
-        TableLayout TL = getActivity().findViewById(R.id.DelFragTable);
+        TableLayout TL = requireActivity().findViewById(R.id.DelFragTable);
         ArrayList<String> ToBeDel = new ArrayList<>();
         for(int i=1;i<TL.getChildCount();i++){
             TableRow TR = (TableRow) TL.getChildAt(i);
@@ -177,7 +174,10 @@ public class DeleteFragment extends DialogFragment {
     }
 
     public void CloseFrag(View v){
-        new Home2().Switchy( getActivity().findViewById(R.id.home2ViewStyle) );
+        new Home2().Switchy(
+                new TextView(getContext())//getView().findViewById(R.id.home2ViewStyle)
+        );
+        //null ptr except - activity
         getParentFragmentManager().beginTransaction().remove(DeleteFragment.this).commit();
         //getActivity().findViewById(R.id.home2FragHolder).back
     }
