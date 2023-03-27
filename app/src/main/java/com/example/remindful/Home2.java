@@ -248,7 +248,7 @@ public class Home2 extends AppCompatActivity {
     public float DPtoPixel(int DP){
         //PixeltoDP
         ////get resources from frag - fix
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,DP,getResources().getDisplayMetrics());
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,DP,getApplicationContext().getResources().getDisplayMetrics());
     }
 
     public void Temp(View v){ SetupDelArea(); }

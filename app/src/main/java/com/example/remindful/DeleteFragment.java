@@ -1,8 +1,10 @@
 package com.example.remindful;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -12,6 +14,7 @@ import android.widget.CheckBox;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,6 +24,7 @@ import org.riversun.promise.SyncPromise;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,10 +36,12 @@ public class DeleteFragment extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
+        MainContainer = container;
         //new Home().WriteLine(""+container.getClass().getName() ); //FRAMELAYOUT
 
         return inflater.inflate(R.layout.delete_fragment, container, false);
     }
+    private ViewGroup MainContainer;
 
     @Override
     public void onStart() {
@@ -76,11 +82,11 @@ public class DeleteFragment extends DialogFragment {
                     String PureTitle= x.substring(m1.start() + DH.TITLE.length() + ":".length() ,m1.end()-1 ),
                         PureYMD=x.substring(m2.start() + DH.YMDHMS.length() + ":".length(),m2.end()-1 ),
                         PureID=x.substring(m3.start() + DH.ID.length() +":".length(),m3.end()-1 );
-                    System.out.println(MessageFormat.format(
+                    /*System.out.println(MessageFormat.format(
                             "m1: {0} | m2: {1} | m3: {2}",
-                            PureTitle,PureYMD,PureID ));
+                            PureTitle,PureYMD,PureID ));*/
                     TableRow Tr = SetupRow( PureTitle );
-                    //Tr.setTag(0, PureYMD +"-"+ PureID );
+                    Tr.setTag(PureYMD +"-"+ PureID );
                     TL.addView(Tr);
                 }
                 //System.out.println("if - end");
@@ -157,28 +163,73 @@ public class DeleteFragment extends DialogFragment {
     }
 
     public void DelFragDelBut(View v){
-        final DatabaseHandler DH = new DatabaseHandler(getContext());
+        TextView tv = (TextView) v;
+
+        String tv2 = tv.getText() +"";
+        tv.setText("DELETED!");
+        tv.setBackgroundColor(Color.rgb(50,201,94));
+
+        new Handler().postDelayed(() -> {
+            tv.setText(tv2);
+            tv.setBackgroundResource(R.drawable.roundbordernote);
+        },1300);
 
         //Check all checked => del them from DB - exclude top
         TableLayout TL = requireActivity().findViewById(R.id.DelFragTable);
-        ArrayList<String> ToBeDel = new ArrayList<>();
+        ArrayList<ArrayList<String>> ToBeDel = new ArrayList<>();
         for(int i=1;i<TL.getChildCount();i++){
             TableRow TR = (TableRow) TL.getChildAt(i);
             if( ((CheckBox) TR.getChildAt(1)).isChecked() ){
+                String Title,YMD,ID;
                 //True = del
-                ToBeDel.add(""+ ((TextView)TR.getChildAt(0)).getText() );
-                System.out.println("TAG: "+ TR.getChildAt(0).getTag(0) );
+                Title = ""+((TextView)TR.getChildAt(0)).getText();
+                YMD = TR.getTag().toString().split("-")[0];
+                ID = TR.getTag().toString().split("-")[1];
+                ToBeDel.add(new ArrayList<>(Arrays.asList(ID,Title,YMD)));
             }
         }
-        System.out.println( ToBeDel );
+        //System.out.println( ToBeDel );
+
+        if(ToBeDel.size() > 0){
+            //QuickDelFormat(ToBeDel);
+        }else{
+            Toast.makeText(getContext(), "Nothing selected to delete!", Toast.LENGTH_SHORT).show();
+        }
+
+
+    }
+
+    private void QuickDelFormat(ArrayList<ArrayList<String>> ToBeDel){
+        final DatabaseHandler DH = new DatabaseHandler(getContext());
+
+        //Del FROM TblNme WHERE (row 1) OR (row2) or (row3)... ;
+        String Query = "DELETE FROM `"+DH.DBname+"` WHERE ";
+        for (ArrayList<String> AL: ToBeDel) {
+            //ID,TITLE,YMD
+            Query +=
+              MessageFormat.format(
+                    "({0} = {1} AND {2} = \"{3}\" AND {4} = {5})",
+                    DH.ID,AL.get(0),DH.TITLE,AL.get(1),DH.YMDHMS,AL.get(2)
+            );
+            if (AL == ToBeDel.get( ToBeDel.size()-1 )){
+                Query += ";";
+            }else{
+                Query += " OR ";
+            }
+        }
+        //System.out.println(Query);
+        DH.Writequery(Query);
+        Toast.makeText(getContext(), "DELETED SELECTED!\n(refresh to update UI)", Toast.LENGTH_SHORT).show();
     }
 
     public void CloseFrag(View v){
-        new Home2().Switchy(
-                new TextView(getContext())//getView().findViewById(R.id.home2ViewStyle)
-        );
+
         //null ptr except - activity
+        //new Home2().Switchy( MainContainer.findViewById(R.id.home2ViewStyle) );
+
+
         getParentFragmentManager().beginTransaction().remove(DeleteFragment.this).commit();
         //getActivity().findViewById(R.id.home2FragHolder).back
+        startActivity(new Intent(getContext(),Home2.class));
     }
 }
