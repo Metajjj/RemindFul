@@ -11,15 +11,39 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     //PK | INT   | INT  | TEXT  | TEXT | TEXT         || TEXT
     // ID | Year + Month + Day + Hour + Min + Sec | Title | Note | Time to remind...
     // YMDHMNS : 20230201155432
-    protected final String DBname = "NoteList", ID = "ID", YMDHMS ="YMDHMS", TITLE = "Title", NOTE = "Note", R_TIME = "R_Time", NewLine="ACD1234", Seperator="|";
+    protected final String DBname = "NoteList", ID = "ID", YMDHMS ="YMDHMS", TITLE = "Title", NOTE = "Note", R_TIME = "R_Time", Seperator="||||||", NewLine=UniqueNL();
+    private int ABC123=0;
     //Dont need R bool, just check R_Time if null
     private final String[] ColHeads = {ID, YMDHMS,TITLE,NOTE, R_TIME};
 
+    //Changes NL everytime DH is called/creates - newline is used
+    private String UniqueNL(){
+
+        String o = "";
+        if (ABC123==0) {
+            String[] s = {"£", "$", "€", "%", "^", "&", "*", "¬", "¦"};
+
+            for (int i = 0; i < s.length + 100; i++) {
+                o += s[((int) (Math.random() * s.length))];
+            }
+            ABC123++;
+        }
+        else {
+            o = this.NewLine;
+        }
+        System.out.println("NewLine:\n"+o);
+
+        return o;
+    }
+
     public DatabaseHandler(Context c) {
         super(c, "NoteList", null, 1);
+
+        //System.out.println("NL: "+NewLine);
     }
 
     protected void ResetTable() {
+
         DatabaseHandler.this.getWritableDatabase().execSQL("DROP TABLE IF EXISTS `" + DBname + "`");
         DatabaseHandler.this.getWritableDatabase().execSQL("CREATE TABLE `" + DBname + "` (`" + ID + "` INTEGER PRIMARY KEY AUTOINCREMENT, `" + YMDHMS + "` INT, `" + TITLE + "` TEXT, `"+NOTE+"` TEXT, `"+R_TIME+"` TEXT)");
 

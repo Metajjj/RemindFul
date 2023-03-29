@@ -10,10 +10,19 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.work.BackoffPolicy;
+import androidx.work.Constraints;
+import androidx.work.Data;
+import androidx.work.ExistingWorkPolicy;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkInfo;
+import androidx.work.WorkManager;
+import androidx.work.WorkRequest;
 
 import java.text.MessageFormat;
 import java.util.Calendar;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -89,21 +98,13 @@ public class NewNote extends AppCompatActivity {
         TextView tv = (TextView) v;
         if( tv.getText() == "SAVE" ){
 
-            if(DataExist){
-                Update();
-            } else {
-                DH.Writequery(
-                        DH.InsertBuilder(DH.DBname, new String[]{DH.YMDHMS, DH.TITLE, DH.NOTE},
-                                new String[][]{{CalYMDHMS(),
-                                        "\"" + ((TextView) findViewById(R.id.NewNoteNoteTitle)).getText().toString() + "\"",
-                                        "\"" + ((TextView) findViewById(R.id.NewNoteNoteDetail)).getText().toString() + "\""}}
-                        )
-                );
-            }
+            TrueSave();
 
             Saved="SAVED";
         }else{
             Toast.makeText(this,"ERR no reminding fn!",Toast.LENGTH_SHORT).show();
+
+            TrueSave(); Remind();
 
             Saved="SAVED & REMINDED";
         }
@@ -118,6 +119,93 @@ public class NewNote extends AppCompatActivity {
             tv.setBackgroundResource(R.drawable.roundbordernote);
             v.setOnClickListener(this::Save);
             },1300);
+    }
+
+    private void TrueSave(){
+
+        if(DataExist){
+            Update();
+        } else {
+            DH.Writequery(
+                    DH.InsertBuilder(DH.DBname, new String[]{DH.YMDHMS, DH.TITLE, DH.NOTE},
+                            new String[][]{{CalYMDHMS(),
+                                    "\"" + ((TextView) findViewById(R.id.NewNoteNoteTitle)).getText().toString() + "\"",
+                                    "\"" + ((TextView) findViewById(R.id.NewNoteNoteDetail)).getText().toString() + "\""}}
+                    )
+            );
+        }
+
+    }
+    private void Remind(){
+        //Set new activity... do stuff..
+
+        //keeps running even in background
+        //Expedited = run as background asap ; is important
+        //Constraints = decide conditions for it to run
+        //InitialDelay only works for the first time of a periodic fire, others work as interval indicated
+        //BackOffCriteria takes effect when worker has to be retried - 10s min | default 30s
+        //Tag as ID
+        // ERR: expedited jobs cant be delayed
+      //*
+        WorkRequest WR = new OneTimeWorkRequest.Builder(BackgroundReqWork.class)
+                .setInputData(
+                        new Data.Builder()
+                                .putString("D1","SillyString")
+                        .build())
+                .addTag("WorkerReqTag")
+                .setBackoffCriteria(BackoffPolicy.LINEAR,10,TimeUnit.SECONDS)
+                .setInitialDelay(10, TimeUnit.SECONDS)
+                .setConstraints(
+                        new Constraints.Builder()
+                                .setRequiresCharging(false)
+                        .build())
+                //.setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+        .build();
+
+        //Work queries added via work request identifiers.. lets u chain them
+
+        //enqueue to begin, unique enqueue to avoid duplication of tasks
+        //Policy to change how is handled.. append, keep, replace - append => chaining tasks (fails if 1st task not success ; avoid with append_and_replace)
+        WorkManager.getInstance(NewNote.this).enqueueUniqueWork("UniqueNameToAvoidDups", ExistingWorkPolicy.KEEP, (OneTimeWorkRequest) WR);
+
+        //.getWorkInfo_LiveData to observe progress
+        //Most live data is WorkInfos (array)
+        // ERR: cannot cast lifefcycle to lifecycleowner
+        WorkManager.getInstance(NewNote.this).getWorkInfosForUniqueWorkLiveData("UniqueNameToAvoidDups").observe(
+                NewNote.this,
+                workInfosArr -> {
+
+                    if (workInfosArr.isEmpty()) {
+                        return; //Empty err
+                    }
+                    //for(WorkInfo workInfos : workInfosArr){ }
+                    WorkInfo workInfos = workInfosArr.get(0); //Only 1 UID
+
+                    if (workInfos.getState() == WorkInfo.State.SUCCEEDED) {
+                        new Handler().postDelayed(() -> {
+                            Toast.makeText(this, "WorkReqSucceed!!", Toast.LENGTH_SHORT).show();
+                            //setview => custom toast
+                        }, 3000);
+                    }
+                }
+        );
+        //WorkManager.getInstance(this).cancelUniqueWork("UID");
+    //*/
+        /*
+        ELAPSED_TIME - after period of time
+        RTC - based on clock time
+        _WAKEUP - suffix to forcefully wake phone
+        */
+        //PendingIntent PI = PendingIntent.getBroadcast(NewNote.this,0, new Intent(NewNote.this, AlarmReceiver.class) ,0);
+        //AlarmManager AM = (AlarmManager)getSystemService(ALARM_SERVICE);
+
+       ///((AlarmManager)getSystemService(ALARM_SERVICE)).set( AlarmManager.ELAPSED_REALTIME,5000, PendingIntent.getBroadcast(NewNote.this,0, new Intent(NewNote.this, AlarmReceiver.class) ,0)  );
+
+        //AM.cancel( PendingIntent.getBroadcast(NewNote.this,0, new Intent(NewNote.this, AlarmReceiver.class) ,0) );
+        //To cancel if necessary, use same intent
+
+
+        ////FIX SET NEW FRAG TO SET R_TIME and such..
     }
 
     private void Update(){

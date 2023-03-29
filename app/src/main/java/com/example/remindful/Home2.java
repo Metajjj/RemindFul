@@ -20,6 +20,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -199,17 +200,17 @@ public class Home2 extends AppCompatActivity {
 
         for(String s : notes.split( Pattern.quote(DH.NewLine) ))
         {
-            //System.out.println("==\n"+s+"\n=="); //ISNT SPLIT
+            System.out.println("==\n"+s+"\n==");
             //Split s into Title,Note,YMHSD,ID
             m1= Pattern.compile("Note:[\\s\\w\\d]+\\|").matcher(s);
             m2= Pattern.compile("Title:[\\s\\w\\d]+\\|").matcher(s);
             m3= Pattern.compile("YMDHMS:[\\s\\w\\d]+\\|").matcher(s);
             m4= Pattern.compile("ID:[\\s\\w\\d]+\\|").matcher(s);
 
-            /*System.out.println(MessageFormat.format(
+            System.out.println(MessageFormat.format(
                     "ID: {0} | Title: {1} | YMD: {2} | Note: {3} | All: "+( m1.find(0) && m2.find(0) && m3.find(0) && m4.find(0) ? "TRUE" : "FALSE"),
                     m4.find(0),m2.find(0),m3.find(0),m1.find(0)
-            ));*/
+            ));
 
             //Has to use find(int) or it starts from last pos of last find() instead of from beginning again
             if (m1.find(0) && m2.find(0) && m3.find(0) && m4.find(0)) {
@@ -222,7 +223,7 @@ public class Home2 extends AppCompatActivity {
                 ) );
             } else{
                 Toast.makeText(Home2.this,"Error occured when accessing db, possible corruption!",Toast.LENGTH_SHORT).show();
-                //System.out.println( MessageFormat.format("ERR\nNote - {0} | Title - {1} | YMD - {2} | ID - {3}", m1.find(),m2.find(),m3.find(),m4.find()) );
+                System.out.println( MessageFormat.format("ERR\nNote - {0} | Title - {1} | YMD - {2} | ID - {3}", m1.find(),m2.find(),m3.find(),m4.find()) );
             }
         }
 
@@ -251,7 +252,6 @@ public class Home2 extends AppCompatActivity {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,DP,getApplicationContext().getResources().getDisplayMetrics());
     }
 
-    public void Temp(View v){ SetupDelArea(); }
     private void SetupDelArea(){
         Toast.makeText(Home2.this,"Del time!",Toast.LENGTH_LONG).show();
 

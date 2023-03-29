@@ -16,7 +16,6 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:onClick="Temp"
         android:id="@+id/home2Title"
         android:layout_width="0dp"
         android:layout_height="98dp"

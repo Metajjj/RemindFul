@@ -82,9 +82,9 @@ public class DeleteFragment extends DialogFragment {
                     String PureTitle= x.substring(m1.start() + DH.TITLE.length() + ":".length() ,m1.end()-1 ),
                         PureYMD=x.substring(m2.start() + DH.YMDHMS.length() + ":".length(),m2.end()-1 ),
                         PureID=x.substring(m3.start() + DH.ID.length() +":".length(),m3.end()-1 );
-                    /*System.out.println(MessageFormat.format(
+                    System.out.println(MessageFormat.format(
                             "m1: {0} | m2: {1} | m3: {2}",
-                            PureTitle,PureYMD,PureID ));*/
+                            PureTitle,PureYMD,PureID ));
                     TableRow Tr = SetupRow( PureTitle );
                     Tr.setTag(PureYMD +"-"+ PureID );
                     TL.addView(Tr);
@@ -122,7 +122,7 @@ public class DeleteFragment extends DialogFragment {
         Tv.setGravity(Gravity.CENTER); Tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         Tv.setTypeface(null, Typeface.BOLD);
         Tv.setLayoutParams(Params); Tv.setText(Title);
-        Tv.setTextSize( ((TextView)getActivity().findViewById(R.id.DelFragSelAll)).getTextSize() ); ///app:autoSizeTextType="uniform"
+        Tv.setTextSize( ((TextView)getActivity().findViewById(R.id.DelFragSelAll)).getTextSize() ); ///FIX app:autoSizeTextType="uniform"
         Tv.setBackgroundResource(R.drawable.roundborderdel); Tv.setTextColor(Color.parseColor("#6C5346"));
 
         //CheckBox
@@ -191,7 +191,7 @@ public class DeleteFragment extends DialogFragment {
         //System.out.println( ToBeDel );
 
         if(ToBeDel.size() > 0){
-            //QuickDelFormat(ToBeDel);
+            QuickDelFormat(ToBeDel);
         }else{
             Toast.makeText(getContext(), "Nothing selected to delete!", Toast.LENGTH_SHORT).show();
         }
@@ -199,21 +199,21 @@ public class DeleteFragment extends DialogFragment {
 
     }
 
-    private void QuickDelFormat(ArrayList<ArrayList<String>> ToBeDel){
+    private void QuickDelFormat(ArrayList<ArrayList<String>> ToBeDel) {
         final DatabaseHandler DH = new DatabaseHandler(getContext());
 
         //Del FROM TblNme WHERE (row 1) OR (row2) or (row3)... ;
-        String Query = "DELETE FROM `"+DH.DBname+"` WHERE ";
-        for (ArrayList<String> AL: ToBeDel) {
+        String Query = "DELETE FROM `" + DH.DBname + "` WHERE ";
+        for (ArrayList<String> AL : ToBeDel) {
             //ID,TITLE,YMD
             Query +=
-              MessageFormat.format(
-                    "({0} = {1} AND {2} = \"{3}\" AND {4} = {5})",
-                    DH.ID,AL.get(0),DH.TITLE,AL.get(1),DH.YMDHMS,AL.get(2)
-            );
-            if (AL == ToBeDel.get( ToBeDel.size()-1 )){
+                    MessageFormat.format(
+                            "({0} = {1} AND {2} = \"{3}\" AND {4} = {5})",
+                            DH.ID, AL.get(0), DH.TITLE, AL.get(1), DH.YMDHMS, AL.get(2)
+                    );
+            if (AL == ToBeDel.get(ToBeDel.size() - 1)) {
                 Query += ";";
-            }else{
+            } else {
                 Query += " OR ";
             }
         }
