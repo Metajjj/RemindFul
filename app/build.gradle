@@ -29,13 +29,12 @@ android {
 }
 
 dependencies {
-    //implementation "androidx.lifecycle:lifecycle-livedata:2.6.1"
-    //implementation "androidx.lifecycle:lifecycle-runtime:2.6.1"
+    //implementation "androidx.core:core:1.9.0" //Notification
 
-    implementation "androidx.work:work-runtime:2.8.1"
+    implementation "androidx.work:work-runtime:2.8.1" //BgWorkerThreads
     implementation "androidx.work:work-multiprocess:2.8.1"
 
-    implementation 'org.riversun:java-promise:1.1.0'
+    implementation 'org.riversun:java-promise:1.1.0' //Promises
 
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.8.0'

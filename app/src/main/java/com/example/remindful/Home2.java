@@ -18,7 +18,6 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentTransaction;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -91,10 +90,10 @@ public class Home2 extends AppCompatActivity {
     private void TempLoad(String sort){
         ((TableLayout)findViewById(R.id.NewNoteTable)).removeAllViews();
 
-        String catc = DH.Readquery("SELECT * FROM `"+DH.DBname+"` "+sort+";");
+        String[] catc = DH.Readquery("SELECT * FROM `"+DH.DBname+"` "+sort+";");
         //System.out.println("===CATCH\n"+catc+"\n==="); WORKS FINE
 
-        if(catc.equals("")){ NotesMissing(); }
+        if(catc[0].equals("")){ NotesMissing(); }
         else{ DisplayNotes(catc); }
     }
 
@@ -194,11 +193,12 @@ public class Home2 extends AppCompatActivity {
         return new TextView[]{TvNote,TvTitle};
     }
 
-    private void DisplayNotes(String notes){
+    private void DisplayNotes(String[] notes){
         ArrayList<TextView[]> TVHldr = new ArrayList<>(); ArrayList<TextView> Notes=new ArrayList<>(),Titles=new ArrayList<>(); Matcher m1,m2,m3,m4;
+        String note=notes[0],Separator=notes[1], NewLine = notes[2];
         //new Home().WriteLine(notes); //xx:xx|yy:yy\nx2:x2|y2:y2\n
 
-        for(String s : notes.split( Pattern.quote(DH.NewLine) ))
+        for(String s : note.split( Pattern.quote(NewLine) ))
         {
             System.out.println("==\n"+s+"\n==");
             //Split s into Title,Note,YMHSD,ID
@@ -255,9 +255,8 @@ public class Home2 extends AppCompatActivity {
     private void SetupDelArea(){
         Toast.makeText(Home2.this,"Del time!",Toast.LENGTH_LONG).show();
 
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.home2FragHolder, DeleteFragment.class, null);
-        ft.commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.home2FragHolder,DeleteFragment.class,null).commit();
+
         findViewById(R.id.home2FragHolder).bringToFront();
 
         /*View DL = getLayoutInflater().inflate(R.layout.delete_fragment,null);

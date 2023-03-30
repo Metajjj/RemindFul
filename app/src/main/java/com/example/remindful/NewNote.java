@@ -1,5 +1,6 @@
 package com.example.remindful;
 
+import android.content.ContentValues;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -126,18 +127,16 @@ public class NewNote extends AppCompatActivity {
         if(DataExist){
             Update();
         } else {
-            DH.Writequery(
-                    DH.InsertBuilder(DH.DBname, new String[]{DH.YMDHMS, DH.TITLE, DH.NOTE},
-                            new String[][]{{CalYMDHMS(),
-                                    "\"" + ((TextView) findViewById(R.id.NewNoteNoteTitle)).getText().toString() + "\"",
-                                    "\"" + ((TextView) findViewById(R.id.NewNoteNoteDetail)).getText().toString() + "\""}}
-                    )
-            );
+            //DH.Writequery( DH.InsertBuilder(DH.DBname, new String[]{DH.YMDHMS, DH.TITLE, DH.NOTE}, new String[][]{{CalYMDHMS(), "\"" + ((TextView) findViewById(R.id.NewNoteNoteTitle)).getText().toString() + "\"", "\"" + ((TextView) findViewById(R.id.NewNoteNoteDetail)).getText().toString() + "\""}} ) );
+
+            ContentValues CV = new ContentValues(); //Cant be single line
+            CV.put(DH.YMDHMS,CalYMDHMS()); CV.put(DH.TITLE,((TextView) findViewById(R.id.NewNoteNoteTitle)).getText().toString()); CV.put(DH.NOTE,((TextView) findViewById(R.id.NewNoteNoteDetail)).getText().toString());
+            DH.getWritableDatabase().insert(DH.DBname,null,CV);
         }
 
     }
     private void Remind(){
-        //Set new activity... do stuff..
+        //Set new activity... do stuff.. grab R_Time //If no diff between year/day/ wutevs.. dont convert to sec and ignore
 
         //keeps running even in background
         //Expedited = run as background asap ; is important
@@ -154,7 +153,7 @@ public class NewNote extends AppCompatActivity {
                         .build())
                 .addTag("WorkerReqTag")
                 .setBackoffCriteria(BackoffPolicy.LINEAR,10,TimeUnit.SECONDS)
-                .setInitialDelay(10, TimeUnit.SECONDS)
+                .setInitialDelay(10, TimeUnit.SECONDS) //When To Run - Curr Time
                 .setConstraints(
                         new Constraints.Builder()
                                 .setRequiresCharging(false)
@@ -195,6 +194,10 @@ public class NewNote extends AppCompatActivity {
         ////FIX SET NEW FRAG TO SET R_TIME and such..
     }
 
+    private void Noti(){
+        //https://developer.android.com/develop/ui/views/notifications/build-notification#java
+    }
+
     private void Update(){
         String title=((TextView)findViewById(R.id.NewNoteNoteTitle)).getText().toString();
         String note=((TextView)findViewById(R.id.NewNoteNoteDetail)).getText().toString();
@@ -202,7 +205,10 @@ public class NewNote extends AppCompatActivity {
         String Query = MessageFormat.format("UPDATE `{0}` SET `{1}` = \"{2}\", `{3}` = \"{4}\", `{5}` = {6} WHERE `{7}` = {8} AND `{9}` = {10}",DH.DBname, DH.TITLE, title, DH.NOTE, note, DH.YMDHMS, CalYMDHMS(), DH.ID, G_ID, DH.YMDHMS, G_YMDHMS);
 
         //new Home().WriteLine(Query+"\n"+getIntent().getExtras().get("i"));
-        DH.Writequery(Query);
+        //DH.Writequery(Query);
+
+        ContentValues CV = new ContentValues(); CV.put(DH.TITLE,title);CV.put(DH.NOTE,note);CV.put(DH.YMDHMS,CalYMDHMS());
+        DH.getWritableDatabase().update(DH.DBname,CV,MessageFormat.format("{0}=? AND {1}=?",DH.ID,DH.YMDHMS),new String[]{G_ID,G_YMDHMS});
     }
 
 }

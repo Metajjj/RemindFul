@@ -11,8 +11,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     //PK | INT   | INT  | TEXT  | TEXT | TEXT         || TEXT
     // ID | Year + Month + Day + Hour + Min + Sec | Title | Note | Time to remind...
     // YMDHMNS : 20230201155432
-    protected final String DBname = "NoteList", ID = "ID", YMDHMS ="YMDHMS", TITLE = "Title", NOTE = "Note", R_TIME = "R_Time", Seperator="||||||", NewLine=UniqueNL();
-    private int ABC123=0;
+    protected final String DBname = "NoteList", ID = "ID", YMDHMS ="YMDHMS", TITLE = "Title", NOTE = "Note", R_TIME = "R_Time";//, Seperator="||||||", NewLine=UniqueNL();
+
     //Dont need R bool, just check R_Time if null
     private final String[] ColHeads = {ID, YMDHMS,TITLE,NOTE, R_TIME};
 
@@ -20,18 +20,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private String UniqueNL(){
 
         String o = "";
-        if (ABC123==0) {
-            String[] s = {"£", "$", "€", "%", "^", "&", "*", "¬", "¦"};
 
-            for (int i = 0; i < s.length + 100; i++) {
+        String[] s = {"£", "$", "€", "%", "^", "&", "*", "¬", "¦"};
+
+        for (int i = 0; i < s.length + 100; i++) {
                 o += s[((int) (Math.random() * s.length))];
             }
-            ABC123++;
-        }
-        else {
-            o = this.NewLine;
-        }
-        System.out.println("NewLine:\n"+o);
+
+        System.out.println("NewLine: "+o);
 
         return o;
     }
@@ -90,8 +86,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     //execSQL = no data return
     //rawQuery = Cursor data return
     protected void Writequery(String query) {
+        //FIX WRITE QUERY
         SQLiteDatabase db = this.getWritableDatabase();
         try {
+
             db.execSQL(query);
         } catch (Exception e) {
             System.out.println("WriteDBErr: " + e);
@@ -100,10 +98,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     @SuppressLint("Range")
-    protected String Readquery(String query) {
+    protected String[] Readquery(String query) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c;
-        String output;
+        String[] output= new String[]{};
         try {
             c = db.rawQuery(query, null); //selectionArgs to replace wildcard `?` in query | error if lacking ?
 
@@ -111,15 +109,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
             c.close();
         } catch (Exception e) {
-            output = "ReadDBErr: " + e; System.out.println("SRS ERR DH : "+e);
+            System.out.println("SRS ERR DH : "+e);
         }
         db.close();
         return output;
     }
 
     @SuppressLint("Range")
-    private String CursorSorter(Cursor c){
-        String output="";
+    private String[] CursorSorter(Cursor c){
+        String output="", Seperator=UniqueNL(), NewLine=UniqueNL();
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) { //for each row
             //OUTPUT = headername:value|headername2:value2|
             int i=1; //Skips first troub
@@ -139,7 +137,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
         //System.out.println("DH_OUT: "+output);
 
-        return ""+output;
+        //RETURN string[] {OUTPUT , NEWLINE , SEPEPERATOR} - loses need to recall or any changing
+        return new String[]{output,Seperator,NewLine};
     }
 }
 

@@ -24,7 +24,8 @@ public class BackgroundReqWork extends Worker {
 
         Looper.prepare(); //Has to be called to run handlers when returned to observer
         try {
-            System.out.println("TOASTY");
+            //getInputData().getString("D1");
+            System.out.println("TOASTY : "+getInputData().getString("D1"));
             Toast.makeText(context, "Alarm fired!", Toast.LENGTH_SHORT).show();
 
             return Result.success(); //retry,fail
