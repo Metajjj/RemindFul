@@ -191,19 +191,6 @@ public class NewNote extends AppCompatActivity {
         );
         //WorkManager.getInstance(this).cancelUniqueWork("UID");
     //*/
-        /*
-        ELAPSED_TIME - after period of time
-        RTC - based on clock time
-        _WAKEUP - suffix to forcefully wake phone
-        */
-        //PendingIntent PI = PendingIntent.getBroadcast(NewNote.this,0, new Intent(NewNote.this, AlarmReceiver.class) ,0);
-        //AlarmManager AM = (AlarmManager)getSystemService(ALARM_SERVICE);
-
-       ///((AlarmManager)getSystemService(ALARM_SERVICE)).set( AlarmManager.ELAPSED_REALTIME,5000, PendingIntent.getBroadcast(NewNote.this,0, new Intent(NewNote.this, AlarmReceiver.class) ,0)  );
-
-        //AM.cancel( PendingIntent.getBroadcast(NewNote.this,0, new Intent(NewNote.this, AlarmReceiver.class) ,0) );
-        //To cancel if necessary, use same intent
-
 
         ////FIX SET NEW FRAG TO SET R_TIME and such..
     }

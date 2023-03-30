@@ -16,7 +16,7 @@ public class BackgroundReqWork extends Worker {
         context=con;
     }
 
-    private static int i=0;
+    private static int i=0; //Has to be static or if is new class open again and again by worker, infi loop
     @NonNull
     @Override
     public Result doWork() {
