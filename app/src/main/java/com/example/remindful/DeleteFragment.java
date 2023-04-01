@@ -36,12 +36,10 @@ public class DeleteFragment extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        MainContainer = container;
         //new Home().WriteLine(""+container.getClass().getName() ); //FRAMELAYOUT
 
         return inflater.inflate(R.layout.delete_fragment, container, false);
     }
-    private ViewGroup MainContainer;
 
     @Override
     public void onStart() {
@@ -57,12 +55,18 @@ public class DeleteFragment extends DialogFragment {
         ((TextView)getActivity().findViewById(R.id.DelFragSelAll)).setText("Loading...");
         TableLayout TL = (getActivity().findViewById(R.id.DelFragTable));
 
+        //CLEARING OLD FROM REFRESH
+        TableRow TR = (TableRow) getActivity().findViewById(R.id.DelFragSelAll).getParent();
+        TL.removeAllViews(); TL.addView(TR);
+
         SyncPromise.resolve().always((action, data)->{
             ////GRAB ID + YMD TO USE AS TAG
-            String s = DH.Readquery(
+            String[] S = DH.Readquery(
                     MessageFormat.format("SELECT `{0}`,`{2}`,`{3}` FROM `{1}`;",
                             DH.TITLE,DH.DBname,DH.YMDHMS,DH.ID)
             );
+
+            String s1= S[0],s2=S[1],s3=S[2];
 
             //System.out.println("====\n"+s+"\n====");
 
@@ -71,17 +75,17 @@ public class DeleteFragment extends DialogFragment {
             //System.out.println("Len: "+ s.split( Pattern.quote(DH.NewLine) ).length );
             //Figure out
 
-            for (String x : s.split( Pattern.quote(DH.NewLine) )) {
+            for (String x : s1.split( Pattern.quote(s3) )) {
 
-                Matcher m1 = Pattern.compile(DH.TITLE+":[\\w\\d\\s]*\\|").matcher(x),
-                m2 = Pattern.compile(DH.YMDHMS+":[\\w\\d\\s]*\\|").matcher(x),
-                m3 = Pattern.compile(DH.ID+":[\\w\\d\\s]*\\|").matcher(x);
+                Matcher m1 = Pattern.compile(DH.TITLE+":[\\w\\d\\s]*"+Pattern.quote(s2) ).matcher(x),
+                m2 = Pattern.compile(DH.YMDHMS+":[\\w\\d\\s]*"+Pattern.quote(s2) ).matcher(x),
+                m3 = Pattern.compile(DH.ID+":[\\w\\d\\s]*"+Pattern.quote(s2) ).matcher(x);
                 //System.out.println("m1:"+m1.find(0)+" m2:"+m2.find(0)+" m3:"+m3.find(0));
 
                 if(m1.find(0) && m2.find(0) && m3.find(0)){
-                    String PureTitle= x.substring(m1.start() + DH.TITLE.length() + ":".length() ,m1.end()-1 ),
-                        PureYMD=x.substring(m2.start() + DH.YMDHMS.length() + ":".length(),m2.end()-1 ),
-                        PureID=x.substring(m3.start() + DH.ID.length() +":".length(),m3.end()-1 );
+                    String PureTitle= x.substring(m1.start() + DH.TITLE.length() + ":".length() ,m1.end()- s2.length() ),
+                        PureYMD=x.substring(m2.start() + DH.YMDHMS.length() + ":".length(),m2.end()- s2.length() ),
+                        PureID=x.substring(m3.start() + DH.ID.length() +":".length(),m3.end()- s2.length() );
                     System.out.println(MessageFormat.format(
                             "m1: {0} | m2: {1} | m3: {2}",
                             PureTitle,PureYMD,PureID ));
@@ -104,7 +108,7 @@ public class DeleteFragment extends DialogFragment {
         }).start();
     }
 
-    private float DP2Pixel(int DP){
+    private float DP2Pixel(float DP){
         //PixeltoDP
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,DP,getResources().getDisplayMetrics());
     }
@@ -122,7 +126,8 @@ public class DeleteFragment extends DialogFragment {
         Tv.setGravity(Gravity.CENTER); Tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         Tv.setTypeface(null, Typeface.BOLD);
         Tv.setLayoutParams(Params); Tv.setText(Title);
-        Tv.setTextSize( ((TextView)getActivity().findViewById(R.id.DelFragSelAll)).getTextSize() ); ///FIX app:autoSizeTextType="uniform"
+        Tv.setTextSize( ((TextView)getActivity().findViewById(R.id.DelFragSelAll)).getTextSize() ); ////FIX app:autoSizeTextType="uniform"
+            ////Messes up on refresh
         Tv.setBackgroundResource(R.drawable.roundborderdel); Tv.setTextColor(Color.parseColor("#6C5346"));
 
         //CheckBox
@@ -196,37 +201,45 @@ public class DeleteFragment extends DialogFragment {
             Toast.makeText(getContext(), "Nothing selected to delete!", Toast.LENGTH_SHORT).show();
         }
 
-
+        ////REFRESH UI
+        onStart();
     }
 
     private void QuickDelFormat(ArrayList<ArrayList<String>> ToBeDel) {
+        //ID|Title|YMD
         final DatabaseHandler DH = new DatabaseHandler(getContext());
 
-        //Del FROM TblNme WHERE (row 1) OR (row2) or (row3)... ;
-        String Query = "DELETE FROM `" + DH.DBname + "` WHERE ";
+        ArrayList<String> Args=new ArrayList<>();
+
+        String Query = "";
         for (ArrayList<String> AL : ToBeDel) {
             //ID,TITLE,YMD
             Query +=
                     MessageFormat.format(
-                            "({0} = {1} AND {2} = \"{3}\" AND {4} = {5})",
-                            DH.ID, AL.get(0), DH.TITLE, AL.get(1), DH.YMDHMS, AL.get(2)
+                            "( {0} = {1} AND {2} = {3} AND {4} = {5} )",
+                            DH.ID, "?", DH.TITLE, "?", DH.YMDHMS, "?"
                     );
+            Args.add(AL.get(0));Args.add(AL.get(1));Args.add(AL.get(2));
             if (AL == ToBeDel.get(ToBeDel.size() - 1)) {
-                Query += ";";
+                Query += "";
             } else {
                 Query += " OR ";
             }
         }
-        //System.out.println(Query);
-        DH.Writequery(Query);
+        System.out.println(Query);
+        //DH.Writequery(Query);
         Toast.makeText(getContext(), "DELETED SELECTED!\n(refresh to update UI)", Toast.LENGTH_SHORT).show();
+
+        System.out.println("Num of rows deleted: "+
+        DH.getWritableDatabase().delete(DH.DBname,Query,
+                Args.toArray(new String[]{}))
+        );
     }
 
     public void CloseFrag(View v){
 
         //null ptr except - activity
         //new Home2().Switchy( MainContainer.findViewById(R.id.home2ViewStyle) );
-
 
         getParentFragmentManager().beginTransaction().remove(DeleteFragment.this).commit();
         //getActivity().findViewById(R.id.home2FragHolder).back

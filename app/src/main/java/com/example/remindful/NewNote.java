@@ -41,31 +41,30 @@ public class NewNote extends AppCompatActivity {
         Remind(findViewById(R.id.NewNoteRemindBox));
 
         //check for extra bundle intent crap and load it up === INSTERT => UPDATE colInfo /ALTER tableInfo
-        try{ DataExists( getIntent().getExtras().get("i").toString() ); } catch (Exception e){}
+        try{ DataExists( (String[]) getIntent().getExtras().get("i")); } catch (Exception e){}
     }
-    private void DataExists(String s){
-        DataExist = true;
+    private void DataExists(String[] S){
+        DataExist = true; String s1=S[0],s2=S[1];
         ((TextView)findViewById(R.id.NewNoteTitle)).setText("Update Note");
 
-        Matcher m1= Pattern.compile("Note:[\\s\\w\\d]+\\|").matcher(s),
-        m2= Pattern.compile("Title:[\\s\\w\\d]+\\|").matcher(s),
-        m3= Pattern.compile("YMDHMS:[\\s\\w\\d]+\\|").matcher(s),
-        m4= Pattern.compile("ID:[\\s\\w\\d]+\\|").matcher(s);
+        Matcher m1= Pattern.compile("Note:[\\s\\w\\d]+"+s2).matcher(s1),
+        m2= Pattern.compile("Title:[\\s\\w\\d]+"+Pattern.quote(s2) ).matcher(s1),
+        m3= Pattern.compile("YMDHMS:[\\s\\w\\d]+"+Pattern.quote(s2) ).matcher(s1),
+        m4= Pattern.compile("ID:[\\s\\w\\d]+"+Pattern.quote(s2) ).matcher(s1);
 
         if (m1.find() && m2.find() && m3.find() && m4.find()){
             //G_Note = s.substring(m1.start() + "Note:".length(), m1.end() - 1);
             //G_Title = s.substring(m2.start() + "Title:".length(), m2.end() - 1);
 
-            ((TextView)findViewById(R.id.NewNoteNoteDetail)).setText( s.substring(m1.start() + "Note:".length(), m1.end() - 1) );
-            ((TextView)findViewById(R.id.NewNoteNoteTitle)).setText( s.substring(m2.start() + "Title:".length(), m2.end() - 1) );
+            ((TextView)findViewById(R.id.NewNoteNoteDetail)).setText( s1.substring(m1.start() + "Note:".length(), m1.end() - s2.length()) );
+            ((TextView)findViewById(R.id.NewNoteNoteTitle)).setText( s1.substring(m2.start() + "Title:".length(), m2.end() - s2.length()) );
 
-            G_YMDHMS = s.substring(m3.start() + "YMDHMS:".length(), m3.end() - 1);
-            G_ID = s.substring(m4.start() + "ID:".length(), m4.end() - 1);
+            G_YMDHMS = s1.substring(m3.start() + "YMDHMS:".length(), m3.end() - s2.length());
+            G_ID = s1.substring(m4.start() + "ID:".length(), m4.end() - s2.length());
         }
 
         //((TextView)findViewById(R.id.NewNoteNoteTitle)).setText(G_Title);
         //((TextView)findViewById(R.id.NewNoteNoteDetail)).setText(G_Note);
-
     }
 
     public void Remind(View v){
@@ -202,8 +201,7 @@ public class NewNote extends AppCompatActivity {
         String title=((TextView)findViewById(R.id.NewNoteNoteTitle)).getText().toString();
         String note=((TextView)findViewById(R.id.NewNoteNoteDetail)).getText().toString();
 
-        String Query = MessageFormat.format("UPDATE `{0}` SET `{1}` = \"{2}\", `{3}` = \"{4}\", `{5}` = {6} WHERE `{7}` = {8} AND `{9}` = {10}",DH.DBname, DH.TITLE, title, DH.NOTE, note, DH.YMDHMS, CalYMDHMS(), DH.ID, G_ID, DH.YMDHMS, G_YMDHMS);
-
+        //String Query = MessageFormat.format("UPDATE `{0}` SET `{1}` = \"{2}\", `{3}` = \"{4}\", `{5}` = {6} WHERE `{7}` = {8} AND `{9}` = {10}",DH.DBname, DH.TITLE, title, DH.NOTE, note, DH.YMDHMS, CalYMDHMS(), DH.ID, G_ID, DH.YMDHMS, G_YMDHMS);
         //new Home().WriteLine(Query+"\n"+getIntent().getExtras().get("i"));
         //DH.Writequery(Query);
 

@@ -9,5 +9,7 @@ public class Remind extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //Use this to display and handle when being reminded..interface
     }
 }

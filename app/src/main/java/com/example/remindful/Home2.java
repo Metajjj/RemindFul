@@ -118,7 +118,9 @@ public class Home2 extends AppCompatActivity {
         String ID = v.getTag()+"";
         if (ID.equals("")){ startActivity(new Intent(this,NewNote.class)); }
         else{
-            String o = DH.Readquery("SELECT * FROM `"+DH.DBname+"` WHERE `"+DH.ID+"` = "+v.getTag().toString().split("-")[1]+" AND "+DH.YMDHMS+" = "+v.getTag().toString().split("-")[0]+";");
+            //String o = DH.Readquery("SELECT * FROM `"+DH.DBname+"` WHERE `"+DH.ID+"` = "+v.getTag().toString().split("-")[1]+" AND "+DH.YMDHMS+" = "+v.getTag().toString().split("-")[0]+";");
+
+            String[] o = DH.Readquery(MessageFormat.format("SELECT * FROM `{0}` WHERE {1} = {2} AND {3} = {4};",DH.DBname,DH.ID,v.getTag().toString().split("-")[1],DH.YMDHMS,v.getTag().toString().split("-")[0]));
 
             startActivity(new Intent(Home2.this,NewNote.class).putExtra("i",o));
         }
@@ -200,12 +202,14 @@ public class Home2 extends AppCompatActivity {
 
         for(String s : note.split( Pattern.quote(NewLine) ))
         {
+
+            //FIX - cant match proper if symbols
             System.out.println("==\n"+s+"\n==");
             //Split s into Title,Note,YMHSD,ID
-            m1= Pattern.compile("Note:[\\s\\w\\d]+\\|").matcher(s);
-            m2= Pattern.compile("Title:[\\s\\w\\d]+\\|").matcher(s);
-            m3= Pattern.compile("YMDHMS:[\\s\\w\\d]+\\|").matcher(s);
-            m4= Pattern.compile("ID:[\\s\\w\\d]+\\|").matcher(s);
+            m1= Pattern.compile("Note:[-\\s\\w\\d;@,^$€£\"]+"+Pattern.quote(Separator), Pattern.MULTILINE | Pattern.LITERAL ).matcher(s);
+            m2= Pattern.compile("Title:[-\\s\\w\\d;@,^$€£\"]+"+Pattern.quote(Separator) ).matcher(s);
+            m3= Pattern.compile("YMDHMS:[-\\s\\w\\d;@,^$€£\"]+"+Pattern.quote(Separator) ).matcher(s);
+            m4= Pattern.compile("ID:[-\\s\\w\\d;@,^$€£\"]+"+Pattern.quote(Separator) ).matcher(s);
 
             System.out.println(MessageFormat.format(
                     "ID: {0} | Title: {1} | YMD: {2} | Note: {3} | All: "+( m1.find(0) && m2.find(0) && m3.find(0) && m4.find(0) ? "TRUE" : "FALSE"),
@@ -216,14 +220,13 @@ public class Home2 extends AppCompatActivity {
             if (m1.find(0) && m2.find(0) && m3.find(0) && m4.find(0)) {
 
                 TVHldr.add(SetupCols(
-                        s.substring(m1.start() + "Note:".length(), m1.end() - 1),
-                        s.substring(m2.start() + "Title:".length(), m2.end() - 1),
-                        s.substring(m3.start() + "YMDHMS:".length(), m3.end() - 1) + "-" +
-                        s.substring(m4.start() + "ID:".length(), m4.end() - 1)
+                        s.substring(m1.start() + "Note:".length(), m1.end() - Separator.length() ),
+                        s.substring(m2.start() + "Title:".length(), m2.end() - Separator.length() ),
+                        s.substring(m3.start() + "YMDHMS:".length(), m3.end() - Separator.length() ) + "-" +
+                        s.substring(m4.start() + "ID:".length(), m4.end() - Separator.length() )
                 ) );
             } else{
                 Toast.makeText(Home2.this,"Error occured when accessing db, possible corruption!",Toast.LENGTH_SHORT).show();
-                System.out.println( MessageFormat.format("ERR\nNote - {0} | Title - {1} | YMD - {2} | ID - {3}", m1.find(),m2.find(),m3.find(),m4.find()) );
             }
         }
 
