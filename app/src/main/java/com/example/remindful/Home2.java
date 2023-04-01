@@ -203,7 +203,7 @@ public class Home2 extends AppCompatActivity {
         for(String s : note.split( Pattern.quote(NewLine) ))
         {
 
-            //FIX - cant match proper if symbols
+            ////FIX - cant match proper if symbols
             System.out.println("==\n"+s+"\n==");
             //Split s into Title,Note,YMHSD,ID
             m1= Pattern.compile("Note:[-\\s\\w\\d;@,^$€£\"]+"+Pattern.quote(Separator), Pattern.MULTILINE | Pattern.LITERAL ).matcher(s);
