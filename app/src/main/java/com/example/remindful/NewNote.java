@@ -47,12 +47,12 @@ public class NewNote extends AppCompatActivity {
         DataExist = true; String s1=S[0],s2=S[1];
         ((TextView)findViewById(R.id.NewNoteTitle)).setText("Update Note");
 
-        Matcher m1= Pattern.compile("Note:[\\s\\w\\d]+"+s2).matcher(s1),
-        m2= Pattern.compile("Title:[\\s\\w\\d]+"+Pattern.quote(s2) ).matcher(s1),
-        m3= Pattern.compile("YMDHMS:[\\s\\w\\d]+"+Pattern.quote(s2) ).matcher(s1),
-        m4= Pattern.compile("ID:[\\s\\w\\d]+"+Pattern.quote(s2) ).matcher(s1);
+        Matcher m1= Pattern.compile("Note:[\\-\\w\\d\\s;@\"$£%^,.?!]*"+s2).matcher(s1),
+        m2= Pattern.compile("Title:[\\-\\w\\d\\s;@\"$£%^,.?!]*"+Pattern.quote(s2) ).matcher(s1),
+        m3= Pattern.compile("YMDHMS:[\\-\\w\\d\\s;@\"$£%^,.?!]*"+Pattern.quote(s2) ).matcher(s1),
+        m4= Pattern.compile("ID:[\\-\\w\\d\\s;@\"$£%^,.?!]*"+Pattern.quote(s2) ).matcher(s1);
 
-        if (m1.find() && m2.find() && m3.find() && m4.find()){
+        if (m1.find(0) && m2.find(0) && m3.find(0) && m4.find(0)){
             //G_Note = s.substring(m1.start() + "Note:".length(), m1.end() - 1);
             //G_Title = s.substring(m2.start() + "Title:".length(), m2.end() - 1);
 

@@ -91,7 +91,7 @@ public class Home2 extends AppCompatActivity {
         ((TableLayout)findViewById(R.id.NewNoteTable)).removeAllViews();
 
         String[] catc = DH.Readquery("SELECT * FROM `"+DH.DBname+"` "+sort+";");
-        //System.out.println("===CATCH\n"+catc+"\n==="); WORKS FINE
+        //System.out.println("Catc: "+catc[0].equals(""));
 
         if(catc[0].equals("")){ NotesMissing(); }
         else{ DisplayNotes(catc); }
@@ -206,10 +206,10 @@ public class Home2 extends AppCompatActivity {
             ////FIX - cant match proper if symbols
             System.out.println("==\n"+s+"\n==");
             //Split s into Title,Note,YMHSD,ID
-            m1= Pattern.compile("Note:[-\\w\\d\\s;@\"$£%^,]+"+Pattern.quote(Separator), Pattern.MULTILINE ).matcher(s);
-            m2= Pattern.compile("Title:[-\\w\\d\\s;@\"$%^,]+"+Pattern.quote(Separator) ).matcher(s);
-            m3= Pattern.compile("YMDHMS:[-\\w\\d\\s;@\"$%^,]+"+Pattern.quote(Separator) ).matcher(s);
-            m4= Pattern.compile("ID:[-\\w\\d\\s;@\"$%^,]+"+Pattern.quote(Separator) ).matcher(s);
+            m1= Pattern.compile("Note:[\\-\\w\\d\\s;@\"$£%^,.?!\\[\\]*\\\\]*"+Pattern.quote(Separator), Pattern.DOTALL ).matcher(s);
+            m2= Pattern.compile("Title:[\\-\\w\\d\\s;@\"$£%^,.?!]*"+Pattern.quote(Separator) ).matcher(s);
+            m3= Pattern.compile("YMDHMS:[\\-\\w\\d\\s;@\"$£%^,.?!]*"+Pattern.quote(Separator) ).matcher(s);
+            m4= Pattern.compile("ID:[\\-\\w\\d\\s;@\"$£%^,.?!]*"+Pattern.quote(Separator) ).matcher(s);
 
             System.out.println(MessageFormat.format(
                     "ID: {0} | Title: {1} | YMD: {2} | Note: {3} | All: "+( m1.find(0) && m2.find(0) && m3.find(0) && m4.find(0) ? "TRUE" : "FALSE"),
@@ -217,8 +217,9 @@ public class Home2 extends AppCompatActivity {
             ));
 
             //Has to use find(int) or it starts from last pos of last find() instead of from beginning again
+            //No successful match yet continues to if statement
             if (m1.find(0) && m2.find(0) && m3.find(0) && m4.find(0)) {
-
+                System.out.println("All sections found!");
                 TVHldr.add(SetupCols(
                         s.substring(m1.start() + "Note:".length(), m1.end() - Separator.length() ),
                         s.substring(m2.start() + "Title:".length(), m2.end() - Separator.length() ),
@@ -226,10 +227,10 @@ public class Home2 extends AppCompatActivity {
                         s.substring(m4.start() + "ID:".length(), m4.end() - Separator.length() )
                 ) );
             } else{
-                System.out.println( MessageFormat.format(
+                /*System.out.println( MessageFormat.format(
                         "Note: {0} | Title: {1} | YMD: {2} | ID: {3}",
                         s.substring(m1.start() + "Note:".length(), m1.end() - Separator.length() ) , s.substring(m2.start() + "Title:".length(), m2.end() - Separator.length() ) , s.substring(m3.start() + "YMDHMS:".length(), m3.end() - Separator.length() ) ,  s.substring(m4.start() + "ID:".length(), m4.end() - Separator.length() )
-                ));
+                ));*/
                 Toast.makeText(Home2.this,"Error occured when accessing db, possible corruption!",Toast.LENGTH_SHORT).show();
             }
         }

@@ -27,7 +27,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 o += s[((int) (Math.random() * s.length))];
             }
 
-        System.out.println("NewLine: "+o);
+        //System.out.println("NewLine: "+o);
 
         return o;
     }
