@@ -21,9 +21,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Home2 extends AppCompatActivity {
     //CTRL SHIFT +   opens all brackets
@@ -90,11 +89,18 @@ public class Home2 extends AppCompatActivity {
     private void TempLoad(String sort){
         ((TableLayout)findViewById(R.id.NewNoteTable)).removeAllViews();
 
-        String[] catc = DH.Readquery("SELECT * FROM `"+DH.DBname+"` "+sort+";");
+        ArrayList catc = DH.Readquery("SELECT * FROM `"+DH.DBname+"` "+sort+";");
         //System.out.println("Catc: "+catc[0].equals(""));
 
-        if(catc[0].equals("")){ NotesMissing(); }
-        else{ DisplayNotes(catc); }
+        if(catc.size()==0){ NotesMissing(); }
+        else{
+            try {
+                DisplayNotes( catc );
+            } catch (Exception e){
+                System.out.println("ERR: "+e);
+                Toast.makeText(this, "Serious error occured!", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     public void Menu(View v){
@@ -120,9 +126,10 @@ public class Home2 extends AppCompatActivity {
         else{
             //String o = DH.Readquery("SELECT * FROM `"+DH.DBname+"` WHERE `"+DH.ID+"` = "+v.getTag().toString().split("-")[1]+" AND "+DH.YMDHMS+" = "+v.getTag().toString().split("-")[0]+";");
 
-            String[] o = DH.Readquery(MessageFormat.format("SELECT * FROM `{0}` WHERE {1} = {2} AND {3} = {4};",DH.DBname,DH.ID,v.getTag().toString().split("-")[1],DH.YMDHMS,v.getTag().toString().split("-")[0]));
+            ArrayList<HashMap> o = DH.Readquery(MessageFormat.format("SELECT * FROM `{0}` WHERE {1} = {2} AND {3} = {4};",DH.DBname,DH.ID,v.getTag().toString().split("-")[1],DH.YMDHMS,v.getTag().toString().split("-")[0]));
+            //new String[0];
 
-            startActivity(new Intent(Home2.this,NewNote.class).putExtra("i",o));
+            startActivity(new Intent(Home2.this,NewNote.class).putExtra("i",(HashMap<String,String>) o.get(0)));
         }
     }
 
@@ -195,44 +202,22 @@ public class Home2 extends AppCompatActivity {
         return new TextView[]{TvNote,TvTitle};
     }
 
-    private void DisplayNotes(String[] notes){
-        ArrayList<TextView[]> TVHldr = new ArrayList<>(); ArrayList<TextView> Notes=new ArrayList<>(),Titles=new ArrayList<>(); Matcher m1,m2,m3,m4;
-        String note=notes[0],Separator=notes[1], NewLine = notes[2];
-        //new Home().WriteLine(notes); //xx:xx|yy:yy\nx2:x2|y2:y2\n
+    private void DisplayNotes(ArrayList<HashMap> notes){
+        ArrayList<TextView[]> TVHldr = new ArrayList<>(); ArrayList<TextView> Notes=new ArrayList<>(),Titles=new ArrayList<>();
 
-        for(String s : note.split( Pattern.quote(NewLine) ))
-        {
+        for( HashMap s : notes ) {
+
 
             ////FIX - cant match proper if symbols
             System.out.println("==\n"+s+"\n==");
-            //Split s into Title,Note,YMHSD,ID
-            m1= Pattern.compile("Note:[\\-\\w\\d\\s;@\"$£%^,.?!\\[\\]*\\\\]*"+Pattern.quote(Separator), Pattern.DOTALL ).matcher(s);
-            m2= Pattern.compile("Title:[\\-\\w\\d\\s;@\"$£%^,.?!]*"+Pattern.quote(Separator) ).matcher(s);
-            m3= Pattern.compile("YMDHMS:[\\-\\w\\d\\s;@\"$£%^,.?!]*"+Pattern.quote(Separator) ).matcher(s);
-            m4= Pattern.compile("ID:[\\-\\w\\d\\s;@\"$£%^,.?!]*"+Pattern.quote(Separator) ).matcher(s);
 
-            System.out.println(MessageFormat.format(
-                    "ID: {0} | Title: {1} | YMD: {2} | Note: {3} | All: "+( m1.find(0) && m2.find(0) && m3.find(0) && m4.find(0) ? "TRUE" : "FALSE"),
-                    m4.find(0),m2.find(0),m3.find(0),m1.find(0)
+
+            TVHldr.add(SetupCols(
+                    s.get(DH.NOTE)+"",
+                    s.get(DH.TITLE)+"",
+                    s.get(DH.YMDHMS)+"-"+s.get(DH.ID)
             ));
 
-            //Has to use find(int) or it starts from last pos of last find() instead of from beginning again
-            //No successful match yet continues to if statement
-            if (m1.find(0) && m2.find(0) && m3.find(0) && m4.find(0)) {
-                System.out.println("All sections found!");
-                TVHldr.add(SetupCols(
-                        s.substring(m1.start() + "Note:".length(), m1.end() - Separator.length() ),
-                        s.substring(m2.start() + "Title:".length(), m2.end() - Separator.length() ),
-                        s.substring(m3.start() + "YMDHMS:".length(), m3.end() - Separator.length() ) + "-" +
-                        s.substring(m4.start() + "ID:".length(), m4.end() - Separator.length() )
-                ) );
-            } else{
-                /*System.out.println( MessageFormat.format(
-                        "Note: {0} | Title: {1} | YMD: {2} | ID: {3}",
-                        s.substring(m1.start() + "Note:".length(), m1.end() - Separator.length() ) , s.substring(m2.start() + "Title:".length(), m2.end() - Separator.length() ) , s.substring(m3.start() + "YMDHMS:".length(), m3.end() - Separator.length() ) ,  s.substring(m4.start() + "ID:".length(), m4.end() - Separator.length() )
-                ));*/
-                Toast.makeText(Home2.this,"Error occured when accessing db, possible corruption!",Toast.LENGTH_SHORT).show();
-            }
         }
 
         //Splits Cols into their rows/arrays

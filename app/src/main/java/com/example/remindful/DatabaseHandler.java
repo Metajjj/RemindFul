@@ -6,6 +6,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 public class DatabaseHandler extends SQLiteOpenHelper {
     //ID | Month | Year | Title | Note | TimeModified || Time to remind..
     //PK | INT   | INT  | TEXT  | TEXT | TEXT         || TEXT
@@ -98,10 +102,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     @SuppressLint("Range")
-    protected String[] Readquery(String query) {
+    protected ArrayList Readquery(String query) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c;
-        String[] output= new String[]{};
+        ArrayList output = new ArrayList<>();
         try {
             c = db.rawQuery(query, null); //selectionArgs to replace wildcard `?` in query | error if lacking ?
 
@@ -112,19 +116,35 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             System.out.println("SRS ERR DH : "+e);
         }
         db.close();
+
+        System.out.println("O:\n"+output); //WORKS
         return output;
+        //System.out.println("L: "+output.size());
+        //return new String[]{};
     }
 
     @SuppressLint("Range")
-    private String[] CursorSorter(Cursor c){
+    private ArrayList CursorSorter(Cursor c){
+
+        ////FIX - return cursor result as array ? no need NL and stuff
+        ArrayList<HashMap> Res = new ArrayList<>();
+        //Data.put("ID:x", new HashMap<>().put("",""));
+        //Res.add(Data);
+
         String output="", Seperator=UniqueNL(), NewLine=UniqueNL();
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) { //for each row
-            //OUTPUT = headername:value|headername2:value2|
+
+            Map<String,String> Data = new HashMap<>();
+            //Determines what data is treated as
+
             int i=1; //Skips first troub
             for (String s : ColHeads){
 
                 if(c.getColumnIndex(s)>=0) {
                     output += s + ":" + c.getString(c.getColumnIndex(s)) + Seperator;
+
+                    //Data.put(i,new HashMap<>().put(s,c.getString(c.getColumnIndex(s))));
+                    Data.put(s,c.getString(c.getColumnIndex(s)));
                 }
                 if (
                         i % ColHeads.length == 0 //s.equals(ColHeads[ColHeads.length-1])
@@ -132,13 +152,21 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
                 i++;
             }
+            Res.add((HashMap) Data);
+            //System.out.println(Data);
+            //for( Map.Entry<String,String> Entry : Data.entrySet()) { System.out.println("Key: "+Entry.getKey()+" | Val: "+Entry.getValue()); }
+
 
             //output += c.getString(c.getColumnIndex(ID)) + "|" + c.getString(c.getColumnIndex(MONTH)) + "|" + c.getString(c.getColumnIndex(YEAR)) + "|" + c.getString(c.getColumnIndex(TITLE)) + "\n";
         }
         //System.out.println("DH_OUT: "+output);
 
         //RETURN string[] {OUTPUT , NEWLINE , SEPEPERATOR} - loses need to recall or any changing
-        return new String[]{output,Seperator,NewLine};
+
+        //System.out.println(Res); //WORKS
+        return Res;
+
+        //return new String[]{output,Seperator,NewLine};
     }
 }
 

@@ -22,10 +22,9 @@ import androidx.work.WorkRequest;
 
 import java.text.MessageFormat;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class NewNote extends AppCompatActivity {
     private final DatabaseHandler DH = new DatabaseHandler(NewNote.this);
@@ -41,30 +40,17 @@ public class NewNote extends AppCompatActivity {
         Remind(findViewById(R.id.NewNoteRemindBox));
 
         //check for extra bundle intent crap and load it up === INSTERT => UPDATE colInfo /ALTER tableInfo
-        try{ DataExists( (String[]) getIntent().getExtras().get("i")); } catch (Exception e){}
+        try{ DataExists( (HashMap<String,String>) getIntent().getExtras().get("i")); } catch (Exception e){}
     }
-    private void DataExists(String[] S){
-        DataExist = true; String s1=S[0],s2=S[1];
+    private void DataExists(HashMap<String,String> S){
+        DataExist = true;
         ((TextView)findViewById(R.id.NewNoteTitle)).setText("Update Note");
 
-        Matcher m1= Pattern.compile("Note:[\\-\\w\\d\\s;@\"$£%^,.?!]*"+s2).matcher(s1),
-        m2= Pattern.compile("Title:[\\-\\w\\d\\s;@\"$£%^,.?!]*"+Pattern.quote(s2) ).matcher(s1),
-        m3= Pattern.compile("YMDHMS:[\\-\\w\\d\\s;@\"$£%^,.?!]*"+Pattern.quote(s2) ).matcher(s1),
-        m4= Pattern.compile("ID:[\\-\\w\\d\\s;@\"$£%^,.?!]*"+Pattern.quote(s2) ).matcher(s1);
+        ((TextView)findViewById(R.id.NewNoteNoteDetail)).setText( S.get(DH.NOTE) );
+        ((TextView)findViewById(R.id.NewNoteNoteTitle)).setText( S.get(DH.TITLE) );
 
-        if (m1.find(0) && m2.find(0) && m3.find(0) && m4.find(0)){
-            //G_Note = s.substring(m1.start() + "Note:".length(), m1.end() - 1);
-            //G_Title = s.substring(m2.start() + "Title:".length(), m2.end() - 1);
-
-            ((TextView)findViewById(R.id.NewNoteNoteDetail)).setText( s1.substring(m1.start() + "Note:".length(), m1.end() - s2.length()) );
-            ((TextView)findViewById(R.id.NewNoteNoteTitle)).setText( s1.substring(m2.start() + "Title:".length(), m2.end() - s2.length()) );
-
-            G_YMDHMS = s1.substring(m3.start() + "YMDHMS:".length(), m3.end() - s2.length());
-            G_ID = s1.substring(m4.start() + "ID:".length(), m4.end() - s2.length());
-        }
-
-        //((TextView)findViewById(R.id.NewNoteNoteTitle)).setText(G_Title);
-        //((TextView)findViewById(R.id.NewNoteNoteDetail)).setText(G_Note);
+        G_YMDHMS = S.get(DH.YMDHMS);
+        G_ID = S.get(DH.ID);
     }
 
     public void Remind(View v){

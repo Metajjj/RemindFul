@@ -25,8 +25,7 @@ import org.riversun.promise.SyncPromise;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.HashMap;
 
 public class DeleteFragment extends DialogFragment {
     //private final DatabaseHandler DH = new DatabaseHandler(getContext());
@@ -61,43 +60,28 @@ public class DeleteFragment extends DialogFragment {
 
         SyncPromise.resolve().always((action, data)->{
             ////GRAB ID + YMD TO USE AS TAG
-            String[] S = DH.Readquery(
+            ArrayList<HashMap> S = DH.Readquery(
                     MessageFormat.format("SELECT `{0}`,`{2}`,`{3}` FROM `{1}`;",
                             DH.TITLE,DH.DBname,DH.YMDHMS,DH.ID)
             );
 
-            String s1= S[0],s2=S[1],s3=S[2];
+            //System.out.println("====\n"+S+"\n====");
 
-            //System.out.println("====\n"+s+"\n====");
+            for (HashMap<String,String> x : S) {
 
-            //s = s.replaceAll(DH.NewLine,"");
-            //System.out.println("\n"+s.getClass()+"\n"+s+"\n");
-            //System.out.println("Len: "+ s.split( Pattern.quote(DH.NewLine) ).length );
-            //Figure out
+                String PureTitle = x.get(DH.TITLE),
+                        PureYMD = x.get(DH.YMDHMS),
+                        PureID = x.get(DH.ID);
 
-            for (String x : s1.split( Pattern.quote(s3) )) {
+                System.out.println(MessageFormat.format(
+                        "m1: {0} | m2: {1} | m3: {2}",
+                        PureTitle, PureYMD, PureID));
 
-                Matcher m1 = Pattern.compile(DH.TITLE+":[\\w\\d\\s]*"+Pattern.quote(s2) ).matcher(x),
-                m2 = Pattern.compile(DH.YMDHMS+":[\\w\\d\\s]*"+Pattern.quote(s2) ).matcher(x),
-                m3 = Pattern.compile(DH.ID+":[\\w\\d\\s]*"+Pattern.quote(s2) ).matcher(x);
-                //System.out.println("m1:"+m1.find(0)+" m2:"+m2.find(0)+" m3:"+m3.find(0));
-
-                if(m1.find(0) && m2.find(0) && m3.find(0)){
-                    String PureTitle= x.substring(m1.start() + DH.TITLE.length() + ":".length() ,m1.end()- s2.length() ),
-                        PureYMD=x.substring(m2.start() + DH.YMDHMS.length() + ":".length(),m2.end()- s2.length() ),
-                        PureID=x.substring(m3.start() + DH.ID.length() +":".length(),m3.end()- s2.length() );
-                    System.out.println(MessageFormat.format(
-                            "m1: {0} | m2: {1} | m3: {2}",
-                            PureTitle,PureYMD,PureID ));
-                    TableRow Tr = SetupRow( PureTitle );
-                    Tr.setTag(PureYMD +"-"+ PureID );
-                    TL.addView(Tr);
-                }
-                //System.out.println("if - end");
+                TableRow Tr = SetupRow(PureTitle);
+                Tr.setTag(PureYMD + "-" + PureID);
+                TL.addView(Tr);
             }
 
-
-            //Never resolves
             action.resolve();
         }).then((a,d)->{
 
@@ -228,7 +212,7 @@ public class DeleteFragment extends DialogFragment {
         }
         System.out.println(Query);
         //DH.Writequery(Query);
-        Toast.makeText(getContext(), "DELETED SELECTED!\n(refresh to update UI)", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), "DELETED SELECTED!", Toast.LENGTH_SHORT).show();
 
         System.out.println("Num of rows deleted: "+
         DH.getWritableDatabase().delete(DH.DBname,Query,
