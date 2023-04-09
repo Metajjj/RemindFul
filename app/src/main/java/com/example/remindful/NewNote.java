@@ -11,20 +11,11 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.work.BackoffPolicy;
-import androidx.work.Constraints;
-import androidx.work.Data;
-import androidx.work.ExistingWorkPolicy;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.WorkInfo;
-import androidx.work.WorkManager;
-import androidx.work.WorkRequest;
 
 import java.text.MessageFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 public class NewNote extends AppCompatActivity {
     private final DatabaseHandler DH = new DatabaseHandler(NewNote.this);
@@ -117,66 +108,16 @@ public class NewNote extends AppCompatActivity {
             ContentValues CV = new ContentValues(); //Cant be single line
             CV.put(DH.YMDHMS,CalYMDHMS()); CV.put(DH.TITLE,((TextView) findViewById(R.id.NewNoteNoteTitle)).getText().toString()); CV.put(DH.NOTE,((TextView) findViewById(R.id.NewNoteNoteDetail)).getText().toString());
             DH.getWritableDatabase().insert(DH.DBname,null,CV);
+
+            // TODO On save => reload into update ??
         }
 
     }
     private void Remind(){
         //Set new activity... do stuff.. grab R_Time //If no diff between year/day/ wutevs.. dont convert to sec and ignore
+        getSupportFragmentManager().beginTransaction().replace(R.id.NewNoteFragHolder,RemindFragment.class,null).commit();
 
-        //keeps running even in background
-        //Expedited = run as background asap ; is important
-        //Constraints = decide conditions for it to run
-        //InitialDelay only works for the first time of a periodic fire, others work as interval indicated
-        //BackOffCriteria takes effect when worker has to be retried - 10s min | default 30s
-        //Tag as ID
-        // ERR: expedited jobs cant be delayed
-      //*
-        WorkRequest WR = new OneTimeWorkRequest.Builder(BackgroundReqWork.class)
-                .setInputData(
-                        new Data.Builder()
-                                .putString("D1","SillyString")
-                        .build())
-                .addTag("WorkerReqTag")
-                .setBackoffCriteria(BackoffPolicy.LINEAR,10,TimeUnit.SECONDS)
-                .setInitialDelay(10, TimeUnit.SECONDS) //When To Run - Curr Time
-                .setConstraints(
-                        new Constraints.Builder()
-                                .setRequiresCharging(false)
-                        .build())
-                //.setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
-        .build();
-
-        //Work queries added via work request identifiers.. lets u chain them
-
-        //enqueue to begin, unique enqueue to avoid duplication of tasks
-        //Policy to change how is handled.. append, keep, replace - append => chaining tasks (fails if 1st task not success ; avoid with append_and_replace)
-        WorkManager.getInstance(NewNote.this).enqueueUniqueWork("UniqueNameToAvoidDups", ExistingWorkPolicy.KEEP, (OneTimeWorkRequest) WR);
-
-        //.getWorkInfo_LiveData to observe progress
-        //Most live data is WorkInfos (array)
-        // ERR: cannot cast lifefcycle to lifecycleowner
-        WorkManager.getInstance(NewNote.this).getWorkInfosForUniqueWorkLiveData("UniqueNameToAvoidDups").observe(
-                NewNote.this,
-                workInfosArr -> {
-
-                    if (workInfosArr.isEmpty()) {
-                        return; //Empty err
-                    }
-                    //for(WorkInfo workInfos : workInfosArr){ }
-                    WorkInfo workInfos = workInfosArr.get(0); //Only 1 UID
-
-                    if (workInfos.getState() == WorkInfo.State.SUCCEEDED) {
-                        new Handler().postDelayed(() -> {
-                            Toast.makeText(this, "WorkReqSucceed!!", Toast.LENGTH_SHORT).show();
-                            //setview => custom toast
-                        }, 3000);
-                    }
-                }
-        );
-        //WorkManager.getInstance(this).cancelUniqueWork("UID");
-    //*/
-
-        ////FIX SET NEW FRAG TO SET R_TIME and such..
+        findViewById(R.id.NewNoteFragHolder).bringToFront();
     }
 
     private void Noti(){

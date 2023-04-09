@@ -117,7 +117,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
         db.close();
 
-        System.out.println("O:\n"+output); //WORKS
         return output;
         //System.out.println("L: "+output.size());
         //return new String[]{};

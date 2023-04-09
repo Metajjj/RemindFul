@@ -6,8 +6,6 @@
     android:layout_height="match_parent"
     android:background="#8F000000">
 
-    <!-- TV title, trans bg + same for del selected -->
-
     <ScrollView
         android:id="@+id/DelFragScroll"
         android:layout_width="match_parent"
@@ -33,6 +31,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
+                <!-- TODO fix this back to uniform-->
                 <TextView
                     android:id="@+id/DelFragSelAll"
                     android:layout_weight="0"
@@ -41,21 +40,22 @@
                     android:gravity="center"
                     android:textAlignment="center"
                     android:textStyle="bold"
-                    app:autoSizeTextType="uniform"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_width="0dp"
                     android:text="Invert Selection"
                     android:textColor="#6C5346"
-                    android:padding="3dp"
+                    android:padding="8dp"
+
+                    android:textSize="32sp"
 
                     android:background="@drawable/roundborderdel"
                     />
+
                 <CheckBox
-                    android:clickable="false"
-                    android:layout_weight="1"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    />
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:clickable="false" />
             </TableRow>
         </TableLayout>
 

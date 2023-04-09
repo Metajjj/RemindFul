@@ -27,6 +27,7 @@ import java.util.Objects;
 public class Home2 extends AppCompatActivity {
     //CTRL SHIFT +   opens all brackets
     //CTRL SHIFT -   closes all brackets
+    //TODO - fix tempload out of sync with switchy
     private final DatabaseHandler DH = new DatabaseHandler(Home2.this);
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -206,11 +207,7 @@ public class Home2 extends AppCompatActivity {
         ArrayList<TextView[]> TVHldr = new ArrayList<>(); ArrayList<TextView> Notes=new ArrayList<>(),Titles=new ArrayList<>();
 
         for( HashMap s : notes ) {
-
-
-            ////FIX - cant match proper if symbols
             System.out.println("==\n"+s+"\n==");
-
 
             TVHldr.add(SetupCols(
                     s.get(DH.NOTE)+"",

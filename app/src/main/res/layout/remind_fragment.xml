@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="#8F000000">
 
-    <!-- TV title, trans bg + same for del selected -->
+    <!-- TODO Date / Time -->
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/RemFragMainCont"
@@ -22,6 +22,189 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <!-- DATE -->
+
+        <EditText
+            android:textAlignment="center" android:gravity="center"
+            android:id="@+id/RemFragDateYear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginEnd="100dp"
+            android:layout_marginBottom="225dp"
+            android:background="@drawable/roundbordernote"
+            android:hint="YEAR"
+            android:inputType="number"
+            android:maxLength="4"
+            android:minWidth="50dp"
+            android:minHeight="50dp"
+            app:layout_constraintBottom_toTopOf="@+id/view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:textAlignment="center" android:gravity="center"
+            android:id="@+id/RemFragDateMonth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="100dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginEnd="100dp"
+            android:layout_marginBottom="225dp"
+            android:background="@drawable/roundbordernote"
+            android:hint="MONTH"
+            android:inputType="number"
+            android:maxLength="2"
+            android:minWidth="50dp"
+            android:minHeight="50dp"
+            app:layout_constraintBottom_toTopOf="@+id/view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:textAlignment="center" android:gravity="center"
+            android:id="@+id/RemFragDateDay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="100dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginEnd="50dp"
+            android:layout_marginBottom="225dp"
+            android:background="@drawable/roundbordernote"
+            android:hint="DAY"
+            android:inputType="number"
+            android:maxLength="2"
+            android:minWidth="50dp"
+            android:minHeight="50dp"
+            app:layout_constraintBottom_toTopOf="@+id/view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/RemFragDateButt"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="100dp"
+            android:layout_marginTop="245dp"
+            android:layout_marginEnd="100dp"
+            android:layout_marginBottom="25dp"
+            android:background="@drawable/roundbordernote"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="DATE"
+            android:textAlignment="center"
+            android:textStyle="bold"
+            app:autoSizeTextType="uniform"
+            app:layout_constraintBottom_toTopOf="@+id/view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:id="@+id/view"
+            android:layout_width="0dp"
+            android:layout_height="2dp"
+            android:layout_marginTop="100dp"
+            android:layout_marginBottom="100dp"
+            android:background="#DDD"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- TIME -->
+
+        <EditText
+            android:id="@+id/RemFragTimeHour"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginEnd="100dp"
+            android:layout_marginBottom="225dp"
+            android:background="@drawable/roundbordernote"
+            android:gravity="center"
+            android:hint="HOUR"
+            android:inputType="number"
+            android:maxLength="2"
+            android:minWidth="50dp"
+            android:minHeight="50dp"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/view" />
+
+        <EditText
+            android:id="@+id/RemFragTimeMin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="100dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginEnd="100dp"
+            android:layout_marginBottom="225dp"
+            android:background="@drawable/roundbordernote"
+            android:gravity="center"
+            android:hint="MIN"
+            android:inputType="number"
+            android:maxLength="2"
+            android:minWidth="50dp"
+            android:minHeight="50dp"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/view" />
+
+        <EditText
+            android:id="@+id/RemFragTimeSec"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="100dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginEnd="50dp"
+            android:layout_marginBottom="225dp"
+            android:background="@drawable/roundbordernote"
+            android:gravity="center"
+            android:hint="SEC"
+            android:inputType="number"
+            android:maxLength="2"
+            android:minWidth="50dp"
+            android:minHeight="50dp"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/view" />
+
+        <TextView
+            android:id="@+id/RemFragTimeButt"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="100dp"
+            android:layout_marginTop="245dp"
+            android:layout_marginEnd="100dp"
+            android:layout_marginBottom="25dp"
+            android:background="@drawable/roundbordernote"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="Visually set TIME"
+            android:textAlignment="center"
+            android:textStyle="bold"
+            app:autoSizeTextType="uniform"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/view" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -2,9 +2,12 @@ package com.example.remindful;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -45,21 +48,51 @@ public class DeleteFragment extends DialogFragment {
         super.onStart();
         getActivity().findViewById(R.id.DelFragBg).setOnClickListener(this::CloseFrag);
         getActivity().findViewById(R.id.DelFragButt).setOnClickListener(this::DelFragDelBut);
-
         final DatabaseHandler DH = new DatabaseHandler(getContext());
+
 
         //Promise = new handler  -  avoid ui locking and waits
         //.always takes both reject and resolve //SyncPromise makes it wait for first function before next if multithreaded..
 
-        ((TextView)getActivity().findViewById(R.id.DelFragSelAll)).setText("Loading...");
+        TextView SelAllTv = ((TextView)getActivity().findViewById(R.id.DelFragSelAll));
+        SelAllTv.setText("Invert Selection");
         TableLayout TL = (getActivity().findViewById(R.id.DelFragTable));
 
         //CLEARING OLD FROM REFRESH
-        TableRow TR = (TableRow) getActivity().findViewById(R.id.DelFragSelAll).getParent();
+        TableRow TR = (TableRow) SelAllTv.getParent();
         TL.removeAllViews(); TL.addView(TR);
 
+        //needs post or getWidth is not what is drawn/finalised
+        SelAllTv.post(()->{
+            Rect bounds = new Rect(); Paint TextPaint = SelAllTv.getPaint();
+            //TextPaint.getTextBounds(SelAllTv.getText(),0,SelAllTv.getText().length(),bounds);
+            int TxtH = bounds.height(), TxtW=bounds.width();
+            //TextPaint doesnt include elipses
+
+            System.out.println( MessageFormat.format(
+                    "HANDLER: \nTop tv txtsize: {0}px | Top tv w: {1} | Top tv char count: {2} | TxtPaint: {3}",
+                    SelAllTv.getTextSize(),
+                    SelAllTv.getWidth() ,
+                    SelAllTv.getText().length(),
+                    TextPaint.measureText(SelAllTv.getText()+"")
+            ));
+
+            SelAllTv.setTextSize(TypedValue.COMPLEX_UNIT_PX, SelAllTv.getTextSize() -20);
+            System.out.println( MessageFormat.format(
+                    "HANDLER: \nTop tv txtsize: {0}px | Top tv w: {1} | Top tv char count: {2} | TxtPaint: {3}",
+                    SelAllTv.getTextSize(),
+                    SelAllTv.getWidth() ,
+                    SelAllTv.getText().length(),
+                    TextPaint.measureText(SelAllTv.getText()+"")
+            ));
+
+            new Handler().postDelayed(()->{
+                //System.out.println("5s|"+AutoSizeText( SelAllTv ));
+            },3000);
+        });
+        // TextSize (80px) vs Text width (618px) vs Txt Len (16 char?)
+
         SyncPromise.resolve().always((action, data)->{
-            ////GRAB ID + YMD TO USE AS TAG
             ArrayList<HashMap> S = DH.Readquery(
                     MessageFormat.format("SELECT `{0}`,`{2}`,`{3}` FROM `{1}`;",
                             DH.TITLE,DH.DBname,DH.YMDHMS,DH.ID)
@@ -73,9 +106,9 @@ public class DeleteFragment extends DialogFragment {
                         PureYMD = x.get(DH.YMDHMS),
                         PureID = x.get(DH.ID);
 
-                System.out.println(MessageFormat.format(
-                        "m1: {0} | m2: {1} | m3: {2}",
-                        PureTitle, PureYMD, PureID));
+                /*System.out.println(MessageFormat.format(
+                        "title: {0} | ymd: {1} | id: {2}",
+                        PureTitle, PureYMD, PureID));*/
 
                 TableRow Tr = SetupRow(PureTitle);
                 Tr.setTag(PureYMD + "-" + PureID);
@@ -85,33 +118,39 @@ public class DeleteFragment extends DialogFragment {
             action.resolve();
         }).then((a,d)->{
 
-            ((TextView)getActivity().findViewById(R.id.DelFragSelAll)).setText("Invert Selection");
-            ((View)(getActivity().findViewById(R.id.DelFragSelAll)).getParent()).setOnClickListener(this::DelFragTopButtClicked);
+            //SelAllTv.setText("Invert Selection");
+            ((View)(SelAllTv).getParent()).setOnClickListener(this::DelFragTopButtClicked);
 
             a.resolve();
         }).start();
     }
 
     private float DP2Pixel(float DP){
-        //PixeltoDP
+        //PixeltoDP //TypedValue.COMPLEX_UNIT_PX
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,DP,getResources().getDisplayMetrics());
     }
 
     private TableRow SetupRow(String Title){
+        //Dupe / Clone not allowed!
         TextView Tv = new TextView(getContext()); CheckBox Cb = new CheckBox(getContext()); TableRow Tr = new TableRow(getContext()); ViewGroup.LayoutParams Params;
 
         //TextView
         Params = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT,0);
         //PadVal = (int)Math.floor(new Home2().DPtoPixel(3)); //Error to run new Activity class
-        int PadVal = (int)Math.floor(DP2Pixel(3));
+        int PadVal = (int)Math.floor(DP2Pixel(8));
         Tv.setPadding(PadVal,PadVal,PadVal,PadVal);
 
         Tv.setSingleLine(true); Tv.setMaxLines(1);
         Tv.setGravity(Gravity.CENTER); Tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         Tv.setTypeface(null, Typeface.BOLD);
         Tv.setLayoutParams(Params); Tv.setText(Title);
-        Tv.setTextSize( ((TextView)getActivity().findViewById(R.id.DelFragSelAll)).getTextSize() ); ////FIX app:autoSizeTextType="uniform"
-            ////Messes up on refresh
+        Tv.setEllipsize(TextUtils.TruncateAt.END);
+
+        Tv.setTextSize(TypedValue.COMPLEX_UNIT_PX , ((TextView)getActivity().findViewById(R.id.DelFragSelAll)).getTextSize() -10 );
+        //TextViewCompat.setAutoSizeTextTypeWithDefaults(Tv,TextViewCompat.AUTO_SIZE_TEXT_TYPE_UNIFORM); //ERR
+            ////Messes up on refresh  //TxtSize = pixel unit TODO
+
+
         Tv.setBackgroundResource(R.drawable.roundborderdel); Tv.setTextColor(Color.parseColor("#6C5346"));
 
         //CheckBox
@@ -122,6 +161,12 @@ public class DeleteFragment extends DialogFragment {
         Tr.setLayoutParams(new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         Tr.addView(Tv,0);Tr.addView(Cb,1);
         Tr.setOnClickListener(this::DelFragButtClicked);
+        Tr.setOnLongClickListener((v)->{
+            //WORKS TODO improve
+            v = ((ViewGroup) v).getChildAt(0);
+            Toast.makeText(getContext(), ""+ ((TextView)v).getText(), Toast.LENGTH_LONG).show();
+            return true;
+        });
 
         return Tr;
     }
@@ -166,11 +211,12 @@ public class DeleteFragment extends DialogFragment {
         //Check all checked => del them from DB - exclude top
         TableLayout TL = requireActivity().findViewById(R.id.DelFragTable);
         ArrayList<ArrayList<String>> ToBeDel = new ArrayList<>();
+        ArrayList<TableRow> ToBeRemoved = new ArrayList<>();
         for(int i=1;i<TL.getChildCount();i++){
             TableRow TR = (TableRow) TL.getChildAt(i);
             if( ((CheckBox) TR.getChildAt(1)).isChecked() ){
-                String Title,YMD,ID;
-                //True = del
+                ToBeRemoved.add(TR); String Title,YMD,ID;
+
                 Title = ""+((TextView)TR.getChildAt(0)).getText();
                 YMD = TR.getTag().toString().split("-")[0];
                 ID = TR.getTag().toString().split("-")[1];
@@ -181,21 +227,21 @@ public class DeleteFragment extends DialogFragment {
 
         if(ToBeDel.size() > 0){
             QuickDelFormat(ToBeDel);
+
+            //Removed views - auto move existing views up
+            for(TableRow tr : ToBeRemoved){ TL.removeView(tr); }
+
         }else{
             Toast.makeText(getContext(), "Nothing selected to delete!", Toast.LENGTH_SHORT).show();
         }
-
-        ////REFRESH UI
-        onStart();
     }
 
     private void QuickDelFormat(ArrayList<ArrayList<String>> ToBeDel) {
         //ID|Title|YMD
         final DatabaseHandler DH = new DatabaseHandler(getContext());
-
         ArrayList<String> Args=new ArrayList<>();
-
         String Query = "";
+
         for (ArrayList<String> AL : ToBeDel) {
             //ID,TITLE,YMD
             Query +=
@@ -210,8 +256,7 @@ public class DeleteFragment extends DialogFragment {
                 Query += " OR ";
             }
         }
-        System.out.println(Query);
-        //DH.Writequery(Query);
+        //System.out.println(Query);
         Toast.makeText(getContext(), "DELETED SELECTED!", Toast.LENGTH_SHORT).show();
 
         System.out.println("Num of rows deleted: "+
