@@ -33,7 +33,6 @@ import androidx.work.Constraints;
 import androidx.work.Data;
 import androidx.work.ExistingWorkPolicy;
 import androidx.work.OneTimeWorkRequest;
-import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
 import androidx.work.WorkRequest;
 
@@ -41,6 +40,7 @@ import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 
@@ -54,18 +54,19 @@ public class RemindFragment extends DialogFragment {
 
         super.onCreateView(inflater, container, savedInstanceState);
 
-        //new Home().WriteLine(""+container.getClass().getName() ); //FRAMELAYOUT TODO
-
         if(getArguments() != null && getArguments().getSerializable("HashMap") == null){
             Toast.makeText(getContext(), "Error detecting note for reminding!!", Toast.LENGTH_SHORT).show();
             RemFragCloseFrag(new View(getContext()));
         }
 
         CurrNote = (HashMap<String, String>) getArguments().getSerializable("HashMap");
-        System.out.println("Tada~\n"+CurrNote); //Works
+
+        context = getContext().getApplicationContext();
 
         return inflater.inflate(R.layout.remind_fragment, container, false);
     }
+
+    android.content.Context context;
 
     private HashMap<String,String> CurrNote;
 
@@ -79,8 +80,8 @@ public class RemindFragment extends DialogFragment {
                 res -> {
                     if (!res) {
                         //Not granted!
-                        Toast.makeText(getContext(), "Need perm to work!", Toast.LENGTH_LONG).show();
-                        RemFragCloseFrag(new View(getContext()));
+                        Toast.makeText(context, "Need perm to work!", Toast.LENGTH_LONG).show();
+                        RemFragCloseFrag(new View(context));
                     }
                 }
         );
@@ -89,7 +90,7 @@ public class RemindFragment extends DialogFragment {
     @Override
     public void onStart() {
         super.onStart();
-        final DatabaseHandler DH = new DatabaseHandler(getContext());
+        final DatabaseHandler DH = new DatabaseHandler(context);
         getActivity().findViewById(R.id.RemFragBg).setOnClickListener(this::RemFragCloseFrag);
         getActivity().findViewById(R.id.RemFragMainCont).setOnClickListener(null);
         //MainCont click activates Bg click if not null
@@ -111,7 +112,7 @@ public class RemindFragment extends DialogFragment {
 
         //TimePickerDialog
         getActivity().findViewById(R.id.RemFragTimeButt).setOnClickListener((v)->{
-            TimePickerDialog TPD = new TimePickerDialog(getContext(), (timePicker, H, M) -> {
+            TimePickerDialog TPD = new TimePickerDialog(context, (timePicker, H, M) -> {
                 String Hour=H+"",Min=M+"";
                 System.out.println("Hour: "+H+"  Min: "+M);
                 Hour = (Hour.length()<2) ? "0"+Hour : Hour;
@@ -245,7 +246,7 @@ public class RemindFragment extends DialogFragment {
         RemFragYearCheck(Year,false);
 
         if( Day.getText().toString().equals("") || Month.getText().toString().equals("") || Year.getText().toString().equals("") || Min.getText().toString().equals("") || Hour.getText().toString().equals("") || Sec.getText().toString().equals("") ){
-            Toast.makeText(getContext(), "Date/Time input missing!\nNo reminding!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Date/Time input missing!\nNo reminding!", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -269,13 +270,13 @@ public class RemindFragment extends DialogFragment {
 
         } catch (Exception e) {
             System.out.println("Err: "+e);
-            Toast.makeText(getContext(), "Disallowed date/time detected!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Disallowed date/time detected!", Toast.LENGTH_SHORT).show();
             return;
         }
         //Given DateTime is acceptable
 
         //Update entry w R_TIME
-        DatabaseHandler DH = new DatabaseHandler(getContext());
+        DatabaseHandler DH = new DatabaseHandler(context);
         ContentValues CV = new ContentValues(); CV.put(DH.TITLE,CurrNote.get(DH.TITLE));CV.put(DH.NOTE,CurrNote.get(DH.NOTE));CV.put(DH.YMDHMS,CurrNote.get(DH.YMDHMS));CV.put(DH.ID,CurrNote.get(DH.ID)); CV.put(DH.R_TIME,Datetime);
 
         DH.getWritableDatabase().update( DH.DBname, CV, MessageFormat.format("{0}=? AND {1}=? AND {2}=?",DH.ID,DH.TITLE,DH.NOTE), new String[]{CurrNote.get(DH.ID),CurrNote.get(DH.TITLE),CurrNote.get(DH.NOTE)} );
@@ -311,68 +312,84 @@ public class RemindFragment extends DialogFragment {
         //BackOffCriteria takes effect when worker has to be retried - 10s min | default 30s
         //Tag as ID
         // ERR: expedited jobs cant be delayed
-        //*
-        WorkRequest WR = new OneTimeWorkRequest.Builder(BackgroundReqWork.class)
-                .setInputData(
-                        new Data.Builder()
-                                .putString("D1","SillySausage")
-                                .build())
+
+        Data.Builder WorkReqArgs = new Data.Builder().putString("D1","SillySausage"); //Cant put when build()
+        for(Map.Entry<String,String> kvp : CurrNote.entrySet()){ WorkReqArgs.putString(kvp.getKey(), kvp.getValue()); }
+
+        WorkRequest.Builder WRB = new OneTimeWorkRequest.Builder(BackgroundReqWork.class)
+                .setInputData( WorkReqArgs.build() )
                 .addTag("WorkerReqTag")
                 .setBackoffCriteria(BackoffPolicy.LINEAR,10, TimeUnit.SECONDS)
-                .setInitialDelay(/*DTime*/30, TimeUnit.SECONDS) //When To Run - Curr Time
+                .setInitialDelay(/*DTime*/10, TimeUnit.SECONDS) //When To Run - Curr Time
                 .setConstraints(
                         new Constraints.Builder()
                                 .setRequiresCharging(false)
-                                .build())
-                //.setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
-                .build();
+                                .setRequiresBatteryNotLow(false)
+                                .setRequiresDeviceIdle(false)
+                                .setRequiresStorageNotLow(false)
+                        .build())
+                //.setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST) //If expedited, no delays allowed
+                ;
 
         //Work queries added via work request identifiers.. lets u chain them
 
         //enqueue to begin, unique enqueue to avoid duplication of tasks
         //Policy to change how is handled.. append, keep, replace - append => chaining tasks (fails if 1st task not success ; avoid with append_and_replace)
-        WorkManager.getInstance(getContext()).enqueueUniqueWork("UniqueNameToAvoidDups", ExistingWorkPolicy.KEEP, (OneTimeWorkRequest) WR);
+        WorkManager.getInstance(context).enqueueUniqueWork("UniqueNameToAvoidDups", ExistingWorkPolicy.APPEND_OR_REPLACE, (OneTimeWorkRequest) WRB.build());
+        //Replace time to be reminded if updated
+
+
+        WRB.setInitialDelay(5,TimeUnit.SECONDS);
+        WorkManager.getInstance(context).enqueueUniqueWork("UniqueName#2", ExistingWorkPolicy.APPEND_OR_REPLACE, (OneTimeWorkRequest) WRB.build());
+        //Appends or replaces if retry or fail
 
         //.getWorkInfo_LiveData to observe progress
         //Most live data is WorkInfos (array)
         // ERR: cannot cast lifefcycle to lifecycleowner
-        WorkManager.getInstance(getContext()).getWorkInfosForUniqueWorkLiveData("UniqueNameToAvoidDups").observe(
+        /*WorkManager.getInstance(context).getWorkInfosForUniqueWorkLiveData("UniqueNameToAvoidDups").observe(
                 this,
                 workInfosArr -> {
 
+                    //Looper.prepare();
                     if (workInfosArr.isEmpty()) {
+                        System.out.println("Empty WI arr");
                         return; //Empty err
                     }
                     //for(WorkInfo workInfos : workInfosArr){ }
                     WorkInfo workInfos = workInfosArr.get(0); //Only 1 UID
 
+                    System.out.println("WorkState: "+workInfos.getState()+" | String: "+workInfos+" |ID:"+workInfos.getId());
+
                     if (workInfos.getState() == WorkInfo.State.SUCCEEDED) {
                         new Handler().postDelayed(() -> {
-                            Toast.makeText(getContext(), "WorkReqSucceed!!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, "WorkReqSucceed!!", Toast.LENGTH_SHORT).show();
                             //setview => custom toast
-                        }, 3000);
+                            System.out.println("WRS : "+workInfos.getOutputData().getString("D1"));
+                        }, 5000);
                     }
                 }
-        );
+        );*/ //Wont use observer - reliant on state active
         //WorkManager.getInstance(this).cancelUniqueWork("UID");
         SetupNoti(CurrNote);
     }
 
     private void SetupNoti(HashMap<String,String> CurrNote){
-        android.content.Context context = getContext(); //Avoids err from missing context when fragment gone
-        final DatabaseHandler DH = new DatabaseHandler(getContext());
+        //Create a Main noti here, and background fire mini notis to interact with background workers
+        // - update main noti based on mini notis smhw? static int?
+
+        final DatabaseHandler DH = new DatabaseHandler(context);
 
         //Setting up NotiChannel for app
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             context.getSystemService(NotificationManager.class).createNotificationChannel(new NotificationChannel("RemindFul_NotiID", "RemindFul_NotiID", NotificationManager.IMPORTANCE_DEFAULT));
         }
 
-        NotificationCompat.Builder NotiBuild = new NotificationCompat.Builder(context,"NotiID")
+        NotificationCompat.Builder NotiBuild = new NotificationCompat.Builder(context,"RemindFul_NotiID")
                 .setSmallIcon(R.drawable.cm) //Small Icon for noti that goes in top left
                 .setContentTitle("Notification Title") //Noti title
                 .setContentText("Noti text!") //Collapsed Noti txt
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT) //Priority ?
-                //.setStyle(new NotificationCompat.BigTextStyle().bigText("Very large text that would normally\nbe unable to fit within\n a compat notification")) //Expanded noti text
+                .setStyle(new NotificationCompat.BigTextStyle().bigText("Very large text that would normally\nbe unable to fit within\n a compat notification")) //Expanded noti text
                 .setAutoCancel(true) //Anytap on noti = cancel/remove noti
                 .setContentIntent(PendingIntent.getActivity(context, 1, new Intent(context, Home2.class).putExtra("",""), PendingIntent.FLAG_IMMUTABLE)) //Starts new activity when clicked - Default click = Action 1
                 .addAction(0,"Home",PendingIntent.getActivity(context,1,new Intent(context,Home.class), PendingIntent.FLAG_IMMUTABLE))
@@ -397,7 +414,6 @@ public class RemindFragment extends DialogFragment {
                 NotificationManagerCompat.from(context).notify('N'+'o'+'t'+'i'+'I'+'d',NotiBuild.build());
                 System.out.println("Noti #2!"); //WORKS IF PREV NOTI GONE // DIFF ID
 
-                RemFragCloseFrag(new View(getContext()));
             },300*10);
 
             new Handler().postDelayed(()->{
@@ -408,6 +424,9 @@ public class RemindFragment extends DialogFragment {
                     System.out.println("ERR!\n"+e);
                 }
             },1000*10);
+        }else{
+            Toast.makeText(context,"Notifications not granted and may cause crash!\nEnable and retry!",Toast.LENGTH_LONG).show();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { ARL.launch(Manifest.permission.POST_NOTIFICATIONS); }
         }
     }
 
@@ -415,6 +434,6 @@ public class RemindFragment extends DialogFragment {
 
         getParentFragmentManager().beginTransaction().remove(RemindFragment.this).commit();
         //getActivity().findViewById(R.id.home2FragHolder).back
-        //startActivity(new Intent(getContext(),Home2.class));
+        //startActivity(new Intent(context,Home2.class));
     }
 }

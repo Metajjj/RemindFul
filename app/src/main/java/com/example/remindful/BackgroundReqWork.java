@@ -1,8 +1,6 @@
 package com.example.remindful;
 
 import android.content.Context;
-import android.os.Looper;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.work.Worker;
@@ -13,30 +11,18 @@ public class BackgroundReqWork extends Worker {
     public BackgroundReqWork(Context con, WorkerParameters WP){
         super(con,WP);
 
-        context=con;
+        context=con; //constructor fires when dowork is fired
     }
 
-    private static int i=0; //Has to be static or if is new class open again and again by worker, infi loop
     @NonNull
     @Override
     public Result doWork() {
         //setForegroundAsync(getForegroundInfo()); //For expedite
 
-        Looper.prepare(); //Has to be called to run handlers when returned to observer
-        try {
-            //getInputData().getString("D1");
-            System.out.println("TOASTY : "+getInputData().getString("D1"));
-            Toast.makeText(context, "Alarm fired!", Toast.LENGTH_SHORT).show();
+        //System.out.println("Worker KvP:\n"+getInputData().getKeyValueMap());
+        //WORKS
 
-            return Result.success(); //retry,fail
-            //Fails to retry?
-        }catch (Exception e){
-            System.out.println("i:"+i+"\nERR: "+e);
-            if(i++==3){
-                return Result.failure();
-            }
-            return Result.retry();
-        }
-        //If fails, retry 3 times else give up
+
+        return Result.success();
     }
 }
