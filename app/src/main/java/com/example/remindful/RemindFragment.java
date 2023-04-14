@@ -1,9 +1,17 @@
 package com.example.remindful;
 
 
+import android.Manifest;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -12,8 +20,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.work.BackoffPolicy;
 import androidx.work.Constraints;
@@ -24,7 +37,10 @@ import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
 import androidx.work.WorkRequest;
 
+import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 
@@ -33,15 +49,42 @@ public class RemindFragment extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        //Has to run before creation else error
+        SetupPermGrabber();
+
         super.onCreateView(inflater, container, savedInstanceState);
 
         //new Home().WriteLine(""+container.getClass().getName() ); //FRAMELAYOUT TODO
-        mContainer = container;
+
+        if(getArguments() != null && getArguments().getSerializable("HashMap") == null){
+            Toast.makeText(getContext(), "Error detecting note for reminding!!", Toast.LENGTH_SHORT).show();
+            RemFragCloseFrag(new View(getContext()));
+        }
+
+        CurrNote = (HashMap<String, String>) getArguments().getSerializable("HashMap");
+        System.out.println("Tada~\n"+CurrNote); //Works
 
         return inflater.inflate(R.layout.remind_fragment, container, false);
     }
 
-    ViewGroup mContainer;
+    private HashMap<String,String> CurrNote;
+
+    private
+    ActivityResultLauncher<String> ARL;
+
+    private void SetupPermGrabber(){
+        //New way of checking permission - has to be created before fragment is
+        ARL = registerForActivityResult(
+                new ActivityResultContracts.RequestPermission(),
+                res -> {
+                    if (!res) {
+                        //Not granted!
+                        Toast.makeText(getContext(), "Need perm to work!", Toast.LENGTH_LONG).show();
+                        RemFragCloseFrag(new View(getContext()));
+                    }
+                }
+        );
+    }
 
     @Override
     public void onStart() {
@@ -211,7 +254,54 @@ public class RemindFragment extends DialogFragment {
 
     private void SetupRemindWorker(String Datetime){
         //System.out.println(Datetime);
+        Calendar cal = Calendar.getInstance();
+        java.text.DateFormat DF = new SimpleDateFormat("yyyyMMddHHmmss");
+        DF.setLenient(false);
+        //check if Date given is feasible via calender
+        try {
+            DF.parse(Datetime);
 
+            //Make sure Date is not past of curr date
+            long CurrTime = cal.getTimeInMillis();
+            cal.setTime(DF.parse(Datetime));
+            //System.out.println(MessageFormat.format( "Curr: {0} | Inp: {1} | Res: {2}", cal.getTimeInMillis() ));
+            if (CurrTime >= cal.getTimeInMillis()){ throw new Exception("Date in past!"); }
+
+        } catch (Exception e) {
+            System.out.println("Err: "+e);
+            Toast.makeText(getContext(), "Disallowed date/time detected!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        //Given DateTime is acceptable
+
+        //Update entry w R_TIME
+        DatabaseHandler DH = new DatabaseHandler(getContext());
+        ContentValues CV = new ContentValues(); CV.put(DH.TITLE,CurrNote.get(DH.TITLE));CV.put(DH.NOTE,CurrNote.get(DH.NOTE));CV.put(DH.YMDHMS,CurrNote.get(DH.YMDHMS));CV.put(DH.ID,CurrNote.get(DH.ID)); CV.put(DH.R_TIME,Datetime);
+
+        DH.getWritableDatabase().update( DH.DBname, CV, MessageFormat.format("{0}=? AND {1}=? AND {2}=?",DH.ID,DH.TITLE,DH.NOTE), new String[]{CurrNote.get(DH.ID),CurrNote.get(DH.TITLE),CurrNote.get(DH.NOTE)} );
+
+        //System.out.println(CurrNote+"|"+Datetime);
+
+        CurrNote = (HashMap<String, String>) DH.Readquery(MessageFormat.format(
+                "SELECT * FROM `{0}` WHERE `{1}`={2}",
+                DH.DBname, DH.ID, CurrNote.get(DH.ID)
+        )).get(0); //Regrab the new note with R_TIME
+
+        //System.out.println(CurrNote);
+        //WORKS
+
+        long DTime, STime;
+        try{
+            cal.setTime( DF.parse( CurrNote.get(DH.R_TIME).toString()) );
+            DTime = cal.getTimeInMillis()/1000;
+            cal.setTime( DF.parse( new NewNote().CalYMDHMS() ) );
+            STime = cal.getTimeInMillis()/1000;
+
+            DTime -= STime;
+            //System.out.println(DTime+"s"); ////TODO Diff of few millisecs when fired
+        }catch(Exception e){}
+
+        ////TODO FIX STRING PASSED AND UID
         //TODO setup remind worker
 
         //keeps running even in background
@@ -225,11 +315,11 @@ public class RemindFragment extends DialogFragment {
         WorkRequest WR = new OneTimeWorkRequest.Builder(BackgroundReqWork.class)
                 .setInputData(
                         new Data.Builder()
-                                .putString("D1","SillyString")
+                                .putString("D1","SillySausage")
                                 .build())
                 .addTag("WorkerReqTag")
                 .setBackoffCriteria(BackoffPolicy.LINEAR,10, TimeUnit.SECONDS)
-                .setInitialDelay(10, TimeUnit.SECONDS) //When To Run - Curr Time
+                .setInitialDelay(/*DTime*/30, TimeUnit.SECONDS) //When To Run - Curr Time
                 .setConstraints(
                         new Constraints.Builder()
                                 .setRequiresCharging(false)
@@ -247,7 +337,7 @@ public class RemindFragment extends DialogFragment {
         //Most live data is WorkInfos (array)
         // ERR: cannot cast lifefcycle to lifecycleowner
         WorkManager.getInstance(getContext()).getWorkInfosForUniqueWorkLiveData("UniqueNameToAvoidDups").observe(
-                getContext(),
+                this,
                 workInfosArr -> {
 
                     if (workInfosArr.isEmpty()) {
@@ -265,6 +355,60 @@ public class RemindFragment extends DialogFragment {
                 }
         );
         //WorkManager.getInstance(this).cancelUniqueWork("UID");
+        SetupNoti(CurrNote);
+    }
+
+    private void SetupNoti(HashMap<String,String> CurrNote){
+        android.content.Context context = getContext(); //Avoids err from missing context when fragment gone
+        final DatabaseHandler DH = new DatabaseHandler(getContext());
+
+        //Setting up NotiChannel for app
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.getSystemService(NotificationManager.class).createNotificationChannel(new NotificationChannel("RemindFul_NotiID", "RemindFul_NotiID", NotificationManager.IMPORTANCE_DEFAULT));
+        }
+
+        NotificationCompat.Builder NotiBuild = new NotificationCompat.Builder(context,"NotiID")
+                .setSmallIcon(R.drawable.cm) //Small Icon for noti that goes in top left
+                .setContentTitle("Notification Title") //Noti title
+                .setContentText("Noti text!") //Collapsed Noti txt
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT) //Priority ?
+                //.setStyle(new NotificationCompat.BigTextStyle().bigText("Very large text that would normally\nbe unable to fit within\n a compat notification")) //Expanded noti text
+                .setAutoCancel(true) //Anytap on noti = cancel/remove noti
+                .setContentIntent(PendingIntent.getActivity(context, 1, new Intent(context, Home2.class).putExtra("",""), PendingIntent.FLAG_IMMUTABLE)) //Starts new activity when clicked - Default click = Action 1
+                .addAction(0,"Home",PendingIntent.getActivity(context,1,new Intent(context,Home.class), PendingIntent.FLAG_IMMUTABLE))
+                .addAction(0,"Home2",PendingIntent.getActivity(context,1,new Intent(context,Home2.class), PendingIntent.FLAG_IMMUTABLE))
+                .addAction(0,"Action3",null)
+                //Only 3 actions are visible & icon doesnt appear & intent to start and open app
+                .setColor( Color.argb(255,255,0,0) )
+        ;
+
+        //TODO finish off - Cancel noti, create string res:NotiID  background worker to cancel and manage intent opening.. CREATE BACKWORK HERE, CREATE NOTI AT BACKREQWORK...
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            ARL.launch(Manifest.permission.POST_NOTIFICATIONS); // Check/grab perm
+        }
+
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+            //build notification with ID & noti build
+            NotificationManagerCompat.from(context).notify('N'+'o'+'t'+'i'+'I'+'D', NotiBuild.build());
+            System.out.println("Noti build works!");
+
+            new Handler().postDelayed(()->{
+                NotificationManagerCompat.from(context).notify('N'+'o'+'t'+'i'+'I'+'d',NotiBuild.build());
+                System.out.println("Noti #2!"); //WORKS IF PREV NOTI GONE // DIFF ID
+
+                RemFragCloseFrag(new View(getContext()));
+            },300*10);
+
+            new Handler().postDelayed(()->{
+                try {
+                    NotificationManagerCompat.from(context).cancel('N' + 'o' + 't' + 'i' + 'I' + 'D');
+                    System.out.println("Noti gone!"); //WORKS
+                }catch (Exception e){
+                    System.out.println("ERR!\n"+e);
+                }
+            },1000*10);
+        }
     }
 
     public void RemFragCloseFrag(View v){

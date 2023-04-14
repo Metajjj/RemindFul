@@ -37,14 +37,14 @@ public class Home2 extends AppCompatActivity {
 
         setContentView(R.layout.home2);
 
-        switchy();
+        findViewById(R.id.home2ViewStyle).performClick();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         new Handler().post(()->{
-            switchy();
+            findViewById(R.id.home2ViewStyle).performClick();
         });
     }
 

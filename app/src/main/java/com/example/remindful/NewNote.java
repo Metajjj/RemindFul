@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Objects;
@@ -49,7 +50,7 @@ public class NewNote extends AppCompatActivity {
         ((TextView)findViewById(R.id.NewNoteSave)).setText( (b.isChecked()? "SAVE & REMIND" : "SAVE") );
     }
 
-    private String CalYMDHMS(){
+    protected String CalYMDHMS(){
         String
         Year =""+ Calendar.getInstance().get(Calendar.YEAR),
         Month=""+ (Calendar.getInstance().get(Calendar.MONTH)+1),
@@ -111,17 +112,26 @@ public class NewNote extends AppCompatActivity {
 
             // TODO On save => reload into update ??
         }
-
     }
+
     private void Remind(){
         //Set new activity... do stuff.. grab R_Time //If no diff between year/day/ wutevs.. dont convert to sec and ignore
-        getSupportFragmentManager().beginTransaction().replace(R.id.NewNoteFragHolder,RemindFragment.class,null).commit();
+        //Have to declare bundle outside
+
+
+
+        ArrayList<HashMap<String,String>> AL = DH.Readquery(MessageFormat.format(
+                "SELECT * FROM `{0}` ORDER BY `{1}` DESC ;",
+                DH.DBname, DH.YMDHMS
+        ));
+
+        //System.out.println(AL.size()+"\n"+AL );
+
+        Bundle b = new Bundle(); b.putSerializable("HashMap",AL.get(0));
+
+        getSupportFragmentManager().beginTransaction().replace(R.id.NewNoteFragHolder,RemindFragment.class, b ).commit();
 
         findViewById(R.id.NewNoteFragHolder).bringToFront();
-    }
-
-    private void Noti(){
-        //https://developer.android.com/develop/ui/views/notifications/build-notification#java
     }
 
     private void Update(){

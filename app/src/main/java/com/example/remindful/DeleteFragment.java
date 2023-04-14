@@ -263,6 +263,7 @@ public class DeleteFragment extends DialogFragment {
         DH.getWritableDatabase().delete(DH.DBname,Query,
                 Args.toArray(new String[]{}))
         );
+        //TODO  del and remove R_TIME workmanager
     }
 
     public void CloseFrag(View v){
