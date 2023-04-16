@@ -24,8 +24,6 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.work.BackoffPolicy;
@@ -313,12 +311,16 @@ public class RemindFragment extends DialogFragment {
         //Tag as ID
         // ERR: expedited jobs cant be delayed
 
+        //Update bgw if exists via id?? ==== ++id;
+        String LinkageID = String.valueOf(Integer.parseInt(CurrNote.get(DH.ID)) +1);
+        NotificationManagerCust.LinkageID_Note.put(LinkageID,CurrNote);
+
         Data.Builder WorkReqArgs = new Data.Builder().putString("D1","SillySausage"); //Cant put when build()
         for(Map.Entry<String,String> kvp : CurrNote.entrySet()){ WorkReqArgs.putString(kvp.getKey(), kvp.getValue()); }
 
         WorkRequest.Builder WRB = new OneTimeWorkRequest.Builder(BackgroundReqWork.class)
                 .setInputData( WorkReqArgs.build() )
-                .addTag("WorkerReqTag")
+                //.addTag("WorkerReqTag")
                 .setBackoffCriteria(BackoffPolicy.LINEAR,10, TimeUnit.SECONDS)
                 .setInitialDelay(/*DTime*/10, TimeUnit.SECONDS) //When To Run - Curr Time
                 .setConstraints(
@@ -335,12 +337,13 @@ public class RemindFragment extends DialogFragment {
 
         //enqueue to begin, unique enqueue to avoid duplication of tasks
         //Policy to change how is handled.. append, keep, replace - append => chaining tasks (fails if 1st task not success ; avoid with append_and_replace)
-        WorkManager.getInstance(context).enqueueUniqueWork("UniqueNameToAvoidDups", ExistingWorkPolicy.APPEND_OR_REPLACE, (OneTimeWorkRequest) WRB.build());
+        WorkManager.getInstance(context).enqueueUniqueWork(LinkageID, ExistingWorkPolicy.APPEND_OR_REPLACE, (OneTimeWorkRequest) WRB.build());
         //Replace time to be reminded if updated
 
+        //WorkManager.getInstance(context).cancelUniqueWork("UniqueNameToAvoidDups"); //Works
 
-        WRB.setInitialDelay(5,TimeUnit.SECONDS);
-        WorkManager.getInstance(context).enqueueUniqueWork("UniqueName#2", ExistingWorkPolicy.APPEND_OR_REPLACE, (OneTimeWorkRequest) WRB.build());
+
+
         //Appends or replaces if retry or fail
 
         //.getWorkInfo_LiveData to observe progress
@@ -370,10 +373,10 @@ public class RemindFragment extends DialogFragment {
                 }
         );*/ //Wont use observer - reliant on state active
         //WorkManager.getInstance(this).cancelUniqueWork("UID");
-        SetupNoti(CurrNote);
+        SetupNoti(CurrNote, Integer.parseInt(LinkageID) );
     }
 
-    private void SetupNoti(HashMap<String,String> CurrNote){
+    private void SetupNoti(HashMap<String,String> CurrNote, int LinkID){
         //Create a Main noti here, and background fire mini notis to interact with background workers
         // - update main noti based on mini notis smhw? static int?
 
@@ -384,21 +387,6 @@ public class RemindFragment extends DialogFragment {
             context.getSystemService(NotificationManager.class).createNotificationChannel(new NotificationChannel("RemindFul_NotiID", "RemindFul_NotiID", NotificationManager.IMPORTANCE_DEFAULT));
         }
 
-        NotificationCompat.Builder NotiBuild = new NotificationCompat.Builder(context,"RemindFul_NotiID")
-                .setSmallIcon(R.drawable.cm) //Small Icon for noti that goes in top left
-                .setContentTitle("Notification Title") //Noti title
-                .setContentText("Noti text!") //Collapsed Noti txt
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT) //Priority ?
-                .setStyle(new NotificationCompat.BigTextStyle().bigText("Very large text that would normally\nbe unable to fit within\n a compat notification")) //Expanded noti text
-                .setAutoCancel(true) //Anytap on noti = cancel/remove noti
-                .setContentIntent(PendingIntent.getActivity(context, 1, new Intent(context, Home2.class).putExtra("",""), PendingIntent.FLAG_IMMUTABLE)) //Starts new activity when clicked - Default click = Action 1
-                .addAction(0,"Home",PendingIntent.getActivity(context,1,new Intent(context,Home.class), PendingIntent.FLAG_IMMUTABLE))
-                .addAction(0,"Home2",PendingIntent.getActivity(context,1,new Intent(context,Home2.class), PendingIntent.FLAG_IMMUTABLE))
-                .addAction(0,"Action3",null)
-                //Only 3 actions are visible & icon doesnt appear & intent to start and open app
-                .setColor( Color.argb(255,255,0,0) )
-        ;
-
         //TODO finish off - Cancel noti, create string res:NotiID  background worker to cancel and manage intent opening.. CREATE BACKWORK HERE, CREATE NOTI AT BACKREQWORK...
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -406,24 +394,20 @@ public class RemindFragment extends DialogFragment {
         }
 
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
-            //build notification with ID & noti build
-            NotificationManagerCompat.from(context).notify('N'+'o'+'t'+'i'+'I'+'D', NotiBuild.build());
-            System.out.println("Noti build works!");
 
-            new Handler().postDelayed(()->{
-                NotificationManagerCompat.from(context).notify('N'+'o'+'t'+'i'+'I'+'d',NotiBuild.build());
-                System.out.println("Noti #2!"); //WORKS IF PREV NOTI GONE // DIFF ID
+            NotificationManagerCust CustNM = new NotificationManagerCust(context);
+            CustNM.BuildNotification(
+                     CustNM.NotificationBuilder(CurrNote.get(DH.TITLE),"Expand to see snippet of note!",CurrNote.get(DH.NOTE),
+                             new Object[]{"Cancel Remind", PendingIntent.getBroadcast(context,0,new Intent(context,NotiActionHandler.class).putExtra("LinkageID",LinkID).putExtra("D1","RemindFulNoti"),PendingIntent.FLAG_MUTABLE) },
+                             new Object[]{"Hide Noti (isn't cancel)", PendingIntent.getBroadcast(context,0,new Intent(context,NotiActionHandler.class).putExtra("LinkageID",LinkID).putExtra("D1","RemindFulNoti"),PendingIntent.FLAG_MUTABLE) },
+                             null
+                     )
+                             .setContentIntent( PendingIntent.getActivity(context,0,new Intent(context,Home2.class).putExtra("LinkageID",LinkID),PendingIntent.FLAG_MUTABLE) )
+                             .setAutoCancel(false)
+                    ,null
+                    , LinkID
+            );
 
-            },300*10);
-
-            new Handler().postDelayed(()->{
-                try {
-                    NotificationManagerCompat.from(context).cancel('N' + 'o' + 't' + 'i' + 'I' + 'D');
-                    System.out.println("Noti gone!"); //WORKS
-                }catch (Exception e){
-                    System.out.println("ERR!\n"+e);
-                }
-            },1000*10);
         }else{
             Toast.makeText(context,"Notifications not granted and may cause crash!\nEnable and retry!",Toast.LENGTH_LONG).show();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { ARL.launch(Manifest.permission.POST_NOTIFICATIONS); }

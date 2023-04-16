@@ -16,13 +16,13 @@ import java.util.Objects;
 public class Home extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
 
         Objects.requireNonNull(getSupportActionBar()).hide(); //Hides default header
         setContentView(R.layout.home);
 
-        ColScheme( findViewById(R.id.HomeLayout) );
-
+        ColScheme(findViewById(R.id.HomeLayout));
     }
 
     @Override

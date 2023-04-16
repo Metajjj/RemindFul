@@ -26,6 +26,8 @@
         <activity android:name=".NewNote" android:exported="true" android:screenOrientation="portrait"/>
         <activity android:name=".Remind" android:exported="true" android:screenOrientation="portrait"/>
 
+        <receiver android:name=".NotiActionHandler" />
+
     </application>
 
 </manifest>

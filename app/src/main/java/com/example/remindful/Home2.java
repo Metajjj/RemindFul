@@ -27,7 +27,7 @@ import java.util.Objects;
 public class Home2 extends AppCompatActivity {
     //CTRL SHIFT +   opens all brackets
     //CTRL SHIFT -   closes all brackets
-    //TODO - fix tempload out of sync with switchy
+    //TODO - fix loads twice
     private final DatabaseHandler DH = new DatabaseHandler(Home2.this);
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

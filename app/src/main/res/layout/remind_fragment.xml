@@ -197,7 +197,7 @@
             android:background="@drawable/roundbordernote"
             android:gravity="center"
             android:padding="5dp"
-            android:text="Visually set TIME"
+            android:text="TIME"
             android:textAlignment="center"
             android:textStyle="bold"
             app:autoSizeTextType="uniform"

@@ -8,6 +8,7 @@ import androidx.work.WorkerParameters;
 
 public class BackgroundReqWork extends Worker {
     private Context context;
+
     public BackgroundReqWork(Context con, WorkerParameters WP){
         super(con,WP);
 
@@ -19,8 +20,13 @@ public class BackgroundReqWork extends Worker {
     public Result doWork() {
         //setForegroundAsync(getForegroundInfo()); //For expedite
 
-        //System.out.println("Worker KvP:\n"+getInputData().getKeyValueMap());
+        System.out.println("Id: "+getId()+"\nWorker KvP: "+getInputData().getKeyValueMap());
         //WORKS
+
+
+
+
+        //Check if is fired from noti.. kill BGW
 
 
         return Result.success();

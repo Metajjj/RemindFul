@@ -73,6 +73,8 @@ public class NewNote extends AppCompatActivity {
         String Saved;
         v.setOnClickListener(null);
 
+        findViewById(R.id.NewNoteRemindBox).setOnClickListener(null);
+
         TextView tv = (TextView) v;
         if( tv.getText() == "SAVE" ){
 
@@ -96,6 +98,8 @@ public class NewNote extends AppCompatActivity {
             tv.setText(tv2);
             tv.setBackgroundResource(R.drawable.roundbordernote);
             v.setOnClickListener(this::Save);
+
+            findViewById(R.id.NewNoteRemindBox).setOnClickListener(this::Remind);
             },1300);
     }
 
