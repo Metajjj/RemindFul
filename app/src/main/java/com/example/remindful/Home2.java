@@ -205,10 +205,10 @@ public class Home2 extends AppCompatActivity {
         return new TextView[]{TvNote,TvTitle};
     }
 
-    private void DisplayNotes(ArrayList<HashMap> notes){
+    private void DisplayNotes(ArrayList<HashMap<String,String>> notes){
         ArrayList<TextView[]> TVHldr = new ArrayList<>(); ArrayList<TextView> Notes=new ArrayList<>(),Titles=new ArrayList<>();
 
-        for( HashMap s : notes ) {
+        for( HashMap<String,String> s : notes ) {
             System.out.println("==\n"+s+"\n==");
 
             TVHldr.add(SetupCols(

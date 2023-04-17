@@ -17,6 +17,8 @@ public class Home extends AppCompatActivity {
 
         Objects.requireNonNull(getSupportActionBar()).hide(); //Hides default header
         setContentView(R.layout.home);
+
+        new NotificationManagerCust(getApplicationContext());
     }
 
     @Override

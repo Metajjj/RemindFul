@@ -14,11 +14,11 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class NotificationManagerCust {
 
-    private static int NumOfActiveNotis=0;
     private Context context;
     private final String NotiChannelID="RemindFul_NotiID";
 
@@ -87,14 +87,11 @@ public class NotificationManagerCust {
     protected void BuildNotification(NotificationCompat.Builder NotiSetting, @Nullable String Tag, int ID){
         if(ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_DENIED) { throw new Error("Permission missing!"); }
 
-        NumOfActiveNotis++;
         NotificationManagerCompat.from(context).notify(Tag,ID,NotiSetting.build());
 
         MainNotiUpdate();
     }
     protected void DestroyNotification(@Nullable String Tag, int ID) {
-
-        NumOfActiveNotis--;
         NotificationManagerCompat.from(context).cancel(Tag, ID);
          //No error from being called on one that doesnt exist
 
@@ -102,26 +99,26 @@ public class NotificationManagerCust {
     }
 
     protected void DestroyAllNotifications(){
-        NumOfActiveNotis=0;
-
         NotificationManagerCompat.from(context).cancelAll();
         return;
     }
 
     private void MainNotiUpdate(){
-        if(NumOfActiveNotis < 0){
-            //Error with noti handling!!
-            NumOfActiveNotis=0;
-        }
 
         //update main noti -- no deconstructors!
         if(ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_DENIED) { throw new Error("Permission missing!"); }
+
+        //Get number of things w R_time (that are being reminded for)
+        final DatabaseHandler DH = new DatabaseHandler(context);
+        ArrayList<HashMap<String, String>> CurrNotes = DH.CursorSorter(
+                DH.getReadableDatabase().query(DH.DBname,new String[]{DH.ID,DH.TITLE,DH.R_TIME},DH.R_TIME+" IS NOT NULL",null,null,null,null)
+        );
 
         //Main Noti Settings
         NotificationCompat.Builder NBS = new NotificationCompat.Builder(context,NotiChannelID)
                 .setSmallIcon(R.drawable.cm) //Small Icon for noti that goes in top left
                 .setContentTitle("Main Notification") //Noti title
-                .setContentText("Upcoming notifications/reminders: "+NumOfActiveNotis) //Collapsed Noti txt
+                .setContentText("Upcoming notifications/reminders (+ hidden): "+CurrNotes.size()) //Collapsed Noti txt
                 .setPriority(NotificationCompat.PRIORITY_HIGH) //Priority ?
                 //.setStyle(new NotificationCompat.BigTextStyle().bigText("Upcoming notifications/reminders: "+NumOfActiveNotis+"\nDON'T CLOSE APP FOR REMINDING TO WORK!")) //Expanded noti text
                 .setAutoCancel(false) //Anytap on noti = cancel/remove noti
@@ -137,6 +134,7 @@ public class NotificationManagerCust {
 
         NotificationManagerCompat.from(context).notify(0,NBS.build());
 
+        DH.close();
         return;
     }
 }
