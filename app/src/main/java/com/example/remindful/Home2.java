@@ -37,7 +37,9 @@ public class Home2 extends AppCompatActivity {
 
         setContentView(R.layout.home2);
 
-        findViewById(R.id.home2ViewStyle).performClick();
+        new Handler().post(()->{
+            findViewById(R.id.home2ViewStyle).performClick();
+        });
     }
 
     @Override

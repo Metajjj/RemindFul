@@ -248,6 +248,7 @@ public class RemindFragment extends DialogFragment {
             return;
         }
 
+        System.out.println("CONFIRM REMIND");
         SetupRemindWorker(Year.getText().toString() + Month.getText().toString() + Day.getText().toString() + Hour.getText().toString() + Min.getText().toString() + Sec.getText().toString());
     }
 
@@ -315,14 +316,14 @@ public class RemindFragment extends DialogFragment {
         String LinkageID = String.valueOf(Integer.parseInt(CurrNote.get(DH.ID)) +1);
         NotificationManagerCust.LinkageID_Note.put(LinkageID,CurrNote);
 
-        Data.Builder WorkReqArgs = new Data.Builder().putString("D1","SillySausage"); //Cant put when build()
+        Data.Builder WorkReqArgs = new Data.Builder().putString("LinkageID",LinkageID); //Cant put when build()
         for(Map.Entry<String,String> kvp : CurrNote.entrySet()){ WorkReqArgs.putString(kvp.getKey(), kvp.getValue()); }
 
         WorkRequest.Builder WRB = new OneTimeWorkRequest.Builder(BackgroundReqWork.class)
                 .setInputData( WorkReqArgs.build() )
                 //.addTag("WorkerReqTag")
                 .setBackoffCriteria(BackoffPolicy.LINEAR,10, TimeUnit.SECONDS)
-                .setInitialDelay(/*DTime*/10, TimeUnit.SECONDS) //When To Run - Curr Time
+                .setInitialDelay(/*DTime*/20, TimeUnit.SECONDS) //When To Run - Curr Time
                 .setConstraints(
                         new Constraints.Builder()
                                 .setRequiresCharging(false)
@@ -398,12 +399,10 @@ public class RemindFragment extends DialogFragment {
             NotificationManagerCust CustNM = new NotificationManagerCust(context);
             CustNM.BuildNotification(
                      CustNM.NotificationBuilder(CurrNote.get(DH.TITLE),"Expand to see snippet of note!",CurrNote.get(DH.NOTE),
-                             new Object[]{"Cancel Remind", PendingIntent.getBroadcast(context,0,new Intent(context,NotiActionHandler.class).putExtra("LinkageID",LinkID).putExtra("D1","RemindFulNoti"),PendingIntent.FLAG_MUTABLE) },
-                             new Object[]{"Hide Noti (isn't cancel)", PendingIntent.getBroadcast(context,0,new Intent(context,NotiActionHandler.class).putExtra("LinkageID",LinkID).putExtra("D1","RemindFulNoti"),PendingIntent.FLAG_MUTABLE) },
+                             new Object[]{"Cancel Remind", PendingIntent.getBroadcast(context,LinkID*-1,new Intent(context,NotiActionHandler.class).putExtra("LinkageID",LinkID).putExtra("D1","RemindFulNoti").putExtra("Code","CANCEL"),PendingIntent.FLAG_MUTABLE) },
+                             new Object[]{"Hide Noti (not cancel)", PendingIntent.getBroadcast(context,LinkID,new Intent(context,NotiActionHandler.class).putExtra("LinkageID",LinkID).putExtra("D1","RemindFulNoti").putExtra("Code","HIDE"),PendingIntent.FLAG_MUTABLE) },
                              null
                      )
-                             .setContentIntent( PendingIntent.getActivity(context,0,new Intent(context,Home2.class).putExtra("LinkageID",LinkID),PendingIntent.FLAG_MUTABLE) )
-                             .setAutoCancel(false)
                     ,null
                     , LinkID
             );

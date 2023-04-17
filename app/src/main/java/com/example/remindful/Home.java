@@ -1,6 +1,5 @@
 package com.example.remindful;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import java.util.HashMap;
 import java.util.Objects;
 
 public class Home extends AppCompatActivity {
@@ -32,7 +32,18 @@ public class Home extends AppCompatActivity {
         new Handler().postDelayed(()->{
             ((TextView)findViewById(R.id.HomeTitle)).setText("Loaded!");
             //try{Thread.sleep(2000);}catch(Exception e){}
-            startActivity(new Intent(this,Home2.class));
+            //startActivity(new Intent(this,Home2.class));
+
+            //TODO replace ReadQuery with .query
+            final DatabaseHandler DH = new DatabaseHandler(getApplicationContext());
+            // Select Cols1,2,3 from Table Where Col1=? OR Col2=?; ==  .query (Table; Col1,Col2,Col3; Col1=? OR Col2=?; Arg1,Arg2; groupBy, Having, OrderBy
+
+            java.util.ArrayList<HashMap<String,String>> Notes = DH.CursorSorter(
+                    DH.getReadableDatabase().query(DH.DBname, null,null,null,null,null,null)
+            );
+            DH.close();
+
+            System.out.println( "Notes:\n"+Notes );
 
         },2000);
     }

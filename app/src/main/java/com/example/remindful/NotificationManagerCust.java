@@ -54,6 +54,7 @@ public class NotificationManagerCust {
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(ExpandText))
                 .setAutoCancel(false).setContentIntent(null)
                 .setSmallIcon(R.drawable.cm)
+                .setOngoing(true)
 
                 //.addAction(0,"Test PendInt",PendingIntent.getActivity(context,0,new Intent(context,Home2.class),PendingIntent.FLAG_IMMUTABLE)) //WORKS
                 ;
@@ -95,6 +96,7 @@ public class NotificationManagerCust {
 
         NumOfActiveNotis--;
         NotificationManagerCompat.from(context).cancel(Tag, ID);
+         //No error from being called on one that doesnt exist
 
         MainNotiUpdate();
     }
@@ -107,6 +109,11 @@ public class NotificationManagerCust {
     }
 
     private void MainNotiUpdate(){
+        if(NumOfActiveNotis < 0){
+            //Error with noti handling!!
+            NumOfActiveNotis=0;
+        }
+
         //update main noti -- no deconstructors!
         if(ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_DENIED) { throw new Error("Permission missing!"); }
 
@@ -119,9 +126,13 @@ public class NotificationManagerCust {
                 //.setStyle(new NotificationCompat.BigTextStyle().bigText("Upcoming notifications/reminders: "+NumOfActiveNotis+"\nDON'T CLOSE APP FOR REMINDING TO WORK!")) //Expanded noti text
                 .setAutoCancel(false) //Anytap on noti = cancel/remove noti
                 .setContentIntent(null) //Starts new activity when clicked - Default click
-                .addAction(0,"Cancel All Notis",
-                        PendingIntent.getBroadcast(context,0, new Intent(context,NotiActionHandler.class).putExtra("D1","RemindFulMAINNoti"),PendingIntent.FLAG_MUTABLE)
-                        )
+                .addAction(0,"Cancel All Notis & Reminds",
+                        PendingIntent.getBroadcast(context,Integer.MAX_VALUE, new Intent(context,NotiActionHandler.class).putExtra("D1","RemindFulMAINNoti").putExtra("Code","CANCELALL"),PendingIntent.FLAG_MUTABLE)
+                )
+                .addAction(0,"Show All",
+                        PendingIntent.getBroadcast(context, Integer.MIN_VALUE,new Intent(context,NotiActionHandler.class).putExtra("D1","RemindFulMAINNoti").putExtra("Code","SHOWALL"),PendingIntent.FLAG_MUTABLE)
+                )
+                .setOngoing(true) //Stops notification being swiped away
         ;
 
         NotificationManagerCompat.from(context).notify(0,NBS.build());

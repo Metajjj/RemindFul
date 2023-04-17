@@ -23,10 +23,11 @@ public class BackgroundReqWork extends Worker {
         System.out.println("Id: "+getId()+"\nWorker KvP: "+getInputData().getKeyValueMap());
         //WORKS
 
+        NotificationManagerCust NMC = new NotificationManagerCust(context);
 
-
-
-        //Check if is fired from noti.. kill BGW
+        if ( !getInputData().getString("LinkageID").isEmpty() && getInputData().getString("LinkageID") != null ){
+            NMC.DestroyNotification(null, Integer.parseInt(getInputData().getString("LinkageID"))); //removes noti on background fired
+        }
 
 
         return Result.success();

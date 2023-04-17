@@ -8,7 +8,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
     //ID | Month | Year | Title | Note | TimeModified || Time to remind..
@@ -102,6 +101,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     @SuppressLint("Range")
+    // Select Cols1,2,3 from Table Where Col1=? OR Col2=?; ==  .query (Table; Col1,Col2,Col3; Col1=? OR Col2=?; Arg1,Arg2; groupBy, Having, OrderBy
     protected ArrayList Readquery(String query) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c;
@@ -123,35 +123,37 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     @SuppressLint("Range")
-    private ArrayList CursorSorter(Cursor c){
+    protected ArrayList<HashMap<String,String>> CursorSorter(Cursor c){
 
         ////FIX - return cursor result as array ? no need NL and stuff
-        ArrayList<HashMap> Res = new ArrayList<>();
+        ArrayList<HashMap<String,String>> Res = new ArrayList<>();
         //Data.put("ID:x", new HashMap<>().put("",""));
         //Res.add(Data);
 
-        String output="", Seperator=UniqueNL(), NewLine=UniqueNL();
+        String Seperator=UniqueNL(), NewLine=UniqueNL();
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) { //for each row
 
-            Map<String,String> Data = new HashMap<>();
+            HashMap<String,String> Data = new HashMap<>();
             //Determines what data is treated as
 
             int i=1; //Skips first troub
             for (String s : ColHeads){
 
                 if(c.getColumnIndex(s)>=0) {
-                    output += s + ":" + c.getString(c.getColumnIndex(s)) + Seperator;
+                    //output += s + ":" + c.getString(c.getColumnIndex(s)) + Seperator;
 
                     //Data.put(i,new HashMap<>().put(s,c.getString(c.getColumnIndex(s))));
                     Data.put(s,c.getString(c.getColumnIndex(s)));
                 }
                 if (
                         i % ColHeads.length == 0 //s.equals(ColHeads[ColHeads.length-1])
-                ) { output += NewLine; }
+                ) {
+                    //output += NewLine;
+                    }
 
                 i++;
             }
-            Res.add((HashMap) Data);
+            Res.add(Data);
             //System.out.println(Data);
             //for( Map.Entry<String,String> Entry : Data.entrySet()) { System.out.println("Key: "+Entry.getKey()+" | Val: "+Entry.getValue()); }
 
