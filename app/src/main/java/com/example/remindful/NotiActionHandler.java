@@ -24,6 +24,7 @@ public class NotiActionHandler extends BroadcastReceiver {
                 //Cancel worker based on linkID
                 WorkManager.getInstance(context).cancelUniqueWork(String.valueOf(intent.getExtras().getInt("LinkageID")));
                 NMC.DestroyNotification(null, intent.getExtras().getInt("LinkageID"));
+                //TODO Make R_TIME == null
             } else if(intent.getExtras().getString("Code").equals("HIDE")) {
                 //Hide noti but dont cancel remind
                 NotificationManagerCompat.from(context).cancel(null, intent.getExtras().getInt("LinkageID"));
