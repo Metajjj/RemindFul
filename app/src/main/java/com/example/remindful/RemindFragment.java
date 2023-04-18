@@ -282,13 +282,8 @@ public class RemindFragment extends DialogFragment {
 
         //System.out.println(CurrNote+"|"+Datetime);
 
-        CurrNote = (HashMap<String, String>) DH.Readquery(MessageFormat.format(
-                "SELECT * FROM `{0}` WHERE `{1}`={2}",
-                DH.DBname, DH.ID, CurrNote.get(DH.ID)
-        )).get(0); //Regrab the new note with R_TIME
-
-        //System.out.println(CurrNote);
-        //WORKS
+        CurrNote = DH.CursorSorter(DH.getReadableDatabase().query(DH.DBname,null,DH.ID+" = ?",new String[]{CurrNote.get(DH.ID)},null,null,null)).get(0); //Regrab the new note with R_TIME updated
+        DH.close();
 
         long DTime, STime;
         try{
@@ -323,7 +318,7 @@ public class RemindFragment extends DialogFragment {
                 .setInputData( WorkReqArgs.build() )
                 //.addTag("WorkerReqTag")
                 .setBackoffCriteria(BackoffPolicy.LINEAR,10, TimeUnit.SECONDS)
-                .setInitialDelay(/*DTime*/10, TimeUnit.SECONDS) //When To Run - Curr Time
+                .setInitialDelay(/*TODO DTime*/10, TimeUnit.SECONDS) //When To Run - Curr Time
                 .setConstraints(
                         new Constraints.Builder()
                                 .setRequiresCharging(false)

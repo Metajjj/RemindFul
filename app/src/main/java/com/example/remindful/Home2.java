@@ -19,7 +19,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
@@ -36,16 +35,13 @@ public class Home2 extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).hide(); //Hides default header
 
         setContentView(R.layout.home2);
-
-        new Handler().post(()->{
-            findViewById(R.id.home2ViewStyle).performClick();
-        });
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         new Handler().post(()->{
+            findViewById(R.id.home2ViewStyle).performClick();
             findViewById(R.id.home2ViewStyle).performClick();
         });
     }
@@ -71,10 +67,10 @@ public class Home2 extends AppCompatActivity {
         TextView tv = findViewById(R.id.home2ViewStyle);
         switch (tv.getText()+""){
             case "Recent":
-                new Handler().post(()-> { TempLoad("ORDER BY `"+DH.TITLE+"` ASC,`"+DH.YMDHMS+"` DESC"); });
+                new Handler().post(()-> { TempLoad("`"+DH.TITLE+"` ASC,`"+DH.YMDHMS+"` DESC"); });
                 break;
             case "Alphabetical":
-                new Handler().post(()-> { TempLoad("ORDER BY `"+DH.YMDHMS+"` DESC, `"+DH.TITLE+"` ASC"); });
+                new Handler().post(()-> { TempLoad("`"+DH.YMDHMS+"` DESC, `"+DH.TITLE+"` ASC"); });
                 break;
             default:
                 Toast.makeText(this, "ERROR OCCURRED!", Toast.LENGTH_SHORT).show();
@@ -82,8 +78,7 @@ public class Home2 extends AppCompatActivity {
     }
 
     private void TempNoteWipe(View v){
-        DatabaseHandler DH = new DatabaseHandler(Home2.this);
-        DH.ResetTable();
+        DatabaseHandler DH = new DatabaseHandler(Home2.this); DH.ResetTable(); DH.close();
         Toast.makeText(this,"WIPED notes",Toast.LENGTH_SHORT).show();
 
         switchy();
@@ -92,7 +87,7 @@ public class Home2 extends AppCompatActivity {
     private void TempLoad(String sort){
         ((TableLayout)findViewById(R.id.NewNoteTable)).removeAllViews();
 
-        ArrayList catc = DH.Readquery("SELECT * FROM `"+DH.DBname+"` "+sort+";");
+        ArrayList<HashMap<String,String>> catc = DH.CursorSorter( DH.getReadableDatabase().query(DH.DBname,null,null,null,null,null,sort) );
         //System.out.println("Catc: "+catc[0].equals(""));
 
         if(catc.size()==0){ NotesMissing(); }
@@ -129,8 +124,7 @@ public class Home2 extends AppCompatActivity {
         else{
             //String o = DH.Readquery("SELECT * FROM `"+DH.DBname+"` WHERE `"+DH.ID+"` = "+v.getTag().toString().split("-")[1]+" AND "+DH.YMDHMS+" = "+v.getTag().toString().split("-")[0]+";");
 
-            ArrayList<HashMap> o = DH.Readquery(MessageFormat.format("SELECT * FROM `{0}` WHERE {1} = {2} AND {3} = {4};",DH.DBname,DH.ID,v.getTag().toString().split("-")[1],DH.YMDHMS,v.getTag().toString().split("-")[0]));
-            //new String[0];
+            ArrayList<HashMap<String,String>> o = DH.CursorSorter(DH.getReadableDatabase().query(DH.DBname,null,DH.ID+" = ? AND "+DH.YMDHMS+" = ?",new String[]{v.getTag().toString().split("-")[1],v.getTag().toString().split("-")[0]},null,null,null) );
 
             startActivity(new Intent(Home2.this,NewNote.class).putExtra("i",(HashMap<String,String>) o.get(0)));
         }
@@ -209,7 +203,7 @@ public class Home2 extends AppCompatActivity {
         ArrayList<TextView[]> TVHldr = new ArrayList<>(); ArrayList<TextView> Notes=new ArrayList<>(),Titles=new ArrayList<>();
 
         for( HashMap<String,String> s : notes ) {
-            System.out.println("==\n"+s+"\n==");
+            System.out.println(s);
 
             TVHldr.add(SetupCols(
                     s.get(DH.NOTE)+"",

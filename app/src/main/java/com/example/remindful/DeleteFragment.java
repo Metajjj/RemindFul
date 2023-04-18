@@ -93,32 +93,22 @@ public class DeleteFragment extends DialogFragment {
         // TextSize (80px) vs Text width (618px) vs Txt Len (16 char?)
 
         SyncPromise.resolve().always((action, data)->{
-            ArrayList<HashMap> S = DH.Readquery(
-                    MessageFormat.format("SELECT `{0}`,`{2}`,`{3}` FROM `{1}`;",
-                            DH.TITLE,DH.DBname,DH.YMDHMS,DH.ID)
-            );
+            ArrayList<HashMap<String,String>> S = DH.CursorSorter( DH.getReadableDatabase().query(DH.DBname,new String[]{DH.ID,DH.TITLE,DH.YMDHMS},null,null,null,null,null) );
 
             //System.out.println("====\n"+S+"\n====");
 
             for (HashMap<String,String> x : S) {
-
-                String PureTitle = x.get(DH.TITLE),
-                        PureYMD = x.get(DH.YMDHMS),
-                        PureID = x.get(DH.ID);
-
-                /*System.out.println(MessageFormat.format(
-                        "title: {0} | ymd: {1} | id: {2}",
-                        PureTitle, PureYMD, PureID));*/
+                String PureTitle = x.get(DH.TITLE), PureYMD = x.get(DH.YMDHMS), PureID = x.get(DH.ID);
 
                 TableRow Tr = SetupRow(PureTitle);
                 Tr.setTag(PureYMD + "-" + PureID);
                 TL.addView(Tr);
             }
 
+            DH.close();
             action.resolve();
         }).then((a,d)->{
 
-            //SelAllTv.setText("Invert Selection");
             ((View)(SelAllTv).getParent()).setOnClickListener(this::DelFragTopButtClicked);
 
             a.resolve();

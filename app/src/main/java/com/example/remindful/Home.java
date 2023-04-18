@@ -30,14 +30,11 @@ public class Home extends AppCompatActivity {
             //try{Thread.sleep(2000);}catch(Exception e){}
             startActivity(new android.content.Intent(this,Home2.class));
 
-            //TODO replace ReadQuery with .query
-            /*final DatabaseHandler DH = new DatabaseHandler(getApplicationContext());
-            java.util.ArrayList<HashMap<String, String>> Notes = DH.CursorSorter(
-                    DH.getReadableDatabase().query(DH.DBname, null, null, null, null, null, null)
-            );
-            DH.close();
+            DatabaseHandler DH = new DatabaseHandler(getApplicationContext());
+            System.out.println(
+                DH.CursorSorter( DH.getReadableDatabase().query(DH.DBname,null,null,null,null,null,"`"+DH.TITLE+"` ASC,`"+DH.YMDHMS+"` DESC") )
+            ); DH.close();
 
-            System.out.println("Notes:\n" + Notes);*/
 
         }, 2000);
     }

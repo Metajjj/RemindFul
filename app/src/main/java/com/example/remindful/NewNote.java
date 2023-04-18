@@ -124,10 +124,7 @@ public class NewNote extends AppCompatActivity {
 
 
 
-        ArrayList<HashMap<String,String>> AL = DH.Readquery(MessageFormat.format(
-                "SELECT * FROM `{0}` ORDER BY `{1}` DESC ;",
-                DH.DBname, DH.YMDHMS
-        ));
+        ArrayList<HashMap<String,String>> AL = DH.CursorSorter( DH.getReadableDatabase().query(DH.DBname,null,null,null,null,null,DH.YMDHMS+" DESC"));
 
         //System.out.println(AL.size()+"\n"+AL );
 
