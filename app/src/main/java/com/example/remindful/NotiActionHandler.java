@@ -42,8 +42,8 @@ public class NotiActionHandler extends BroadcastReceiver {
                 NMC.DestroyAllNotifications();
                 WorkManager.getInstance(context).cancelAllWork();
 
-                // TODO  KILL APP PROCESS ???
-
+                //KILL APP PROCESS (background)
+                android.os.Process.killProcess(android.os.Process.myPid());
 
             } else if (intent.getExtras().getString("Code").equals("SHOWALL")) {
                 //code to show setup notis.. foreach based on DB + r_times vs curr time
@@ -53,7 +53,8 @@ public class NotiActionHandler extends BroadcastReceiver {
                 ArrayList<HashMap<String, String>> CurrNotes = DH.CursorSorter(
                         DH.getReadableDatabase().query(DH.DBname,new String[]{DH.ID,DH.TITLE,DH.R_TIME},DH.R_TIME+" IS NOT NULL",null,null,null,null)
                 );
-                    //TODO FINISHHHHH THISSSS - loop all R_times not null
+
+                //Loops all not null R_times and sets down notis
                 for (HashMap<String,String> CurrNote: CurrNotes ) {
                     int LinkID = Integer.valueOf(CurrNote.get(DH.ID))+1;
                     NMC.BuildNotification(

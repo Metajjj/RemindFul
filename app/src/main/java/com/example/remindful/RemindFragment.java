@@ -323,7 +323,7 @@ public class RemindFragment extends DialogFragment {
                 .setInputData( WorkReqArgs.build() )
                 //.addTag("WorkerReqTag")
                 .setBackoffCriteria(BackoffPolicy.LINEAR,10, TimeUnit.SECONDS)
-                .setInitialDelay(/*DTime*/20, TimeUnit.SECONDS) //When To Run - Curr Time
+                .setInitialDelay(/*DTime*/10, TimeUnit.SECONDS) //When To Run - Curr Time
                 .setConstraints(
                         new Constraints.Builder()
                                 .setRequiresCharging(false)
