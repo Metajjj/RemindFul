@@ -11,6 +11,7 @@ import java.util.Objects;
 public class Home extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        getApplicationContext().setTheme(R.style.Theme_RemindFul);
 
         super.onCreate(savedInstanceState);
 

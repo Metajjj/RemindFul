@@ -293,7 +293,7 @@ public class RemindFragment extends DialogFragment {
             STime = cal.getTimeInMillis()/1000;
 
             DTime -= STime;
-            //System.out.println(DTime+"s"); //TODO Diff of few millisecs when fired
+            //System.out.println(DTime+"s"); //Diff of few millisecs when fired
         }catch(Exception e){}
 
         //keeps running even in background

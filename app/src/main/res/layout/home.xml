@@ -2,9 +2,11 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/HomeLayout"
-    android:background="@color/Background"
+    android:background="?attr/Background"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:theme="@style/MainTheme"
+    >
 
     <TextView
         android:id="@+id/HomeTitle"
@@ -20,7 +22,7 @@
 
         android:text="RemindFul"
         android:textAlignment="center"
-        android:textColor="@color/Title"
+        android:textColor="?attr/Title"
         android:textStyle="bold"
         app:autoSizeTextType="uniform"
         app:layout_constraintEnd_toEndOf="parent"

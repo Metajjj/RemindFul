@@ -25,6 +25,7 @@
         <!-- DATE -->
 
         <EditText
+            android:textColorHint="@color/Text"
             android:textColor="@color/Text"
             android:textAlignment="center" android:gravity="center"
             android:id="@+id/RemFragDateYear"
@@ -47,6 +48,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
+            android:textColorHint="@color/Text"
             android:textColor="@color/Text"
             android:textAlignment="center" android:gravity="center"
             android:id="@+id/RemFragDateMonth"
@@ -68,6 +70,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
+            android:textColorHint="@color/Text"
             android:textColor="@color/Text"
             android:textAlignment="center" android:gravity="center"
             android:id="@+id/RemFragDateDay"
@@ -137,6 +140,7 @@
             android:background="@drawable/roundbordernote"
             android:gravity="center"
             android:hint="HOUR"
+            android:textColorHint="@color/Text"
             android:inputType="number"
             android:maxLength="2"
             android:minWidth="50dp"
@@ -149,6 +153,7 @@
             app:layout_constraintTop_toBottomOf="@+id/view" />
 
         <EditText
+            android:textColorHint="@color/Text"
             android:textColor="@color/Text"
             android:id="@+id/RemFragTimeMin"
             android:layout_width="wrap_content"
@@ -171,6 +176,7 @@
             app:layout_constraintTop_toBottomOf="@+id/view" />
 
         <EditText
+            android:textColorHint="@color/Text"
             android:textColor="@color/Text"
             android:id="@+id/RemFragTimeSec"
             android:layout_width="wrap_content"

@@ -41,7 +41,7 @@
         android:layout_marginStart="40dp"
         android:layout_marginLeft="40dp"
         android:layout_marginTop="4dp"
-        android:shadowColor="#d4d8a2"
+        android:shadowColor="@color/Title"
         android:shadowDx="-3"
         android:shadowDy="5"
         android:shadowRadius="10"
