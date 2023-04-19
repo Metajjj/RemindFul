@@ -293,11 +293,8 @@ public class RemindFragment extends DialogFragment {
             STime = cal.getTimeInMillis()/1000;
 
             DTime -= STime;
-            //System.out.println(DTime+"s"); ////TODO Diff of few millisecs when fired
+            //System.out.println(DTime+"s"); //TODO Diff of few millisecs when fired
         }catch(Exception e){}
-
-        ////TODO FIX STRING PASSED AND UID
-        //TODO setup remind worker
 
         //keeps running even in background
         //Expedited = run as background asap ; is important
@@ -318,7 +315,7 @@ public class RemindFragment extends DialogFragment {
                 .setInputData( WorkReqArgs.build() )
                 //.addTag("WorkerReqTag")
                 .setBackoffCriteria(BackoffPolicy.LINEAR,10, TimeUnit.SECONDS)
-                .setInitialDelay(/*TODO DTime*/10, TimeUnit.SECONDS) //When To Run - Curr Time
+                .setInitialDelay(/*TODO DTime*/30, TimeUnit.SECONDS) //When To Run - Curr Time
                 .setConstraints(
                         new Constraints.Builder()
                                 .setRequiresCharging(false)
@@ -382,8 +379,6 @@ public class RemindFragment extends DialogFragment {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             context.getSystemService(NotificationManager.class).createNotificationChannel(new NotificationChannel("RemindFul_NotiID", "RemindFul_NotiID", NotificationManager.IMPORTANCE_DEFAULT));
         }
-
-        //TODO finish off - Cancel noti, create string res:NotiID  background worker to cancel and manage intent opening.. CREATE BACKWORK HERE, CREATE NOTI AT BACKREQWORK...
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             ARL.launch(Manifest.permission.POST_NOTIFICATIONS); // Check/grab perm

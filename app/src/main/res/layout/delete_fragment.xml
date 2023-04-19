@@ -31,7 +31,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <!-- TODO fix this back to uniform-->
                 <TextView
                     android:id="@+id/DelFragSelAll"
                     android:layout_weight="0"
@@ -46,7 +45,7 @@
                     android:textColor="#6C5346"
                     android:padding="8dp"
 
-                    android:textSize="32sp"
+                    android:textSize="31sp"
 
                     android:background="@drawable/roundborderdel"
                     />

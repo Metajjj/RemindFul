@@ -27,14 +27,13 @@ public class Home extends AppCompatActivity {
         ((TextView) findViewById(R.id.HomeTitle)).setText("RemindFul!");
         new Handler().postDelayed(() -> {
             ((TextView) findViewById(R.id.HomeTitle)).setText("Loaded!");
-            //try{Thread.sleep(2000);}catch(Exception e){}
+
             startActivity(new android.content.Intent(this,Home2.class));
 
-            DatabaseHandler DH = new DatabaseHandler(getApplicationContext());
+            /*DatabaseHandler DH = new DatabaseHandler(getApplicationContext());
             System.out.println(
-                DH.CursorSorter( DH.getReadableDatabase().query(DH.DBname,null,null,null,null,null,"`"+DH.TITLE+"` ASC,`"+DH.YMDHMS+"` DESC") )
-            ); DH.close();
-
+                DH.CursorSorter( DH.getReadableDatabase().query(DH.DBname,null,null,null,null,null,"`"+DH.ID+"` DESC") )
+            ); DH.close(); //*/
 
         }, 2000);
     }

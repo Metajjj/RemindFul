@@ -2,8 +2,6 @@ package com.example.remindful;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
@@ -64,31 +62,21 @@ public class DeleteFragment extends DialogFragment {
 
         //needs post or getWidth is not what is drawn/finalised
         SelAllTv.post(()->{
-            Rect bounds = new Rect(); Paint TextPaint = SelAllTv.getPaint();
+            /*Rect bounds = new Rect(); Paint TextPaint = SelAllTv.getPaint();
             //TextPaint.getTextBounds(SelAllTv.getText(),0,SelAllTv.getText().length(),bounds);
-            int TxtH = bounds.height(), TxtW=bounds.width();
+            //int TxtH = bounds.height(), TxtW=bounds.width();
             //TextPaint doesnt include elipses
 
-            System.out.println( MessageFormat.format(
+            /*System.out.println( MessageFormat.format(
                     "HANDLER: \nTop tv txtsize: {0}px | Top tv w: {1} | Top tv char count: {2} | TxtPaint: {3}",
                     SelAllTv.getTextSize(),
                     SelAllTv.getWidth() ,
                     SelAllTv.getText().length(),
                     TextPaint.measureText(SelAllTv.getText()+"")
-            ));
+            ));*/
 
             SelAllTv.setTextSize(TypedValue.COMPLEX_UNIT_PX, SelAllTv.getTextSize() -20);
-            System.out.println( MessageFormat.format(
-                    "HANDLER: \nTop tv txtsize: {0}px | Top tv w: {1} | Top tv char count: {2} | TxtPaint: {3}",
-                    SelAllTv.getTextSize(),
-                    SelAllTv.getWidth() ,
-                    SelAllTv.getText().length(),
-                    TextPaint.measureText(SelAllTv.getText()+"")
-            ));
 
-            new Handler().postDelayed(()->{
-                //System.out.println("5s|"+AutoSizeText( SelAllTv ));
-            },3000);
         });
         // TextSize (80px) vs Text width (618px) vs Txt Len (16 char?)
 
@@ -137,9 +125,7 @@ public class DeleteFragment extends DialogFragment {
         Tv.setEllipsize(TextUtils.TruncateAt.END);
 
         Tv.setTextSize(TypedValue.COMPLEX_UNIT_PX , ((TextView)getActivity().findViewById(R.id.DelFragSelAll)).getTextSize() -10 );
-        //TextViewCompat.setAutoSizeTextTypeWithDefaults(Tv,TextViewCompat.AUTO_SIZE_TEXT_TYPE_UNIFORM); //ERR
-            ////Messes up on refresh  //TxtSize = pixel unit TODO
-
+        //TextViewCompat.setAutoSizeTextTypeWithDefaults(Tv,TextViewCompat.AUTO_SIZE_TEXT_TYPE_UNIFORM);
 
         Tv.setBackgroundResource(R.drawable.roundborderdel); Tv.setTextColor(Color.parseColor("#6C5346"));
 
@@ -232,15 +218,15 @@ public class DeleteFragment extends DialogFragment {
         ArrayList<String> Args=new ArrayList<>();
         String Query = "";
 
-        for (ArrayList<String> AL : ToBeDel) {
+        for (ArrayList<String> IdTitleYmd : ToBeDel) {
             //ID,TITLE,YMD
             Query +=
                     MessageFormat.format(
                             "( {0} = {1} AND {2} = {3} AND {4} = {5} )",
                             DH.ID, "?", DH.TITLE, "?", DH.YMDHMS, "?"
                     );
-            Args.add(AL.get(0));Args.add(AL.get(1));Args.add(AL.get(2));
-            if (AL == ToBeDel.get(ToBeDel.size() - 1)) {
+            Args.add(IdTitleYmd.get(0));Args.add(IdTitleYmd.get(1));Args.add(IdTitleYmd.get(2));
+            if (IdTitleYmd == ToBeDel.get(ToBeDel.size() - 1)) {
                 Query += "";
             } else {
                 Query += " OR ";
@@ -253,7 +239,15 @@ public class DeleteFragment extends DialogFragment {
         DH.getWritableDatabase().delete(DH.DBname,Query,
                 Args.toArray(new String[]{}))
         );
-        //TODO  del and remove R_TIME workmanager
+        DH.close();
+
+        for (ArrayList<String> IdTitleYmd : ToBeDel) {
+            //TODO double check noti gone proper
+            int ID = Integer.parseInt(IdTitleYmd.get(0)) +1;
+            System.out.println("Remove worker: id "+ ID);
+            new NotiActionHandler().onReceive(getContext(),new Intent(getContext(), DeleteFragment.class).putExtra("Code","CANCEL").putExtra("LinkageID",String.valueOf(ID)).putExtra("D1","RemindFulNoti"));
+
+        }
     }
 
     public void CloseFrag(View v){

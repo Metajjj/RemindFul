@@ -37,7 +37,7 @@ public class BackgroundReqWork extends Worker {
             ContentValues CV = new ContentValues();
             CV.putNull(DH.R_TIME);
             DH.getWritableDatabase().update(DH.DBname, CV, DH.ID + " = ?", new String[]{String.valueOf(LinkID - 1)});
-            //TODO check this -- turn R_time to null and update noti
+            //turn R_time to null and update noti
 
             System.out.println(
                     DH.CursorSorter(
@@ -56,8 +56,6 @@ public class BackgroundReqWork extends Worker {
             );
             //Works with intent filters in manifest
         }
-
-        //TODO fix and refine all
 
         DH.close();
         new NotificationManagerCust(context); //Update main noti

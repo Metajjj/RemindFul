@@ -115,14 +115,23 @@ public class NewNote extends AppCompatActivity {
             DH.getWritableDatabase().insert(DH.DBname,null,CV);
 
             // TODO On save => reload into update ??
+            HashMap<String,String> HM = DH.CursorSorter(
+                DH.getReadableDatabase().query(DH.DBname,null,MessageFormat.format(
+                        "`{0}` = ? AND `{1}` = ?",
+                        DH.TITLE,DH.NOTE
+                ),new String[]{((TextView) findViewById(R.id.NewNoteNoteTitle)).getText().toString(),((TextView) findViewById(R.id.NewNoteNoteDetail)).getText().toString()},null,null,"`"+DH.ID+"` DESC")
+            ).get(0);
+
+            new Handler().postDelayed(()->{
+                //startActivity(new Intent(this, NewNote.class).putExtra("i", (HashMap<String,String>) HM)); this.finish();
+                DataExists(HM);
+            },1300);
         }
     }
 
     private void Remind(){
         //Set new activity... do stuff.. grab R_Time //If no diff between year/day/ wutevs.. dont convert to sec and ignore
         //Have to declare bundle outside
-
-
 
         ArrayList<HashMap<String,String>> AL = DH.CursorSorter( DH.getReadableDatabase().query(DH.DBname,null,null,null,null,null,DH.YMDHMS+" DESC"));
 

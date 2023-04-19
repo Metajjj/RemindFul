@@ -26,7 +26,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     protected void ResetTable() {
         DatabaseHandler.this.getWritableDatabase().execSQL("DROP TABLE IF EXISTS `" + DBname + "`");
-        DatabaseHandler.this.getWritableDatabase().execSQL("CREATE TABLE `" + DBname + "` (`" + ID + "` INTEGER PRIMARY KEY AUTOINCREMENT, `" + YMDHMS + "` INT, `" + TITLE + "` TEXT, `"+NOTE+"` TEXT, `"+R_TIME+"` TEXT)");
+        DatabaseHandler.this.getWritableDatabase().execSQL("CREATE TABLE `" + DBname + "` (`" + ID + "` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `" + YMDHMS + "` INT, `" + TITLE + "` TEXT, `"+NOTE+"` TEXT, `"+R_TIME+"` TEXT)");
         DatabaseHandler.this.getWritableDatabase().close();
     }
 
