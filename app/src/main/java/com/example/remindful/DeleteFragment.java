@@ -255,6 +255,6 @@ public class DeleteFragment extends DialogFragment {
 
         getParentFragmentManager().beginTransaction().remove(DeleteFragment.this).commit();
         //getActivity().findViewById(R.id.home2FragHolder).back
-        startActivity(new Intent(getContext(),Home2.class));
+        //startActivity(new Intent(getContext(),Home2.class));
     }
 }

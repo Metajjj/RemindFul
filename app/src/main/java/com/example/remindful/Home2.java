@@ -1,7 +1,6 @@
 package com.example.remindful;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
@@ -177,7 +176,7 @@ public class Home2 extends AppCompatActivity {
         TvNote.setMaxLines(3);
         TvNote.setTypeface(null, Typeface.BOLD);
 
-        TvNote.setTextColor(Color.parseColor("#59453F"));
+        TvNote.setTextColor(getResources().getColor(R.color.Text));
         TvNote.setBackgroundResource(R.drawable.roundbordernote);
         TvNote.setLayoutParams(TempParam);
 
@@ -190,7 +189,7 @@ public class Home2 extends AppCompatActivity {
         TvTitle.setEllipsize(TextUtils.TruncateAt.END);
         TvTitle.setTypeface(null, Typeface.BOLD);
 
-        TvTitle.setTextColor(Color.parseColor("#59453F"));
+        TvTitle.setTextColor(getResources().getColor(R.color.Text));
         TvTitle.setLayoutParams(TempParam);
 
         TvNote.setText(note); TvTitle.setText(title);
@@ -244,15 +243,5 @@ public class Home2 extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction().replace(R.id.home2FragHolder,DeleteFragment.class,null).commit();
 
         findViewById(R.id.home2FragHolder).bringToFront();
-
-        /*View DL = getLayoutInflater().inflate(R.layout.delete_fragment,null);
-        AlertDialog.Builder b = new AlertDialog.Builder(this);
-        b.setView(DL).setTitle("Choose the note(s) to delete!");
-        b.create().show(); b.setCancelable(true);*/
-
-        //Red border, onclick = del - forewarn, is perm
-        //set background res.. del del check box del... ??
-        //On click checkbox tick.. entire note/col turns red background
-
     }
 }

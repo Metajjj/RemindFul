@@ -4,7 +4,7 @@
     android:id="@+id/home2Bg"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#AB9866">
+    android:background="@color/Background">
 
     <FrameLayout
         android:id="@+id/home2FragHolder"
@@ -25,7 +25,7 @@
         android:layout_marginEnd="50dp"
         android:layout_marginRight="50dp"
         android:text="RemindFul"
-        android:textColor="#f4d882"
+        android:textColor="@color/Title"
         android:textSize="48sp"
         android:textStyle="bold"
         app:autoSizeTextType="uniform"
@@ -46,7 +46,7 @@
         android:shadowDy="5"
         android:shadowRadius="10"
         android:text="Recent"
-        android:textColor="#db863e"
+        android:textColor="@color/Interactable"
         android:textStyle="bold"
         app:autoSizeTextType="uniform"
         app:layout_constraintStart_toStartOf="parent"
@@ -57,7 +57,6 @@
         android:layout_width="355dp"
         android:layout_height="430dp"
         android:layout_marginStart="25dp"
-        android:layout_marginLeft="25dp"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="50dp"
         android:contentDescription="Grid style list of notes"
@@ -82,7 +81,6 @@
         android:layout_height="75dp"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="60dp"
-        android:layout_marginRight="60dp"
         android:layout_marginBottom="20dp"
         android:background="@drawable/roundbordernote"
         app:layout_constraintBottom_toTopOf="@+id/NewNoteScroll"

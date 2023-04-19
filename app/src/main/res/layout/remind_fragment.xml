@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#8F000000">
+    android:background="@color/FragBackground">
 
     <!-- TODO Date / Time -->
 
@@ -16,7 +16,7 @@
         android:layout_marginTop="30dp"
         android:layout_marginEnd="30dp"
         android:layout_marginBottom="60dp"
-        android:background="#AB9866"
+        android:background="@color/Background"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -25,6 +25,7 @@
         <!-- DATE -->
 
         <EditText
+            android:textColor="@color/Text"
             android:textAlignment="center" android:gravity="center"
             android:id="@+id/RemFragDateYear"
             android:layout_width="wrap_content"
@@ -46,6 +47,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
+            android:textColor="@color/Text"
             android:textAlignment="center" android:gravity="center"
             android:id="@+id/RemFragDateMonth"
             android:layout_width="wrap_content"
@@ -66,6 +68,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
+            android:textColor="@color/Text"
             android:textAlignment="center" android:gravity="center"
             android:id="@+id/RemFragDateDay"
             android:layout_width="wrap_content"
@@ -87,6 +90,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
+            android:textColor="@color/Text"
             android:id="@+id/RemFragDateButt"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -122,6 +126,7 @@
         <!-- TIME -->
 
         <EditText
+            android:textColor="@color/Text"
             android:id="@+id/RemFragTimeHour"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -144,6 +149,7 @@
             app:layout_constraintTop_toBottomOf="@+id/view" />
 
         <EditText
+            android:textColor="@color/Text"
             android:id="@+id/RemFragTimeMin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -165,6 +171,7 @@
             app:layout_constraintTop_toBottomOf="@+id/view" />
 
         <EditText
+            android:textColor="@color/Text"
             android:id="@+id/RemFragTimeSec"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -187,6 +194,7 @@
             app:layout_constraintTop_toBottomOf="@+id/view" />
 
         <TextView
+            android:textColor="@color/Text"
             android:id="@+id/RemFragTimeButt"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -209,6 +217,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
+        android:textColor="@color/Text"
         android:gravity="center"
         android:textAlignment="center"
         android:textStyle="bold"
@@ -223,7 +232,6 @@
         android:layout_marginBottom="5dp"
         android:background="@drawable/roundbordernote"
         android:text="Confirm remind"
-        android:textColor="#6C5346"
         app:autoSizeTextType="uniform"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
