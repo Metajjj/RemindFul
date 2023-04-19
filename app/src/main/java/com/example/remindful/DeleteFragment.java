@@ -242,11 +242,9 @@ public class DeleteFragment extends DialogFragment {
         DH.close();
 
         for (ArrayList<String> IdTitleYmd : ToBeDel) {
-            //TODO double check noti gone proper
             int ID = Integer.parseInt(IdTitleYmd.get(0)) +1;
             System.out.println("Remove worker: id "+ ID);
-            new NotiActionHandler().onReceive(getContext(),new Intent(getContext(), DeleteFragment.class).putExtra("Code","CANCEL").putExtra("LinkageID",String.valueOf(ID)).putExtra("D1","RemindFulNoti"));
-
+            new NotiActionHandler().onReceive(getContext(),new Intent(getContext().getApplicationContext(), DeleteFragment.class).putExtra("Code","CANCEL").putExtra("LinkageID",ID).putExtra("D1","RemindFulNoti"));
         }
     }
 

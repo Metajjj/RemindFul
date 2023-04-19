@@ -96,7 +96,7 @@ public class Home2 extends AppCompatActivity {
                 DisplayNotes( catc );
             } catch (Exception e){
                 System.out.println("ERR: "+e);
-                Toast.makeText(this, "Serious error occured!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Serious error occured! If you have created a lot of notes, try wiping all notes to reset DB", Toast.LENGTH_SHORT).show();
             }
         }
     }
