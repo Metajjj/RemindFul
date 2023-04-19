@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Theme controller - helps gets col from custom themes with same name and for format purpose -->
+
+    <attr name="Title" format="color"/>
+    <attr name="Interactable" format="color"/>
+    <attr name="Background" format="color"/>
+    <attr name="FragBackground" format="color"/>
+    <attr name="Text" format="color"/>
+    <attr name="DelHighlight" format="color"/>
+    <attr name="EditTextBorder" format="color"/>
+    <attr name="NoteTextBorder" format="color"/>
+
+
+    <!-- Main theme(s), declare the cols that attribute can access and treat as colours stated in format -->
+
+    <style name="MainTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <item name="Title">#f4d882</item>
+        <item name="Interactable">#db863e</item>
+        <item name="Background">#AB9866</item>
+        <item name="FragBackground">#8F000000</item>
+        <item name="Text">#59453F</item>
+        <item name="DelHighlight">#CAB377</item>
+        <item name="EditTextBorder">#c9a473</item>
+        <item name="NoteTextBorder">#d9b453</item>
+    </style>
+
+    <style name="AltTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <item name="Title">#F482EE</item>
+        <item name="Interactable">#5BDB3E</item>
+        <item name="Background">#AB66AA</item>
+        <item name="FragBackground">#8F491A51</item>
+        <item name="Text">#528064</item>
+        <item name="DelHighlight">#AA77CA</item>
+        <item name="EditTextBorder">#B37CBF</item>
+        <item name="NoteTextBorder">#9653D9</item>
+    </style>
+
+</resources>
