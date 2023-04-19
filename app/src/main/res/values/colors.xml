@@ -1,11 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="Title">#F482E5</color> //Pink vers - FFF482E5
+
+    <color name="Title">#f4d882</color>
     <color name="Interactable">#db863e</color>
     <color name="Background">#AB9866</color>
     <color name="FragBackground">#8F000000</color>
     <color name="Text">#59453F</color>
     <color name="DelHighlight">#CAB377</color>
+    <color name="EditTextBorder">#c9a473</color>
+    <color name="NoteTextBorder">#d9b453</color>
+    <array name="ColArr">
+        <item>@color/Title</item>
+        <item>@color/Interactable</item>
+        <item>@color/Background</item>
+        <item>@color/FragBackground</item>
+        <item>@color/Text</item>
+        <item>@color/DelHighlight</item>
+        <item>@color/EditTextBorder</item>
+        <item>@color/NoteTextBorder</item>
+    </array>
+
+    <color name="Title2">#F482EE</color>
+    <color name="Interactable2">#db863e</color>
+    <color name="Background2">#AB66AA</color>
+    <color name="FragBackground2">#8F491A51</color>
+    <color name="Text2">#528064</color>
+    <color name="DelHighlight2">#AA77CA</color>
+    <color name="EditTextBorder2">#B37CBF</color>
+    <color name="NoteTextBorder2">#9653D9</color>
+    <array name="SpecialColArr">
+        <item>@color/Title2</item>
+        <item>@color/Interactable2</item>
+        <item>@color/Background2</item>
+        <item>@color/FragBackground2</item>
+        <item>@color/Text2</item>
+        <item>@color/DelHighlight2</item>
+        <item>@color/EditTextBorder2</item>
+        <item>@color/NoteTextBorder2</item>
+    </array>
+
 
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>

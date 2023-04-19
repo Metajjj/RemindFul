@@ -37,7 +37,6 @@
     <EditText
         android:maxLines="1"
         android:singleLine="true"
-
         android:textColor="@color/Text"
         android:id="@+id/NewNoteNoteTitle"
         android:layout_width="0dp"

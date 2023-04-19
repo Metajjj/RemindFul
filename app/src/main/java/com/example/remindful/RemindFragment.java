@@ -285,7 +285,7 @@ public class RemindFragment extends DialogFragment {
         CurrNote = DH.CursorSorter(DH.getReadableDatabase().query(DH.DBname,null,DH.ID+" = ?",new String[]{CurrNote.get(DH.ID)},null,null,null)).get(0); //Regrab the new note with R_TIME updated
         DH.close();
 
-        long DTime, STime;
+        long DTime=0, STime=0;
         try{
             cal.setTime( DF.parse( CurrNote.get(DH.R_TIME).toString()) );
             DTime = cal.getTimeInMillis()/1000;
@@ -315,7 +315,7 @@ public class RemindFragment extends DialogFragment {
                 .setInputData( WorkReqArgs.build() )
                 //.addTag("WorkerReqTag")
                 .setBackoffCriteria(BackoffPolicy.LINEAR,10, TimeUnit.SECONDS)
-                .setInitialDelay(/*TODO DTime*/30, TimeUnit.SECONDS) //When To Run - Curr Time
+                .setInitialDelay(DTime, TimeUnit.SECONDS) //When To Run - Curr Time
                 .setConstraints(
                         new Constraints.Builder()
                                 .setRequiresCharging(false)
