@@ -2,7 +2,6 @@ package com.example.remindful;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,10 +22,9 @@ public class Home extends AppCompatActivity {
 
     @Override
     protected void onStart() {
+
         super.onStart();
-        ((TextView) findViewById(R.id.HomeTitle)).setText("RemindFul!");
         new Handler().postDelayed(() -> {
-            ((TextView) findViewById(R.id.HomeTitle)).setText("Loaded!");
 
             startActivity(new android.content.Intent(this,Home2.class));
 

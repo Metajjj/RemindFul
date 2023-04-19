@@ -29,7 +29,6 @@ android {
 }
 
 dependencies {
-    //implementation "androidx.core:core:1.9.0" //Notification
 
     implementation "androidx.work:work-runtime:2.8.1" //BgWorkerThreads
     implementation "androidx.work:work-multiprocess:2.8.1"

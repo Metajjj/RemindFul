@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="Title">#f4d882</color>
+    <color name="Title">#F482E5</color> //Pink vers - FFF482E5
     <color name="Interactable">#db863e</color>
     <color name="Background">#AB9866</color>
     <color name="FragBackground">#8F000000</color>

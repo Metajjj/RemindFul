@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 
 import androidx.core.app.NotificationManagerCompat;
 import androidx.work.WorkManager;
@@ -43,7 +44,10 @@ public class NotiActionHandler extends BroadcastReceiver {
                 WorkManager.getInstance(context).cancelAllWork();
 
                 //KILL APP PROCESS (background)
-                android.os.Process.killProcess(android.os.Process.myPid());
+                new Handler().postDelayed(()->{
+                    android.os.Process.killProcess(android.os.Process.myPid());
+                },1000);
+
 
             } else if (intent.getExtras().getString("Code").equals("SHOWALL")) {
                 //code to show setup notis.. foreach based on DB + r_times vs curr time
