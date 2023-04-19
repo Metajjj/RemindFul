@@ -20,18 +20,10 @@ public class Home extends AppCompatActivity {
         new NotificationManagerCust(getApplicationContext());
     }
 
-    private void Special(){
-
-        for(int s : getResources().getIntArray(R.array.SpecialColArr)){
-            System.out.println( s );
-        }
-    }
-
     @Override
     protected void onStart() {
-        Special();
-
         super.onStart();
+
         new Handler().postDelayed(() -> {
 
             //startActivity(new android.content.Intent(this,Home2.class));

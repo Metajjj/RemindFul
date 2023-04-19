@@ -28,7 +28,7 @@
     <color name="DelHighlight2">#AA77CA</color>
     <color name="EditTextBorder2">#B37CBF</color>
     <color name="NoteTextBorder2">#9653D9</color>
-    <array name="SpecialColArr">
+    <array name="SpecialColArr" desc="Practice changing themes">
         <item>@color/Title2</item>
         <item>@color/Interactable2</item>
         <item>@color/Background2</item>
