@@ -43,9 +43,12 @@ public class NotiActionHandler extends BroadcastReceiver {
                 NMC.DestroyAllNotifications();
                 WorkManager.getInstance(context).cancelAllWork();
 
-                //KILL APP PROCESS (background)
+                //KILL APP PROCESS (background) TODO : let it work from inside app
                 new Handler().postDelayed(()->{
+
                     android.os.Process.killProcess(android.os.Process.myPid());
+                    //new ActivityManager().killBackgroundProcesses(context.getPackageName());
+
                 },1000);
 
 
@@ -60,7 +63,7 @@ public class NotiActionHandler extends BroadcastReceiver {
 
                 //Loops all not null R_times and sets down notis
                 for (HashMap<String,String> CurrNote: CurrNotes ) {
-                    int LinkID = Integer.valueOf(CurrNote.get(DH.ID))+1;
+                    int LinkID = Integer.parseInt(CurrNote.get(DH.ID))+1;
                     NMC.BuildNotification(
                             NMC.NotificationBuilder(CurrNote.get(DH.TITLE), "Expand to see snippet of note!", CurrNote.get(DH.NOTE),
                                     new Object[]{"Cancel Remind", PendingIntent.getBroadcast(context, LinkID * -1, new Intent(context, NotiActionHandler.class).putExtra("LinkageID", LinkID).putExtra("D1", "RemindFulNoti").putExtra("Code", "CANCEL"), PendingIntent.FLAG_MUTABLE)},

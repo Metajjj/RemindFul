@@ -4,7 +4,7 @@
     android:id="@+id/home2Bg"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Background">
+    android:background="?attr/Background">
 
     <FrameLayout
         android:id="@+id/home2FragHolder"
@@ -25,7 +25,7 @@
         android:layout_marginEnd="50dp"
         android:layout_marginRight="50dp"
         android:text="RemindFul"
-        android:textColor="@color/Title"
+        android:textColor="?attr/Title"
         android:textSize="48sp"
         android:textStyle="bold"
         app:autoSizeTextType="uniform"
@@ -41,12 +41,12 @@
         android:layout_marginStart="40dp"
         android:layout_marginLeft="40dp"
         android:layout_marginTop="4dp"
-        android:shadowColor="@color/Title"
+        android:shadowColor="?attr/Title"
         android:shadowDx="-3"
         android:shadowDy="5"
         android:shadowRadius="10"
         android:text="Recent"
-        android:textColor="@color/Interactable"
+        android:textColor="?attr/Interactable"
         android:textStyle="bold"
         app:autoSizeTextType="uniform"
         app:layout_constraintStart_toStartOf="parent"
@@ -69,6 +69,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:stretchColumns="*">
+
+            <TextView
+                android:id="@+id/home2TxtColPH"
+                android:textColor="?attr/Text"
+                />
+
         </TableLayout>
 
     </ScrollView>

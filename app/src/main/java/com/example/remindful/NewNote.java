@@ -24,6 +24,9 @@ public class NewNote extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        if(new Home().Style.equals("AltTheme")) { setTheme(R.style.AltTheme); }
+        else{ setTheme(R.style.MainTheme); }
+
         super.onCreate(savedInstanceState);
 
         Objects.requireNonNull(getSupportActionBar()).hide(); //Hides default header
@@ -92,7 +95,7 @@ public class NewNote extends AppCompatActivity {
         String tv2 = tv.getText().toString();
         tv.setText("✓"+Saved+"✓");
         //32C95E
-        tv.setBackgroundColor(Color.rgb(50,201,94));
+        tv.setBackgroundColor(Color.parseColor("#AA32C95E"));
 
         new Handler().postDelayed(() -> {
             tv.setText(tv2);

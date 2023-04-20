@@ -127,7 +127,8 @@ public class DeleteFragment extends DialogFragment {
         Tv.setTextSize(TypedValue.COMPLEX_UNIT_PX , ((TextView)getActivity().findViewById(R.id.DelFragSelAll)).getTextSize() -10 );
         //TextViewCompat.setAutoSizeTextTypeWithDefaults(Tv,TextViewCompat.AUTO_SIZE_TEXT_TYPE_UNIFORM);
 
-        Tv.setBackgroundResource(R.drawable.roundborderdel); Tv.setTextColor(Color.parseColor("#6C5346"));
+
+        Tv.setBackgroundResource(R.drawable.roundborderdel); Tv.setTextColor( ((TextView)getActivity().findViewById(R.id.DelFragSelAll)).getCurrentTextColor() );
 
         //CheckBox
         Params = new TableRow.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT,1);

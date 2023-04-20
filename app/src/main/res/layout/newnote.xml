@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Background">
+    android:background="?attr/Background">
 
     <FrameLayout
         android:id="@+id/NewNoteFragHolder"
@@ -28,16 +28,17 @@
         android:textAlignment="center"
         android:textStyle="bold"
         app:autoSizeTextType="uniform"
-        android:textColor="@color/Title"
+        android:textColor="?attr/Title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
+        android:textColorHint="?attr/Text"
         android:maxLines="1"
         android:singleLine="true"
-        android:textColor="@color/Text"
+        android:textColor="?attr/Text"
         android:id="@+id/NewNoteNoteTitle"
         android:layout_width="0dp"
         android:layout_height="60dp"
@@ -57,6 +58,7 @@
         app:layout_constraintTop_toBottomOf="@+id/NewNoteTitle" />
 
     <EditText
+        android:textColorHint="?attr/Text"
         android:id="@+id/NewNoteNoteDetail"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -72,7 +74,7 @@
         android:paddingTop="15dp"
         android:paddingBottom="15dp"
 
-        android:textColor="@color/Text"
+        android:textColor="?attr/Text"
         app:layout_constraintBottom_toTopOf="@+id/NewNoteRemindBox"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -81,7 +83,9 @@
     <CheckBox
         android:onClick="Remind"
 
-        android:textColor="@color/Text"
+        android:buttonTint="?attr/Title"
+        android:textColor="?attr/Text"
+        android:padding="5dp"
         android:id="@+id/NewNoteRemindBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -98,7 +102,7 @@
 
     <TextView
         android:onClick="Save"
-        android:textColor="@color/Text"
+        android:textColor="?attr/Text"
         android:id="@+id/NewNoteSave"
         android:layout_width="0dp"
         android:layout_height="62dp"

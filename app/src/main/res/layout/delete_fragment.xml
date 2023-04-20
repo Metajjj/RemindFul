@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/FragBackground">
+    android:background="?attr/FragBackground">
 
     <ScrollView
         android:id="@+id/DelFragScroll"
@@ -14,7 +14,7 @@
         android:layout_marginTop="60dp"
         android:layout_marginEnd="60dp"
         android:layout_marginBottom="60dp"
-        android:background="@color/Background"
+        android:background="?attr/Background"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -27,7 +27,7 @@
             android:stretchColumns="0">
 
             <TableRow
-                android:background="@color/DelHighlight"
+                android:background="?attr/DelHighlight"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -42,7 +42,7 @@
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
                     android:text="Invert Selection"
-                    android:textColor="@color/Text"
+                    android:textColor="?attr/Text"
                     android:padding="8dp"
 
                     android:textSize="31sp"
@@ -75,7 +75,7 @@
         android:layout_marginBottom="5dp"
         android:background="@drawable/roundbordernote"
         android:text="Delete Selected"
-        android:textColor="@color/Text"
+        android:textColor="?attr/Text"
         app:autoSizeTextType="uniform"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

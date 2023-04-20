@@ -123,7 +123,7 @@ public class NotificationManagerCust {
                 //.setStyle(new NotificationCompat.BigTextStyle().bigText("Upcoming notifications/reminders: "+NumOfActiveNotis+"\nDON'T CLOSE APP FOR REMINDING TO WORK!")) //Expanded noti text
                 .setAutoCancel(false) //Anytap on noti = cancel/remove noti
                 .setContentIntent(null) //Starts new activity when clicked - Default click
-                .addAction(0,"Cancel All Notis & Reminds",
+                .addAction(0,"Kill app and background (reminds/notis)",
                         PendingIntent.getBroadcast(context,Integer.MAX_VALUE, new Intent(context,NotiActionHandler.class).putExtra("D1","RemindFulMAINNoti").putExtra("Code","CANCELALL"),PendingIntent.FLAG_MUTABLE)
                 )
                 .addAction(0,"Show All",

@@ -27,13 +27,18 @@ public class Home2 extends AppCompatActivity {
     //CTRL SHIFT -   closes all brackets
 
     private final DatabaseHandler DH = new DatabaseHandler(Home2.this);
+    private int themeTxtCol;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        if(new Home().Style.equals("AltTheme")) { setTheme(R.style.AltTheme); }
+        else{ setTheme(R.style.MainTheme); }
+
         super.onCreate(savedInstanceState);
 
         Objects.requireNonNull(getSupportActionBar()).hide(); //Hides default header
 
         setContentView(R.layout.home2);
+        themeTxtCol = ((TextView)findViewById(R.id.home2TxtColPH)).getCurrentTextColor();
     }
 
     @Override
@@ -114,7 +119,7 @@ public class Home2 extends AppCompatActivity {
                         TempNoteWipe(new View(this)); break;
                     }
                 })
-            ).setCancelable(true).create().show();
+        ).setCancelable(true).create().show();
     }
 
     public void OpenNote(View v){
@@ -125,7 +130,7 @@ public class Home2 extends AppCompatActivity {
 
             ArrayList<HashMap<String,String>> o = DH.CursorSorter(DH.getReadableDatabase().query(DH.DBname,null,DH.ID+" = ? AND "+DH.YMDHMS+" = ?",new String[]{v.getTag().toString().split("-")[1],v.getTag().toString().split("-")[0]},null,null,null) );
 
-            startActivity(new Intent(Home2.this,NewNote.class).putExtra("i",(HashMap<String,String>) o.get(0)));
+            startActivity(new Intent(Home2.this,NewNote.class).putExtra("i", o.get(0)));
         }
     }
 
@@ -176,10 +181,12 @@ public class Home2 extends AppCompatActivity {
         TvNote.setMaxLines(3);
         TvNote.setTypeface(null, Typeface.BOLD);
 
-        TvNote.setTextColor(getResources().getColor(R.color.Text));
+        //TODO fix col via theme -- make neater grab from res
+
+        TvNote.setTextColor( themeTxtCol );
+
         TvNote.setBackgroundResource(R.drawable.roundbordernote);
         TvNote.setLayoutParams(TempParam);
-
 
         //TvTitle
         TempParam = new TableRow.LayoutParams(0,ViewGroup.LayoutParams.WRAP_CONTENT,1);
@@ -189,7 +196,7 @@ public class Home2 extends AppCompatActivity {
         TvTitle.setEllipsize(TextUtils.TruncateAt.END);
         TvTitle.setTypeface(null, Typeface.BOLD);
 
-        TvTitle.setTextColor(getResources().getColor(R.color.Text));
+        TvTitle.setTextColor(themeTxtCol);
         TvTitle.setLayoutParams(TempParam);
 
         TvNote.setText(note); TvTitle.setText(title);
