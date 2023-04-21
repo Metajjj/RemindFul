@@ -21,7 +21,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public DatabaseHandler(Context c) {
         super(c, "NoteList", null, 1);
 
-        //System.out.println("NL: "+NewLine);
+        //TODO : Adjust autoincrement ??
     }
 
     protected void ResetTable() {

@@ -15,7 +15,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
@@ -67,7 +66,7 @@ public class Home2 extends AppCompatActivity {
         }
     }
 
-    private void switchy(){
+    protected void switchy(){
         TextView tv = findViewById(R.id.home2ViewStyle);
         switch (tv.getText()+""){
             case "Recent":
@@ -106,7 +105,8 @@ public class Home2 extends AppCompatActivity {
     }
 
     public void Menu(View v){
-        new AlertDialog.Builder(Home2.this, 0).setTitle("MENU").setItems(new String[]{"Add a new note","Del note(s)","Wipe all notes!\n  (permanent & instant, no confirmation!)"},
+        //TODO : make menu fragment!
+        /*new AlertDialog.Builder(Home2.this, 0).setTitle("MENU").setItems(new String[]{"Add a new note","Del note(s)","Wipe all notes!\n  (permanent & instant, no confirmation!)"},
                 ((dialogInterface, i) -> {
                     //Toast.makeText(Home2.this,""+i,Toast.LENGTH_SHORT).show();
                     switch(i){
@@ -119,10 +119,12 @@ public class Home2 extends AppCompatActivity {
                         TempNoteWipe(new View(this)); break;
                     }
                 })
-        ).setCancelable(true).create().show();
+        ).setCancelable(true).create().show();*/
+        getSupportFragmentManager().beginTransaction().replace(R.id.home2FragHolder, MenuFragment.class,null).commit();
+        findViewById(R.id.home2FragHolder).bringToFront();
     }
 
-    public void OpenNote(View v){
+    private void OpenNote(View v){
         String ID = v.getTag()+"";
         if (ID.equals("")){ startActivity(new Intent(this,NewNote.class)); }
         else{
@@ -182,7 +184,6 @@ public class Home2 extends AppCompatActivity {
         TvNote.setTypeface(null, Typeface.BOLD);
 
         //TODO fix col via theme -- make neater grab from res
-
         TvNote.setTextColor( themeTxtCol );
 
         TvNote.setBackgroundResource(R.drawable.roundbordernote);
@@ -242,13 +243,5 @@ public class Home2 extends AppCompatActivity {
         //PixeltoDP
         ////get resources from frag - fix
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,DP,getApplicationContext().getResources().getDisplayMetrics());
-    }
-
-    private void SetupDelArea(){
-        Toast.makeText(Home2.this,"Del time!",Toast.LENGTH_LONG).show();
-
-        getSupportFragmentManager().beginTransaction().replace(R.id.home2FragHolder,DeleteFragment.class,null).commit();
-
-        findViewById(R.id.home2FragHolder).bringToFront();
     }
 }

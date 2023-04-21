@@ -1,13 +1,11 @@
 package com.example.remindful;
 
 import android.content.ContentValues;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -85,7 +83,6 @@ public class NewNote extends AppCompatActivity {
 
             Saved="SAVED";
         }else{
-            Toast.makeText(this,"ERR no reminding fn!",Toast.LENGTH_SHORT).show();
 
             TrueSave(); Remind();
 
@@ -95,7 +92,7 @@ public class NewNote extends AppCompatActivity {
         String tv2 = tv.getText().toString();
         tv.setText("✓"+Saved+"✓");
         //32C95E
-        tv.setBackgroundColor(Color.parseColor("#AA32C95E"));
+        tv.setBackgroundColor(getResources().getColor(R.color.GreenTick));
 
         new Handler().postDelayed(() -> {
             tv.setText(tv2);

@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="?attr/FragBackground">
 
-    <!-- TODO Date / Time -->
+    <!-- TODO : Date visual ?-->
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/RemFragMainCont"

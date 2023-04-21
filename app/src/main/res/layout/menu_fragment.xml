@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/MenuFragBg"
+    android:theme="@style/MainTheme"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/FragBackground">
+
+    <!-- TODO Date / Time -->
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/MenuFragMenu"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="130dp"
+        android:layout_marginEnd="60dp"
+        android:layout_marginBottom="130dp"
+        android:background="?attr/Background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:layout_margin="5dp"
+            android:padding="20dp"
+            android:gravity="center" android:textAlignment="center"
+            android:background="@drawable/roundbordernote"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add a new note"
+            android:textSize="25dp"
+            android:textStyle="bold"
+            android:id="@+id/MenuFragNewNote"
+            android:textColor="?attr/Text"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.25" />
+
+        <TextView
+            android:textSize="25dp"
+            android:textStyle="bold"
+            android:layout_margin="5dp"
+            android:padding="20dp"
+            android:gravity="center" android:textAlignment="center"
+            android:background="@drawable/roundbordernote"
+            android:id="@+id/MenuFragWipeSel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Delete note(s)"
+            android:textColor="?attr/Text"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="119dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5"/>
+
+        <TextView
+            android:textSize="25dp"
+            android:textStyle="bold"
+            android:layout_margin="5dp"
+            android:padding="20dp"
+            android:gravity="center" android:textAlignment="center"
+            android:background="@drawable/roundbordernote"
+            android:id="@+id/MenuFragWipeAll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Wipe all notes"
+            android:textColor="?attr/Text"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="196dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.75"/>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

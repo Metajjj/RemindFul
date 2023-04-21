@@ -21,8 +21,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-import org.riversun.promise.SyncPromise;
-
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,7 +42,14 @@ public class DeleteFragment extends DialogFragment {
     @Override
     public void onStart() {
         super.onStart();
-        getActivity().findViewById(R.id.DelFragBg).setOnClickListener(this::CloseFrag);
+
+        //onClick listeners
+
+        //Removing fragment
+        getActivity().findViewById(R.id.DelFragBg).setOnClickListener(v -> {
+            getParentFragmentManager().beginTransaction().remove(DeleteFragment.this).commit();
+            startActivity(new Intent(getContext().getApplicationContext(), Home2.class).setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP));
+        });
         getActivity().findViewById(R.id.DelFragButt).setOnClickListener(this::DelFragDelBut);
         final DatabaseHandler DH = new DatabaseHandler(getContext());
 
@@ -80,7 +85,7 @@ public class DeleteFragment extends DialogFragment {
         });
         // TextSize (80px) vs Text width (618px) vs Txt Len (16 char?)
 
-        SyncPromise.resolve().always((action, data)->{
+        //SyncPromise.resolve().always((action, data)->{
             ArrayList<HashMap<String,String>> S = DH.CursorSorter( DH.getReadableDatabase().query(DH.DBname,new String[]{DH.ID,DH.TITLE,DH.YMDHMS},null,null,null,null,null) );
 
             //System.out.println("====\n"+S+"\n====");
@@ -94,13 +99,14 @@ public class DeleteFragment extends DialogFragment {
             }
 
             DH.close();
-            action.resolve();
-        }).then((a,d)->{
+            //action.resolve();
+        //}).then((a,d)->{
 
-            ((View)(SelAllTv).getParent()).setOnClickListener(this::DelFragTopButtClicked);
+            ((View)(SelAllTv).getParent()).setOnClickListener(v-> DelFragTopButtClicked() );
 
-            a.resolve();
-        }).start();
+            //a.resolve();
+        //}).start();
+        DH.close();
     }
 
     private float DP2Pixel(float DP){
@@ -137,7 +143,9 @@ public class DeleteFragment extends DialogFragment {
         //TableRow
         Tr.setLayoutParams(new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         Tr.addView(Tv,0);Tr.addView(Cb,1);
-        Tr.setOnClickListener(this::DelFragButtClicked);
+
+        //onclick listeners #2
+        Tr.setOnClickListener( this::DelFragButtClicked );
         Tr.setOnLongClickListener((v)->{
             //WORKS TODO improve
             v = ((ViewGroup) v).getChildAt(0);
@@ -148,14 +156,14 @@ public class DeleteFragment extends DialogFragment {
         return Tr;
     }
 
-    public void DelFragTopButtClicked(View v){
+    private void DelFragTopButtClicked(){
         TableLayout TL = getActivity().findViewById(R.id.DelFragTable);
         for(int i=0;i<TL.getChildCount();i++){
             DelFragButtClicked( TL.getChildAt(i) );
         }
     }
 
-    public void DelFragButtClicked(View v){
+    private void DelFragButtClicked(View v){
         //default set background to drawable.. on click make whole bg same col.. change txt from brown to yellow
         TableRow tr = (TableRow) v;
         String TextCol="";
@@ -173,12 +181,12 @@ public class DeleteFragment extends DialogFragment {
         ((TextView)tr.getChildAt(0)).setTextColor(Color.parseColor(TextCol));
     }
 
-    public void DelFragDelBut(View v){
+    private void DelFragDelBut(View v){
         TextView tv = (TextView) v;
 
         String tv2 = tv.getText() +"";
         tv.setText("DELETED!");
-        tv.setBackgroundColor(Color.rgb(50,201,94));
+        tv.setBackgroundColor(getResources().getColor(R.color.GreenTick));
 
         new Handler().postDelayed(() -> {
             tv.setText(tv2);
@@ -247,15 +255,5 @@ public class DeleteFragment extends DialogFragment {
             System.out.println("Remove worker: id "+ ID);
             new NotiActionHandler().onReceive(getContext(),new Intent(getContext().getApplicationContext(), DeleteFragment.class).putExtra("Code","CANCEL").putExtra("LinkageID",ID).putExtra("D1","RemindFulNoti"));
         }
-    }
-
-    public void CloseFrag(View v){
-
-        //null ptr except - activity
-        //new Home2().Switchy( MainContainer.findViewById(R.id.home2ViewStyle) );
-
-        getParentFragmentManager().beginTransaction().remove(DeleteFragment.this).commit();
-        //getActivity().findViewById(R.id.home2FragHolder).back
-        //startActivity(new Intent(getContext(),Home2.class));
     }
 }

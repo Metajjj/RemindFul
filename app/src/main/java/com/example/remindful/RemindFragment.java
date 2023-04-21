@@ -10,7 +10,6 @@ import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -226,7 +225,7 @@ public class RemindFragment extends DialogFragment {
         String txt = tv.getText().toString();
         tv.setText("✓ Reminder set ✓");
         //32C95E
-        tv.setBackgroundColor(Color.rgb(50,201,94));
+        tv.setBackgroundColor(getResources().getColor(R.color.GreenTick));
 
         new Handler().postDelayed(()->{
             tv.setText(txt);

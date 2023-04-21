@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.KeyEvent;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,9 +18,7 @@ public class Home extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        if(Style==null){
-            Style = this.getString(R.string.Style);
-        }
+        Style = (Style==null) ? this.getString(R.string.Style) : "AltTheme";
 
         if(Style.equals("AltTheme")) { setTheme(R.style.AltTheme); }
         else{ setTheme(R.style.MainTheme); }
@@ -28,6 +27,8 @@ public class Home extends AppCompatActivity {
 
         Objects.requireNonNull(getSupportActionBar()).hide(); //Hides default header
         setContentView(R.layout.home);
+
+        Toast.makeText(this, "!!!RECOMMENDED TO PUT THIS APP's NOTIFICATIONS AS SILENT!!!", Toast.LENGTH_LONG).show();
 
         new NotificationManagerCust(getApplicationContext());
     }
@@ -69,6 +70,6 @@ public class Home extends AppCompatActivity {
                 DH.CursorSorter( DH.getReadableDatabase().query(DH.DBname,null,null,null,null,null,"`"+DH.ID+"` DESC") )
             ); DH.close(); //*/
 
-        }, 2000);
+        }, 3000);
     }
 }

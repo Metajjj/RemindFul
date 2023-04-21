@@ -1,6 +1,7 @@
 package com.example.remindful;
 
 
+import android.app.ActivityManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.ContentValues;
@@ -43,11 +44,15 @@ public class NotiActionHandler extends BroadcastReceiver {
                 NMC.DestroyAllNotifications();
                 WorkManager.getInstance(context).cancelAllWork();
 
-                //KILL APP PROCESS (background) TODO : let it work from inside app
+                //KILL APP PROCESS (background)
                 new Handler().postDelayed(()->{
 
-                    android.os.Process.killProcess(android.os.Process.myPid());
-                    //new ActivityManager().killBackgroundProcesses(context.getPackageName());
+                    if (IsAppForeground(context)){
+                        System.out.println("FOREGROUND APP");
+                    }else {
+                        System.out.println("BACKGROUND APP");
+                        NMC.MainNotiUpdate(true);
+                    }
 
                 },1000);
 
@@ -79,4 +84,16 @@ public class NotiActionHandler extends BroadcastReceiver {
         System.out.println(intent.getExtras().getString("Code"));
         DH.close();
     }
+
+    protected boolean IsAppForeground(Context context){
+        //Get activityManager from system service
+        ActivityManager AM = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        for(ActivityManager.RunningAppProcessInfo proc : AM.getRunningAppProcesses()){
+            if(proc.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND && proc.processName.equals(context.getPackageName())){
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
