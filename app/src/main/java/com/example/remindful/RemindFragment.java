@@ -102,14 +102,21 @@ public class RemindFragment extends DialogFragment {
 
         getActivity().findViewById(R.id.RemFragButt).setOnClickListener(this::RemFragFinalCheck);
 
-        //DatePickerDialog  NEEDS API 24 min
+        //Date/Time PickerDialog  contain Date/Time Picker(s) inside a dialog..
+        // TODO : Date custom layout ??
         getActivity().findViewById(R.id.RemFragDateButt).setOnClickListener((v)->{
-            // TODO : Date custom layout ??
+            /*
+            DatePicker DP = new DatePicker(getActivity());
+            DP.init(0, 0, 0, (datePicker, year, month, day) -> {
+                System.out.println(MessageFormat.format(
+                        "Year: {0} | Month: {1} | Day: {2}",year,month,day
+                ));
+            });*/
         });
 
         //TimePickerDialog
         getActivity().findViewById(R.id.RemFragTimeButt).setOnClickListener((v)->{
-            TimePickerDialog TPD = new TimePickerDialog(context, (timePicker, H, M) -> {
+            TimePickerDialog TPD = new TimePickerDialog(getActivity(), (timePicker, H, M) -> {
                 String Hour=H+"",Min=M+"";
                 System.out.println("Hour: "+H+"  Min: "+M);
                 Hour = (Hour.length()<2) ? "0"+Hour : Hour;

@@ -22,8 +22,7 @@ public class NewNote extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        if(new Home().Style.equals("AltTheme")) { setTheme(R.style.AltTheme); }
-        else{ setTheme(R.style.MainTheme); }
+        setTheme((Integer) new Home().Themes[new Home().ThemeNum]);
 
         super.onCreate(savedInstanceState);
 
@@ -55,7 +54,7 @@ public class NewNote extends AppCompatActivity {
 
     private void Remind(View v){
         CheckBox b = (CheckBox)v;
-        ((TextView)findViewById(R.id.NewNoteSave)).setText( (b.isChecked()? "SAVE & REMIND" : "SAVE") );
+        ((TextView)findViewById(R.id.NewNoteSave)).setText( (b.isChecked() ? "SAVE & REMIND" : "SAVE") );
     }
 
     protected String CalYMDHMS(){
@@ -78,13 +77,13 @@ public class NewNote extends AppCompatActivity {
 
     private void Save(View v){
         //On click.. background flashes green / toast popup to say saved
+        TextView tv = (TextView) v;
         String Saved;
         v.setOnClickListener(null);
 
         findViewById(R.id.NewNoteCheckBox).setOnClickListener(null);
 
-        TextView tv = (TextView) v;
-        if( tv.getText() == "SAVE" ){
+        if( tv.getText().toString().equals("SAVE") ){
 
             TrueSave();
 

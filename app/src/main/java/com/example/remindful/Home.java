@@ -14,14 +14,20 @@ import java.util.Objects;
 
 public class Home extends AppCompatActivity {
 
-    public static String Style = null;
+    public static int[] Themes = null;
+    public static int ThemeNum = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        Style = (Style==null) ? this.getString(R.string.Style) : "AltTheme";
+        if(Themes==null){
 
-        if(Style.equals("AltTheme")) { setTheme(R.style.AltTheme); }
-        else{ setTheme(R.style.MainTheme); }
+            Themes= new int[]{R.style.MainTheme, R.style.PinkTheme, R.style.BlacknWhiteTheme};
+
+        }
+
+        setTheme((Integer) Themes[ThemeNum]);
+
+
 
         super.onCreate(savedInstanceState);
 
@@ -49,12 +55,10 @@ public class Home extends AppCompatActivity {
         findViewById(R.id.HomeTitle).setOnClickListener((v)->{
             HomeLoadingHandler.removeCallbacksAndMessages(null);
 
-            ((TextView) v).setText("Alt theme activated!");
-            Style = "AltTheme";
-            /*this.onStop();
-            this.onDestroy();
-            onCreate(null);*/
-            setTheme(R.style.AltTheme);
+            ((TextView) v).setText("Theme switched!");
+
+            ThemeNum = (ThemeNum+1 >= Themes.length) ? 0 : ++ThemeNum;
+
             startActivity(new Intent(this,Home.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
 
         });

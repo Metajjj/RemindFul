@@ -29,8 +29,7 @@ public class Home2 extends AppCompatActivity {
     private int themeTxtCol;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        if(new Home().Style.equals("AltTheme")) { setTheme(R.style.AltTheme); }
-        else{ setTheme(R.style.MainTheme); }
+        setTheme((Integer) new Home().Themes[new Home().ThemeNum]);
 
         super.onCreate(savedInstanceState);
 

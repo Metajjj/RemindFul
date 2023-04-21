@@ -25,7 +25,7 @@
         <item name="NoteTextBorder">#d9b453</item>
     </style>
 
-    <style name="AltTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="PinkTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <item name="Title">#F482EE</item>
         <item name="Interactable">#5BDB3E</item>
         <item name="Background">#AB66AA</item>
@@ -34,6 +34,17 @@
         <item name="DelHighlight">#AA77CA</item>
         <item name="EditTextBorder">#B37CBF</item>
         <item name="NoteTextBorder">#9653D9</item>
+    </style>
+
+    <style name="BlacknWhiteTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <item name="Title">#FFFFFF</item>
+        <item name="Interactable">#AAAAAA</item>
+        <item name="Background">#999999</item>
+        <item name="FragBackground">#8F000000</item>
+        <item name="Text">#DDDDDD</item>
+        <item name="DelHighlight">#BBBBBB</item>
+        <item name="EditTextBorder">#444444</item>
+        <item name="NoteTextBorder">#666666</item>
     </style>
 
 </resources>
