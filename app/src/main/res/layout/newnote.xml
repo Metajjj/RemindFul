@@ -75,18 +75,16 @@
         android:paddingBottom="15dp"
 
         android:textColor="?attr/Text"
-        app:layout_constraintBottom_toTopOf="@+id/NewNoteRemindBox"
+        app:layout_constraintBottom_toTopOf="@+id/NewNoteCheckBox"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/NewNoteNoteTitle" />
 
     <CheckBox
-        android:onClick="Remind"
-
         android:buttonTint="?attr/Title"
         android:textColor="?attr/Text"
         android:padding="5dp"
-        android:id="@+id/NewNoteRemindBox"
+        android:id="@+id/NewNoteCheckBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="50dp"

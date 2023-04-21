@@ -30,11 +30,18 @@ public class NewNote extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).hide(); //Hides default header
         setContentView(R.layout.newnote);
 
-        Remind(findViewById(R.id.NewNoteRemindBox));
-
         //check for extra bundle intent crap and load it up === INSTERT => UPDATE colInfo /ALTER tableInfo
         try{ DataExists( (HashMap<String,String>) getIntent().getExtras().get("i")); } catch (Exception e){}
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        findViewById(R.id.NewNoteCheckBox).setOnClickListener(this::Remind);
+        findViewById(R.id.NewNoteSave).setOnClickListener(this::Save);
+    }
+
     private void DataExists(HashMap<String,String> S){
         DataExist = true;
         ((TextView)findViewById(R.id.NewNoteTitle)).setText("Update Note");
@@ -46,7 +53,7 @@ public class NewNote extends AppCompatActivity {
         G_ID = S.get(DH.ID);
     }
 
-    public void Remind(View v){
+    private void Remind(View v){
         CheckBox b = (CheckBox)v;
         ((TextView)findViewById(R.id.NewNoteSave)).setText( (b.isChecked()? "SAVE & REMIND" : "SAVE") );
     }
@@ -69,12 +76,12 @@ public class NewNote extends AppCompatActivity {
         return Year + Month + Day + Hour + Min + Sec;
     }
 
-    public void Save(View v){
+    private void Save(View v){
         //On click.. background flashes green / toast popup to say saved
         String Saved;
         v.setOnClickListener(null);
 
-        findViewById(R.id.NewNoteRemindBox).setOnClickListener(null);
+        findViewById(R.id.NewNoteCheckBox).setOnClickListener(null);
 
         TextView tv = (TextView) v;
         if( tv.getText() == "SAVE" ){
@@ -99,7 +106,7 @@ public class NewNote extends AppCompatActivity {
             tv.setBackgroundResource(R.drawable.roundbordernote);
             v.setOnClickListener(this::Save);
 
-            findViewById(R.id.NewNoteRemindBox).setOnClickListener(this::Remind);
+            findViewById(R.id.NewNoteCheckBox).setOnClickListener(this::Remind);
             },1300);
     }
 

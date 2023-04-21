@@ -104,7 +104,7 @@ public class RemindFragment extends DialogFragment {
 
         //DatePickerDialog  NEEDS API 24 min
         getActivity().findViewById(R.id.RemFragDateButt).setOnClickListener((v)->{
-            //Custom layout?
+            // TODO : Date custom layout ??
         });
 
         //TimePickerDialog
@@ -154,7 +154,7 @@ public class RemindFragment extends DialogFragment {
         return ((TextView)getActivity().findViewById(ResID)).getText() +"";
     }
 
-    public void RemFragHourCheck(View v, boolean isFocused){
+    private void RemFragHourCheck(View v, boolean isFocused){
         //Guarantee check
         if (isFocused || ((TextView)v).getText().toString().equals("")){ return; }
         int h = Integer.parseInt( ((TextView)v).getText()+"" );
@@ -166,7 +166,7 @@ public class RemindFragment extends DialogFragment {
         //Reset if wrong
     }
 
-    public void RemFragMinCheck(View v, boolean isFocused){
+    private void RemFragMinCheck(View v, boolean isFocused){
         //Guarantee check
         if (isFocused || ((TextView)v).getText().toString().equals("")){ return; }
         int m = Integer.parseInt( ((TextView)v).getText()+"" );
@@ -178,7 +178,7 @@ public class RemindFragment extends DialogFragment {
         //Reset if wrong
     }
 
-    public void RemFragYearCheck(View v, boolean isFocused){
+    private void RemFragYearCheck(View v, boolean isFocused){
         if (isFocused || ((TextView)v).getText().toString().equals("")){ return; }
         int y = Integer.parseInt( ((TextView)v).getText()+"" );
         String Y = String.valueOf(y);
@@ -190,7 +190,7 @@ public class RemindFragment extends DialogFragment {
         ((TextView)v).setText( (y>=Calendar.getInstance().get(Calendar.YEAR) ) ? y+"" : "" );
     }
 
-    public void RemFragMonthCheck(View v, boolean isFocused){
+    private void RemFragMonthCheck(View v, boolean isFocused){
         if (isFocused || ((TextView)v).getText().toString().equals("")){ return; }
         int m = Integer.parseInt( ((TextView)v).getText()+"" );
         String M = String.valueOf(m);
@@ -199,7 +199,7 @@ public class RemindFragment extends DialogFragment {
         ((TextView)v).setText( (m>=1 && m<=12) ? M : "" );
     }
 
-    public void RemFragDayCheck(View v, boolean isFocused){
+    private void RemFragDayCheck(View v, boolean isFocused){
         if (isFocused || ((TextView)v).getText().toString().equals("")){ return; }
         int d = Integer.parseInt( ((TextView)v).getText()+"" );
         String D = String.valueOf(d);
@@ -208,7 +208,7 @@ public class RemindFragment extends DialogFragment {
         ((TextView)v).setText( (d>=1 && d<=31) ? D : "" );
     }
 
-    public void RemFragSecCheck(View v, boolean isFocused){
+    private void RemFragSecCheck(View v, boolean isFocused){
         //Guarantee check
         if (isFocused || ((TextView)v).getText().toString().equals("")){ return; }
         int s = Integer.parseInt( ((TextView)v).getText()+"" );
@@ -402,7 +402,7 @@ public class RemindFragment extends DialogFragment {
         }
     }
 
-    public void RemFragCloseFrag(View v){
+    private void RemFragCloseFrag(View v){
 
         getParentFragmentManager().beginTransaction().remove(RemindFragment.this).commit();
         //getActivity().findViewById(R.id.home2FragHolder).back

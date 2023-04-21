@@ -41,6 +41,14 @@ public class Home2 extends AppCompatActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+
+        findViewById(R.id.home2Menu).setOnClickListener(v-> Menu());
+        findViewById(R.id.home2ViewStyle).setOnClickListener(this::Switchy);
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         new Handler().post(()->{
@@ -49,7 +57,7 @@ public class Home2 extends AppCompatActivity {
         });
     }
 
-    public void Switchy(View v){
+    private void Switchy(View v){
         TextView tv = (TextView) v;
         //new Home().WriteLine(tv.getText()+"");
         switch (tv.getText()+""){
@@ -80,13 +88,6 @@ public class Home2 extends AppCompatActivity {
         }
     }
 
-    private void TempNoteWipe(View v){
-        DatabaseHandler DH = new DatabaseHandler(Home2.this); DH.ResetTable(); DH.close();
-        Toast.makeText(this,"WIPED notes",Toast.LENGTH_SHORT).show();
-
-        switchy();
-    }
-
     private void TempLoad(String sort){
         ((TableLayout)findViewById(R.id.NewNoteTable)).removeAllViews();
 
@@ -104,22 +105,7 @@ public class Home2 extends AppCompatActivity {
         }
     }
 
-    public void Menu(View v){
-        //TODO : make menu fragment!
-        /*new AlertDialog.Builder(Home2.this, 0).setTitle("MENU").setItems(new String[]{"Add a new note","Del note(s)","Wipe all notes!\n  (permanent & instant, no confirmation!)"},
-                ((dialogInterface, i) -> {
-                    //Toast.makeText(Home2.this,""+i,Toast.LENGTH_SHORT).show();
-                    switch(i){
-                        case 0:
-                            startActivity(new Intent(this,NewNote.class)); break;
-                        case 1:
-                            SetupDelArea();
-                            break;
-                        case 2:
-                        TempNoteWipe(new View(this)); break;
-                    }
-                })
-        ).setCancelable(true).create().show();*/
+    private void Menu(){
         getSupportFragmentManager().beginTransaction().replace(R.id.home2FragHolder, MenuFragment.class,null).commit();
         findViewById(R.id.home2FragHolder).bringToFront();
     }
@@ -239,7 +225,7 @@ public class Home2 extends AppCompatActivity {
         }
     }
 
-    public float DPtoPixel(int DP){
+    private float DPtoPixel(int DP){
         //PixeltoDP
         ////get resources from frag - fix
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,DP,getApplicationContext().getResources().getDisplayMetrics());

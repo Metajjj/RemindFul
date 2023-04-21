@@ -147,7 +147,7 @@ public class DeleteFragment extends DialogFragment {
         //onclick listeners #2
         Tr.setOnClickListener( this::DelFragButtClicked );
         Tr.setOnLongClickListener((v)->{
-            //WORKS TODO improve
+            //WORKS TODO improve showing full name
             v = ((ViewGroup) v).getChildAt(0);
             Toast.makeText(getContext(), ""+ ((TextView)v).getText(), Toast.LENGTH_LONG).show();
             return true;

@@ -34,7 +34,6 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:onClick="Switchy"
         android:id="@+id/home2ViewStyle"
         android:layout_width="104dp"
         android:layout_height="82dp"
@@ -80,9 +79,8 @@
     </ScrollView>
 
     <ImageView
-        android:onClick="Menu"
         android:contentDescription="Menu"
-        android:id="@+id/imageView"
+        android:id="@+id/home2Menu"
         android:layout_width="50dp"
         android:layout_height="75dp"
         android:layout_marginTop="5dp"
