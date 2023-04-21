@@ -69,11 +69,6 @@
             android:layout_height="wrap_content"
             android:stretchColumns="*">
 
-            <TextView
-                android:id="@+id/home2TxtColPH"
-                android:textColor="?attr/Text"
-                />
-
         </TableLayout>
 
     </ScrollView>

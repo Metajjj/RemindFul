@@ -1,6 +1,7 @@
 package com.example.remindful;
 
 import android.content.Intent;
+import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
@@ -26,7 +27,6 @@ public class Home2 extends AppCompatActivity {
     //CTRL SHIFT -   closes all brackets
 
     private final DatabaseHandler DH = new DatabaseHandler(Home2.this);
-    private int themeTxtCol;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         setTheme(new Home().Themes.get(new Home().ThemeNum));
@@ -36,7 +36,6 @@ public class Home2 extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).hide(); //Hides default header
 
         setContentView(R.layout.home2);
-        themeTxtCol = ((TextView)findViewById(R.id.home2TxtColPH)).getCurrentTextColor();
     }
 
     @Override
@@ -168,8 +167,11 @@ public class Home2 extends AppCompatActivity {
         TvNote.setMaxLines(3);
         TvNote.setTypeface(null, Typeface.BOLD);
 
-        //TODO fix col via theme -- make neater grab from res
-        TvNote.setTextColor( themeTxtCol );
+
+        //WORKS gets attr val  -- calls recycle for memory cache release so no single line
+        TypedArray ta = this.obtainStyledAttributes(new int[]{R.attr.Text}); int drw = ta.getColor(0,-1); ta.recycle();
+
+        TvNote.setTextColor(drw);
 
         TvNote.setBackgroundResource(R.drawable.roundbordernote);
         TvNote.setLayoutParams(TempParam);
@@ -182,7 +184,7 @@ public class Home2 extends AppCompatActivity {
         TvTitle.setEllipsize(TextUtils.TruncateAt.END);
         TvTitle.setTypeface(null, Typeface.BOLD);
 
-        TvTitle.setTextColor(themeTxtCol);
+        TvTitle.setTextColor(drw);
         TvTitle.setLayoutParams(TempParam);
 
         TvNote.setText(note); TvTitle.setText(title);

@@ -26,16 +26,8 @@ public class Home extends AppCompatActivity {
         if(Themes.size()==0) {
             for (Field f : R.style.class.getDeclaredFields()) {
                 int i = Integer.MIN_VALUE;
-                try {
-                    if(f.getInt(null)==R.style.MainTheme){
-                        System.out.println("MainTheme");
-                    }
-                    i = f.getInt(null);
-                } catch (Exception e) {
-                }
-                if (i != Integer.MIN_VALUE) {
-                    Themes.add(i);
-                }
+                try { i = f.getInt(null); } catch (Exception e) { }
+                if (i != Integer.MIN_VALUE) { Themes.add(i); }
                 //System.out.println("Field: " + f.toString());
             }
             if(Themes.get(0) != R.style.MainTheme){
@@ -89,9 +81,9 @@ public class Home extends AppCompatActivity {
 
             startActivity(new android.content.Intent(this,Home2.class));
 
-            for(Field f : R.attr.class.getDeclaredFields()){
-                System.out.println("f: "+f);
-            }
+//            for(Field f : R.attr.class.getDeclaredFields()){
+//                System.out.println("f: "+f);
+//            }
 
         }, 3000);
     }
