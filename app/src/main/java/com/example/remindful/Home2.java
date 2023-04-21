@@ -29,7 +29,7 @@ public class Home2 extends AppCompatActivity {
     private int themeTxtCol;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        setTheme((Integer) new Home().Themes[new Home().ThemeNum]);
+        setTheme(new Home().Themes.get(new Home().ThemeNum));
 
         super.onCreate(savedInstanceState);
 

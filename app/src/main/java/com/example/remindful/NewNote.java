@@ -22,7 +22,7 @@ public class NewNote extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        setTheme((Integer) new Home().Themes[new Home().ThemeNum]);
+        setTheme(new Home().Themes.get(new Home().ThemeNum));
 
         super.onCreate(savedInstanceState);
 

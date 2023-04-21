@@ -36,7 +36,7 @@
         <item name="NoteTextBorder">#9653D9</item>
     </style>
 
-    <style name="BlacknWhiteTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="GrayTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <item name="Title">#FFFFFF</item>
         <item name="Interactable">#AAAAAA</item>
         <item name="Background">#999999</item>

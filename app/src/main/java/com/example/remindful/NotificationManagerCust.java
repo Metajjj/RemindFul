@@ -118,7 +118,7 @@ public class NotificationManagerCust {
         NotificationCompat.Builder NBS = new NotificationCompat.Builder(context,NotiChannelID)
                 .setSmallIcon(R.drawable.cm) //Small Icon for noti that goes in top left
                 .setContentTitle( (Destroyable) ? "Swipe to Remove" : "Main Notification" ) //Noti title
-                .setContentText("Upcoming notifications/reminders (+ hidden): "+CurrNotes.size()) //Collapsed Noti txt
+                .setContentText( (Destroyable) ? null : "Upcoming notifications/reminders (+ hidden): "+CurrNotes.size()) //Collapsed Noti txt
                 .setPriority(NotificationCompat.PRIORITY_HIGH) //Priority ?
                 //.setStyle(new NotificationCompat.BigTextStyle().bigText("Upcoming notifications/reminders: "+NumOfActiveNotis+"\nDON'T CLOSE APP FOR REMINDING TO WORK!")) //Expanded noti text
                 .setAutoCancel(false) //Anytap on noti = cancel/remove noti
