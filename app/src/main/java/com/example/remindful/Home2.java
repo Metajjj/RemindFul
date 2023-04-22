@@ -26,9 +26,10 @@ public class Home2 extends AppCompatActivity {
     //CTRL SHIFT +   opens all brackets
     //CTRL SHIFT -   closes all brackets
 
-    private final DatabaseHandler DH = new DatabaseHandler(Home2.this);
+    private DatabaseHandler DH;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        DH = new DatabaseHandler(getApplicationContext());
         setTheme(new Home().Themes.get(new Home().ThemeNum));
 
         super.onCreate(savedInstanceState);
@@ -170,6 +171,7 @@ public class Home2 extends AppCompatActivity {
 
         //WORKS gets attr val  -- calls recycle for memory cache release so no single line
         TypedArray ta = this.obtainStyledAttributes(new int[]{R.attr.Text}); int drw = ta.getColor(0,-1); ta.recycle();
+        //drw == -1 if no col for attr
 
         TvNote.setTextColor(drw);
 

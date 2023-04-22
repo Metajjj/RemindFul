@@ -17,11 +17,13 @@ import java.util.HashMap;
 import java.util.Objects;
 
 public class NewNote extends AppCompatActivity {
-    private final DatabaseHandler DH = new DatabaseHandler(NewNote.this);
+    private DatabaseHandler DH;
     private String G_ID,G_YMDHMS; private Boolean DataExist=false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        DH = new DatabaseHandler(getApplicationContext());
+
         setTheme(new Home().Themes.get(new Home().ThemeNum));
 
         super.onCreate(savedInstanceState);
@@ -117,7 +119,7 @@ public class NewNote extends AppCompatActivity {
             //DH.Writequery( DH.InsertBuilder(DH.DBname, new String[]{DH.YMDHMS, DH.TITLE, DH.NOTE}, new String[][]{{CalYMDHMS(), "\"" + ((TextView) findViewById(R.id.NewNoteNoteTitle)).getText().toString() + "\"", "\"" + ((TextView) findViewById(R.id.NewNoteNoteDetail)).getText().toString() + "\""}} ) );
 
             ContentValues CV = new ContentValues(); //Cant be single line
-            CV.put(DH.YMDHMS,CalYMDHMS()); CV.put(DH.TITLE,((TextView) findViewById(R.id.NewNoteNoteTitle)).getText().toString()); CV.put(DH.NOTE,((TextView) findViewById(R.id.NewNoteNoteDetail)).getText().toString());
+            CV.put(DH.YMDHMS,CalYMDHMS()); CV.put(DH.TITLE,((TextView) findViewById(R.id.NewNoteNoteTitle)).getText().toString()); CV.put(DH.NOTE,((TextView) findViewById(R.id.NewNoteNoteDetail)).getText().toString()); CV.put(DH.ID,DH.getAutoIncrement());
             DH.getWritableDatabase().insert(DH.DBname,null,CV);
 
             HashMap<String,String> HM = DH.CursorSorter(

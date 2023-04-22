@@ -12,30 +12,31 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 
 public class Home extends AppCompatActivity {
 
-    public static ArrayList<Integer> Themes = new ArrayList<>(0);
+    public static ArrayList<Integer> Themes = new ArrayList<Integer>(Arrays.asList(R.style.MainTheme));
+    //MainTheme is default always present theme
 
     public static int ThemeNum = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         //Move to alt thread??
-        if(Themes.size()==0) {
-            for (Field f : R.style.class.getDeclaredFields()) {
-                int i = Integer.MIN_VALUE;
-                try { i = f.getInt(null); } catch (Exception e) { }
-                if (i != Integer.MIN_VALUE) { Themes.add(i); }
-                //System.out.println("Field: " + f.toString());
+        new Handler().post(()-> {
+            if (Themes.size() <= 1) {
+                for (Field f : R.style.class.getDeclaredFields()) {
+                    if(f.getName().equals("MainTheme")){ continue; }
+                    //Avoids duplicating main theme
+
+                    int i = Integer.MIN_VALUE;
+                    try { i = f.getInt(null); } catch (Exception e) { }
+                    if (i != Integer.MIN_VALUE) { Themes.add(i); }
+                }
             }
-            if(Themes.get(0) != R.style.MainTheme){
-                //Moves main theme to first
-                int ThemeMoving = Themes.get(0), MTloc = Themes.indexOf(R.style.MainTheme);
-                Themes.set(0,R.style.MainTheme); Themes.set(MTloc,ThemeMoving);
-            }
-        }
+        });
 
         setTheme(Themes.get(ThemeNum));
 
@@ -45,7 +46,6 @@ public class Home extends AppCompatActivity {
         setContentView(R.layout.home);
 
         Toast.makeText(this, "!!!RECOMMENDED TO PUT THIS APP's NOTIFICATIONS AS SILENT!!!", Toast.LENGTH_LONG).show();
-
 
         new NotificationManagerCust(getApplicationContext());
     }
@@ -81,9 +81,10 @@ public class Home extends AppCompatActivity {
 
             startActivity(new android.content.Intent(this,Home2.class));
 
-//            for(Field f : R.attr.class.getDeclaredFields()){
-//                System.out.println("f: "+f);
-//            }
+            /*
+            for(Field f : R.attr.class.getDeclaredFields()){
+                System.out.println("f: "+f);
+            }*/
 
         }, 3000);
     }

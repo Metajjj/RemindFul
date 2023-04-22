@@ -1,6 +1,7 @@
 package com.example.remindful;
 
 import android.annotation.SuppressLint;
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -18,24 +19,47 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     private final String[] ColHeads = {ID, YMDHMS,TITLE,NOTE, R_TIME};
 
+    private static int AutoIncrementVal= 1;
+
+    protected int getAutoIncrement(){ return ++AutoIncrementVal; }
+
+    protected void ResetAutoIncrement_IDs(){
+        this.close();
+        //Loop thru database = highest ID + 1
+        ArrayList<HashMap<String,String>> Notes = CursorSorter( this.getReadableDatabase().query(DBname,new String[]{ID},null,null,null,null,ID+" ASC") );
+
+        for (int i=1;i<=Notes.size();i++ ) {
+            String CurrID = Notes.get( i-1 ).get(ID);
+            //System.out.println("i: "+ i +" | ID: "+CurrID);
+            if(! CurrID.equals(i+"")){
+                //Update to fill up empty spots in ID
+                ContentValues CV = new ContentValues(); CV.put(ID,i);
+                this.getWritableDatabase().update(DBname,CV,ID+" = ?",new String[]{CurrID});
+            }
+            //Update innate A_I to match my new latest ID
+            if(i==Notes.size()){ AutoIncrementVal=i; }
+        }
+
+        DatabaseHandler.this.close();
+    }
+
     public DatabaseHandler(Context c) {
         super(c, "NoteList", null, 1);
 
-        //TODO : Adjust autoincrement ??
+        ResetAutoIncrement_IDs(); //Streamlines IDs and such
     }
 
     protected void ResetTable() {
         DatabaseHandler.this.getWritableDatabase().execSQL("DROP TABLE IF EXISTS `" + DBname + "`");
-        DatabaseHandler.this.getWritableDatabase().execSQL("CREATE TABLE `" + DBname + "` (`" + ID + "` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `" + YMDHMS + "` INT, `" + TITLE + "` TEXT, `"+NOTE+"` TEXT, `"+R_TIME+"` TEXT)");
+        DatabaseHandler.this.getWritableDatabase().execSQL("CREATE TABLE `" + DBname + "` (`" + ID + "` INTEGER PRIMARY KEY NOT NULL, `" + YMDHMS + "` INT, `" + TITLE + "` TEXT, `"+NOTE+"` TEXT, `"+R_TIME+"` TEXT)");
         DatabaseHandler.this.getWritableDatabase().close();
     }
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         //create db
-        sqLiteDatabase.execSQL("CREATE TABLE `" + DBname + "` (`" + ID + "` INTEGER PRIMARY KEY AUTOINCREMENT, `" + YMDHMS + "` INT, `" + TITLE + "` TEXT, `"+NOTE+"` TEXT, `"+R_TIME+"` TEXT)");
-
-        //ResetTable();
+        //sqLiteDatabase.execSQL("CREATE TABLE `" + DBname + "` (`" + ID + "` INTEGER PRIMARY KEY AUTOINCREMENT, `" + YMDHMS + "` INT, `" + TITLE + "` TEXT, `"+NOTE+"` TEXT, `"+R_TIME+"` TEXT)");
+        ResetTable();
     }
 
     @Override
