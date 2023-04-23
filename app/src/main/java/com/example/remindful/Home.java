@@ -1,9 +1,11 @@
 package com.example.remindful;
 
 import android.content.Intent;
+import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.KeyEvent;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,7 +19,7 @@ import java.util.Objects;
 
 public class Home extends AppCompatActivity {
 
-    public static ArrayList<Integer> Themes = new ArrayList<Integer>(Arrays.asList(R.style.MainTheme));
+    public static ArrayList<Integer> Themes = new ArrayList<>(Arrays.asList(R.style.MainTheme));
     //MainTheme is default always present theme
 
     public static int ThemeNum = 0;
@@ -48,6 +50,15 @@ public class Home extends AppCompatActivity {
         Toast.makeText(this, "!!!RECOMMENDED TO PUT THIS APP's NOTIFICATIONS AS SILENT!!!", Toast.LENGTH_LONG).show();
 
         new NotificationManagerCust(getApplicationContext());
+
+
+        //Get attr stuff
+        TypedArray ta = this.obtainStyledAttributes(new int[]{R.attr.Interactable}); int ThemeTxtCol = ta.getColor(0,-1); ta.recycle();
+
+        //Change progressbar colour without API err
+        ((ProgressBar)findViewById(R.id.HomeProBar)).getIndeterminateDrawable().setColorFilter(
+                ThemeTxtCol, android.graphics.PorterDuff.Mode.SRC_IN
+        );
     }
 
     private Handler HomeLoadingHandler = new Handler();
@@ -81,10 +92,7 @@ public class Home extends AppCompatActivity {
 
             startActivity(new android.content.Intent(this,Home2.class));
 
-            /*
-            for(Field f : R.attr.class.getDeclaredFields()){
-                System.out.println("f: "+f);
-            }*/
+            //for(Field f : R.attr.class.getDeclaredFields()){ System.out.println("f: "+f); }
 
         }, 3000);
     }

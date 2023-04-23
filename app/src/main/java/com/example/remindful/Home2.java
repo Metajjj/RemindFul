@@ -170,10 +170,10 @@ public class Home2 extends AppCompatActivity {
 
 
         //WORKS gets attr val  -- calls recycle for memory cache release so no single line
-        TypedArray ta = this.obtainStyledAttributes(new int[]{R.attr.Text}); int drw = ta.getColor(0,-1); ta.recycle();
+        TypedArray ta = this.obtainStyledAttributes(new int[]{R.attr.Text}); int ThemeTxtCol = ta.getColor(0,-1); ta.recycle();
         //drw == -1 if no col for attr
 
-        TvNote.setTextColor(drw);
+        TvNote.setTextColor(ThemeTxtCol);
 
         TvNote.setBackgroundResource(R.drawable.roundbordernote);
         TvNote.setLayoutParams(TempParam);
@@ -186,7 +186,7 @@ public class Home2 extends AppCompatActivity {
         TvTitle.setEllipsize(TextUtils.TruncateAt.END);
         TvTitle.setTypeface(null, Typeface.BOLD);
 
-        TvTitle.setTextColor(drw);
+        TvTitle.setTextColor(ThemeTxtCol);
         TvTitle.setLayoutParams(TempParam);
 
         TvNote.setText(note); TvTitle.setText(title);

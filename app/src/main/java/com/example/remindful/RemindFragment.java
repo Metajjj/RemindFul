@@ -16,7 +16,6 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -104,15 +103,17 @@ public class RemindFragment extends DialogFragment {
         getActivity().findViewById(R.id.RemFragButt).setOnClickListener(this::RemFragFinalCheck);
 
         //Date/Time PickerDialog  contain Date/Time Picker(s) inside a dialog..
-        // TODO : Date custom layout ??
+        // TODO : Date custom layout ?? Copy from DialogPicker - then same for TimePicker
         getActivity().findViewById(R.id.RemFragDateButt).setOnClickListener((v)->{
 
+            /*
             DatePicker DP = new DatePicker(getActivity());
             DP.init(0, 0, 0, (datePicker, year, month, day) -> {
                 System.out.println(MessageFormat.format(
                         "Year: {0} | Month: {1} | Day: {2}",year,month,day
                 ));
-            });
+            });*/
+            getParentFragmentManager().beginTransaction().add( R.id.NewNoteFragHolder , DatepickerFragment.class, null ).commit();
         });
 
         //TimePickerDialog
