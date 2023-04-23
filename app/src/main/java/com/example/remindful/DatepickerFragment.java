@@ -3,10 +3,12 @@ package com.example.remindful;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CalendarView;
 import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -42,9 +44,10 @@ public class DatepickerFragment extends DialogFragment {
         });
         getActivity().findViewById(R.id.PickerFragMenu).setOnClickListener(null);
 
-        DatePicker DP = new DatePicker(context);
+        DatePicker DP = new DatePicker(context, null,-1); //no 3rd style makes it rotating, prbolem with squashed
         DP.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        ((ViewGroup)getActivity().findViewById(R.id.PickerFragMenu)).addView(DP);
+
+        //getActivity().findViewById(R.id.PickerFragMenu).setLayoutParams(new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT));
 
         DP.init(0,0,0,(dp,Year,Month,Day)->{
             System.out.println(MessageFormat.format("Y:{0}|M:{1}|D:{2}", Year,Month+1,Day));
@@ -56,13 +59,29 @@ public class DatepickerFragment extends DialogFragment {
         DP.setMinDate(Calendar.getInstance().getTimeInMillis());
 
         //Picking apart DatePicker widget to customise it
-        ChildViewFinder(DP);
+         ChildViewFinder(DP);
         //DP -> LinLayouts -> 2x TxtVw (top/heading)
         //DP -> dayPickerView (background of calender) -> ImgButtons (left and right arrows) & DayPickerViewPager (??)
+
+        //((ViewGroup)getActivity().findViewById(R.id.PickerFragMenu)).addView(DP);
+
+        CalendarView cv = new CalendarView(context);
+        cv.setBackgroundColor(R.attr.Title); cv.setMinDate(Calendar.getInstance().getTimeInMillis()); cv.setWeekSeparatorLineColor(R.attr.Interactable);
+        cv.setWeekNumberColor(getResources().getColor(R.color.GreenTick));
+        cv.setFocusedMonthDateColor(Color.WHITE);
+
+        //TODO calenderView -> datepick & text clock -> timepick ??
+        ((ViewGroup)getActivity().findViewById(R.id.PickerFragMenu)).addView(cv);
+
+        cv.setOnDateChangeListener((Cv,Year,Month,Day)-> {
+            System.out.println(MessageFormat.format("Y:{0}|M:{1}|D:{2}", Year+"", Month + 1, Day));
+            ((TextView) getActivity().findViewById(R.id.RemFragDateYear)).setText(Year + "");
+            ((TextView) getActivity().findViewById(R.id.RemFragDateMonth)).setText((Month + 1) + "");
+            ((TextView) getActivity().findViewById(R.id.RemFragDateDay)).setText(Day + "");
+        });
     }
 
     private void ChildViewFinder(ViewGroup vg){
-        int j=0;
         for (int i = 0; i<vg.getChildCount(); i++){
             try{
                 System.out.println(vg.getClass().getName() +" -> "+ vg.getChildAt(i).getClass().getName());
@@ -88,15 +107,14 @@ public class DatepickerFragment extends DialogFragment {
                         vg.setBackgroundColor(ta.getColor(0,-1));
 
                         ta.recycle();
-                    }
-                    else if (vg.getChildAt(i) instanceof android.widget.TextView){
+                    }/*
+                    else if (vg.getChildAt(i) instanceof android.widget.DayPickerView){
                         System.out.println("TV: "+((TextView)vg.getChildAt(i)).getText());
-                    }
+                    }*/
                 }
 
             } catch (Exception e){
                 System.err.println("ERR: "+e);
-
             }
         }
     }

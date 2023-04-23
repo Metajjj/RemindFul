@@ -5,9 +5,7 @@ import android.Manifest;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.TimePickerDialog;
 import android.content.ContentValues;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -118,6 +116,8 @@ public class RemindFragment extends DialogFragment {
 
         //TimePickerDialog
         getActivity().findViewById(R.id.RemFragTimeButt).setOnClickListener((v)->{
+            getParentFragmentManager().beginTransaction().add( R.id.NewNoteFragHolder , TimepickerFragment.class,null ).commit();
+            /*
             ((TextView)getActivity().findViewById(R.id.RemFragTimeSec)).setText("00");
             TimePickerDialog TPD = new TimePickerDialog(getActivity(), (timePicker, H, M) -> {
                 String Hour=H+"",Min=M+"";
@@ -133,7 +133,7 @@ public class RemindFragment extends DialogFragment {
                     true);
             TPD.setButton(DialogInterface.BUTTON_POSITIVE,"Confirm Time",TPD);
             TPD.setButton(DialogInterface.BUTTON_NEGATIVE,"Cancel",TPD);
-            TPD.show();
+            TPD.show();*/
         });
     }
 
