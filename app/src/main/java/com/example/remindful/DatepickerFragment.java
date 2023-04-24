@@ -3,12 +3,10 @@ package com.example.remindful;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CalendarView;
 import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -44,7 +42,7 @@ public class DatepickerFragment extends DialogFragment {
         });
         getActivity().findViewById(R.id.PickerFragMenu).setOnClickListener(null);
 
-        DatePicker DP = new DatePicker(context, null,-1); //no 3rd style makes it rotating, prbolem with squashed
+        DatePicker DP = new DatePicker(context, null); //no 3rd style makes it rotating, prbolem with squashed
         DP.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
         //getActivity().findViewById(R.id.PickerFragMenu).setLayoutParams(new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT));
@@ -59,18 +57,34 @@ public class DatepickerFragment extends DialogFragment {
         DP.setMinDate(Calendar.getInstance().getTimeInMillis());
 
         //Picking apart DatePicker widget to customise it
-         ChildViewFinder(DP);
+         //ChildViewFinder(DP);
         //DP -> LinLayouts -> 2x TxtVw (top/heading)
         //DP -> dayPickerView (background of calender) -> ImgButtons (left and right arrows) & DayPickerViewPager (??)
 
-        //((ViewGroup)getActivity().findViewById(R.id.PickerFragMenu)).addView(DP);
+        ((ViewGroup)getActivity().findViewById(R.id.PickerFragMenu)).addView(DP);
 
+        ChildViewFinder(DP);
+
+        /*
         CalendarView cv = new CalendarView(context);
         cv.setBackgroundColor(R.attr.Title); cv.setMinDate(Calendar.getInstance().getTimeInMillis()); cv.setWeekSeparatorLineColor(R.attr.Interactable);
-        cv.setWeekNumberColor(getResources().getColor(R.color.GreenTick));
-        cv.setFocusedMonthDateColor(Color.WHITE);
+        System.out.println("Date txt: "+
+            cv.getDateTextAppearance()
+        );
+
+        //todo ---------------------------
+
+        TypedArray ta = getActivity().obtainStyledAttributes(new int[]{R.attr.Title,R.attr.Interactable, R.attr.Text});
+        //getResources().getResourceName(R.style.CalViewText)
+
+        //cv.setDateTextAppearance(R.style.CalViewText);
+        //((TextView)((View)cv)).setTextColor(getResources().getColor(R.color.GreenTick));
+        //classcast err
+
+         //https://stackoverflow.com/questions/14980242/small-numbers-in-calendarview-android/36321828#36321828
 
         //TODO calenderView -> datepick & text clock -> timepick ??
+
         ((ViewGroup)getActivity().findViewById(R.id.PickerFragMenu)).addView(cv);
 
         cv.setOnDateChangeListener((Cv,Year,Month,Day)-> {
@@ -79,6 +93,7 @@ public class DatepickerFragment extends DialogFragment {
             ((TextView) getActivity().findViewById(R.id.RemFragDateMonth)).setText((Month + 1) + "");
             ((TextView) getActivity().findViewById(R.id.RemFragDateDay)).setText(Day + "");
         });
+        ChildViewFinder(cv);*/
     }
 
     private void ChildViewFinder(ViewGroup vg){

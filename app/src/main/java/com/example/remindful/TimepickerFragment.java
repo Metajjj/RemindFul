@@ -39,7 +39,7 @@ public class TimepickerFragment extends DialogFragment {
         });
         getActivity().findViewById(R.id.PickerFragMenu).setOnClickListener(null);
 
-        TimePicker TP = new TimePicker(context,null,-1); //no style 3rd makes it rotating
+        TimePicker TP = new TimePicker(context,null, R.style.CalViewText); //no style 3rd makes it spinner
         TP.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         ((ViewGroup)getActivity().findViewById(R.id.PickerFragMenu)).addView(TP);
 
@@ -54,6 +54,8 @@ public class TimepickerFragment extends DialogFragment {
             ((TextView)getActivity().findViewById(R.id.RemFragTimeSec)).setText("00");
             ((TextView)getActivity().findViewById(R.id.RemFragTimeMin)).setText(Min+"");
             ((TextView)getActivity().findViewById(R.id.RemFragTimeHour)).setText(Hour+"");
+
+            ChildViewFinder(timePicker);
         });
 
         TypedArray ta = getActivity().obtainStyledAttributes(new int[]{R.attr.Title,R.attr.Interactable});
@@ -74,12 +76,12 @@ public class TimepickerFragment extends DialogFragment {
                 }catch (ClassCastException e) {
                     System.out.println("\t\t\t\t\t\t\t\tis child!");
 
-                    if(vg.getChildAt(i) instanceof TextView) {
+                    if (vg.getChildAt(i) instanceof TextView) {
                         TextView v = (TextView) vg.getChildAt(i);
                         //System.out.println( v.getText() ); //TxtVw is top part
-                        TypedArray ta = getActivity().obtainStyledAttributes(new int[]{R.attr.Title,R.attr.Interactable});
-                        v.setTextColor(ta.getColor(0,-1));
-                        vg.setBackgroundColor(ta.getColor(1,-1));
+                        TypedArray ta = getActivity().obtainStyledAttributes(new int[]{R.attr.Title, R.attr.Interactable});
+                        v.setTextColor(ta.getColor(0, -1));
+                        vg.setBackgroundColor(ta.getColor(1, -1));
 
                         ta.recycle();
                     }/*

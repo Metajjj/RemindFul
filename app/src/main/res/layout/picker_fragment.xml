@@ -9,22 +9,17 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:padding="8dp"
         android:id="@+id/PickerFragMenu"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="60dp"
         android:layout_marginTop="100dp"
         android:layout_marginEnd="60dp"
         android:layout_marginBottom="100dp"
-        android:background="?attr/Background"
+        android:background="?attr/Title"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-
-        <TextClock
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            />
 
         <!--DatePicker
             android:id="@+id/DateFragDP"
