@@ -108,6 +108,8 @@ public class NewNote extends AppCompatActivity {
             v.setOnClickListener(this::Save);
 
             findViewById(R.id.NewNoteCheckBox).setOnClickListener(this::Remind);
+
+            DH.close();
             },1300);
     }
 
@@ -120,7 +122,8 @@ public class NewNote extends AppCompatActivity {
 
             ContentValues CV = new ContentValues(); //Cant be single line
             CV.put(DH.YMDHMS,CalYMDHMS()); CV.put(DH.TITLE,((TextView) findViewById(R.id.NewNoteNoteTitle)).getText().toString()); CV.put(DH.NOTE,((TextView) findViewById(R.id.NewNoteNoteDetail)).getText().toString()); CV.put(DH.ID,DH.getAutoIncrement());
-            DH.getWritableDatabase().insert(DH.DBname,null,CV);
+            //DH.getWritableDatabase().insert(DH.DBname,null,CV);
+            DH.Insert(DH.DBname,null,CV);
 
             HashMap<String,String> HM = DH.CursorSorter(
                 DH.getReadableDatabase().query(DH.DBname,null,MessageFormat.format(

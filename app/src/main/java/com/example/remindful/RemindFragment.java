@@ -101,7 +101,6 @@ public class RemindFragment extends DialogFragment {
         getActivity().findViewById(R.id.RemFragButt).setOnClickListener(this::RemFragFinalCheck);
 
         //Date/Time PickerDialog  contain Date/Time Picker(s) inside a dialog..
-        // TODO : Date custom layout ?? Copy from DialogPicker - then same for TimePicker
         getActivity().findViewById(R.id.RemFragDateButt).setOnClickListener((v)->{
 
             /*

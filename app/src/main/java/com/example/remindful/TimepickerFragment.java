@@ -39,7 +39,7 @@ public class TimepickerFragment extends DialogFragment {
         });
         getActivity().findViewById(R.id.PickerFragMenu).setOnClickListener(null);
 
-        TimePicker TP = new TimePicker(context,null, R.style.CalViewText); //no style 3rd makes it spinner
+        TimePicker TP = new TimePicker(context,null); //no style 3rd makes it spinner
         TP.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         ((ViewGroup)getActivity().findViewById(R.id.PickerFragMenu)).addView(TP);
 
@@ -78,7 +78,7 @@ public class TimepickerFragment extends DialogFragment {
 
                     if (vg.getChildAt(i) instanceof TextView) {
                         TextView v = (TextView) vg.getChildAt(i);
-                        //System.out.println( v.getText() ); //TxtVw is top part
+                        System.out.println( v.getText() ); //TxtVw is top part
                         TypedArray ta = getActivity().obtainStyledAttributes(new int[]{R.attr.Title, R.attr.Interactable});
                         v.setTextColor(ta.getColor(0, -1));
                         vg.setBackgroundColor(ta.getColor(1, -1));

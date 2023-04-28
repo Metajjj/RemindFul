@@ -23,7 +23,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     protected int getAutoIncrement(){ return ++AutoIncrementVal; }
 
-    protected void ResetAutoIncrement_IDs(){
+    protected void RecheckAutoIncrement(){
+
+        //TODO what about notifications / pending intent??? -- dont rearrange DB just fill in gaps ??
         this.close();
         //Loop thru database = highest ID + 1
         ArrayList<HashMap<String,String>> Notes = CursorSorter( this.getReadableDatabase().query(DBname,new String[]{ID},null,null,null,null,ID+" ASC") );
@@ -33,8 +35,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             //System.out.println("i: "+ i +" | ID: "+CurrID);
             if(! CurrID.equals(i+"")){
                 //Update to fill up empty spots in ID
-                ContentValues CV = new ContentValues(); CV.put(ID,i);
-                this.getWritableDatabase().update(DBname,CV,ID+" = ?",new String[]{CurrID});
+                //ContentValues CV = new ContentValues(); CV.put(ID,i); this.getWritableDatabase().update(DBname,CV,ID+" = ?",new String[]{CurrID});
+                AutoIncrementVal=--i;
+                return;
             }
             //Update innate A_I to match my new latest ID
             if(i==Notes.size()){ AutoIncrementVal=i; }
@@ -43,10 +46,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         DatabaseHandler.this.close();
     }
 
+    protected void Insert(String TableName, String NullColHck, ContentValues CV){
+        //Put incr if lower better
+        RecheckAutoIncrement(); //Should insert automatically into empty slots in DB w o affecting rest of DB
+
+        CV.remove(ID); CV.put(ID,getAutoIncrement()); //Re-adds if better slot available else should be same
+        DatabaseHandler.this.getWritableDatabase().insert(TableName,NullColHck,CV);
+    }
+
     public DatabaseHandler(Context c) {
         super(c, "NoteList", null, 1);
-
-        ResetAutoIncrement_IDs(); //Streamlines IDs and such
     }
 
     protected void ResetTable() {

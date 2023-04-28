@@ -3,7 +3,9 @@ package com.example.remindful;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,7 +59,7 @@ public class DatepickerFragment extends DialogFragment {
         DP.setMinDate(Calendar.getInstance().getTimeInMillis());
 
         //Picking apart DatePicker widget to customise it
-         //ChildViewFinder(DP);
+         ///ChildViewFinder(DP);
         //DP -> LinLayouts -> 2x TxtVw (top/heading)
         //DP -> dayPickerView (background of calender) -> ImgButtons (left and right arrows) & DayPickerViewPager (??)
 
@@ -72,7 +74,7 @@ public class DatepickerFragment extends DialogFragment {
             cv.getDateTextAppearance()
         );
 
-        //todo ---------------------------
+
 
         TypedArray ta = getActivity().obtainStyledAttributes(new int[]{R.attr.Title,R.attr.Interactable, R.attr.Text});
         //getResources().getResourceName(R.style.CalViewText)
@@ -82,8 +84,6 @@ public class DatepickerFragment extends DialogFragment {
         //classcast err
 
          //https://stackoverflow.com/questions/14980242/small-numbers-in-calendarview-android/36321828#36321828
-
-        //TODO calenderView -> datepick & text clock -> timepick ??
 
         ((ViewGroup)getActivity().findViewById(R.id.PickerFragMenu)).addView(cv);
 
@@ -119,7 +119,11 @@ public class DatepickerFragment extends DialogFragment {
                         TypedArray ta = getActivity().obtainStyledAttributes(new int[]{R.attr.Title,R.attr.Interactable});
 
                         v.setBackgroundColor(ta.getColor(1,-1));
-                        vg.setBackgroundColor(ta.getColor(0,-1));
+                        //vg.setBackgroundColor( ta.getColor(0,-1) );
+                        (getActivity().findViewById(R.id.PickerFragMenu)).setBackgroundColor(ta.getColor(0,1));
+                        int MyPad = (int) Math.ceil(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,5,getResources().getDisplayMetrics()));
+                        //vg.setPadding(MyPad,MyPad,MyPad,MyPad);
+                        vg.setBackgroundColor(Color.parseColor("#DDDDDD"));
 
                         ta.recycle();
                     }/*

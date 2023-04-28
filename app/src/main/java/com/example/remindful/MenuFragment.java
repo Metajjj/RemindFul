@@ -61,5 +61,9 @@ public class MenuFragment extends DialogFragment {
             DatabaseHandler DH = new DatabaseHandler(context); DH.ResetTable(); DH.close();
             getActivity().findViewById(R.id.MenuFragBg).performClick();
         });
+
+        getActivity().findViewById(R.id.MenuFragMusic).setOnClickListener(v->{
+            startActivity(new Intent(context, BGM.class));
+        });
     }
 }

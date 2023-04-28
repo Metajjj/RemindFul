@@ -95,7 +95,7 @@ public class NotificationManagerCust {
         NotificationManagerCompat.from(context).cancel(Tag, ID);
          //No error from being called on one that doesnt exist
 
-        MainNotiUpdate(false);
+        MainNotiUpdate(false); //updates slowly??
     }
 
     protected void DestroyAllNotifications(){
