@@ -110,8 +110,13 @@ public class DeleteFragment extends DialogFragment {
     }
 
     private float DP2Pixel(float DP){
-        //PixeltoDP //TypedValue.COMPLEX_UNIT_PX
+        //PixeltoDP //TypedValue.COMPLEX_UNIT_PX -- apply dim returns px always
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,DP,getResources().getDisplayMetrics());
+
+        ////Use this for dimension convert PXtoDP DPtoPX
+        //Density vs dpi --similar
+        //float Dp = Pixel / getResources().getDisplayMetrics().densityDpi;
+        //float Pixel = Dp * getResources().getDisplayMetrics().density;
     }
 
     private TableRow SetupRow(String Title){

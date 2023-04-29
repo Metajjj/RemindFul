@@ -1,9 +1,19 @@
 package com.example.remindful;
 
 import android.Manifest;
+import android.content.res.TypedArray;
+import android.graphics.Typeface;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.TextUtils;
+import android.view.Gravity;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -21,6 +31,8 @@ public class BGM extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         SetupPermGrabber();
 
+        MediaBGM.setLooping(true); //Loop true for media
+
         super.onCreate(savedInstanceState);
 
         Objects.requireNonNull(getSupportActionBar()).hide(); //Hides default header
@@ -29,6 +41,9 @@ public class BGM extends AppCompatActivity {
         Toast.makeText(this,"Needs permission to find and play your songs!",Toast.LENGTH_LONG).show();
 
         GrabPerms();
+
+        for (String fpath: FileList ) { SetupRow(fpath); }
+
     }
 
     ActivityResultLauncher<String> ARL;
@@ -66,24 +81,111 @@ public class BGM extends AppCompatActivity {
         );
 
         GrabMfiles(Environment.getExternalStorageDirectory()); //Appears to get the general files
-        System.out.println("======"); System.out.println(FileList.toString());
-        FileList = new ArrayList<>();
-        GrabMfiles(Environment.getRootDirectory()); //Appears to access system reserved storage
-        System.out.println("======"); System.out.println(FileList.toString());
+        System.out.println(FileList.toString());
+        //FileList = new ArrayList<>();
+        //GrabMfiles(Environment.getRootDirectory()); //Appears to access system reserved storage
+        //System.out.println(FileList.toString());
     }
 
-    //TODO NPE for rootdir
     private void GrabMfiles(File F){
         if(F.isDirectory() && F.listFiles() != null){
             for(File f : F.listFiles()){
                 if (f.isFile() && f.getName().endsWith(".mp3") | f.getName().endsWith(".mp4") | f.getName().endsWith(".ogg") | f.getName().endsWith(".wav")){
                     //System.out.println("File: "+f.getName());
-                    FileList.add(f.getName()+"|"+f.getAbsolutePath());
+                    if (! FileList.contains(f.getAbsolutePath()) ) { FileList.add(f.getAbsolutePath()); }
                 }else{
                     GrabMfiles(f);
                 }
             }
         }
+    }
+
+    private void SetupRow(String Txt){
+        TableRow TR = new TableRow(this);
+        TextView TV1 = new TextView(this), TV2= new TextView(this);
+
+        //TableRow
+        TR.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+        TypedArray ta = this.obtainStyledAttributes(new int[]{R.attr.Text});
+        int TxtCol = ta.getColor(0,-1);
+
+        //TV1
+        TV1.setLayoutParams(new TableRow.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT,2));
+        TV1.setSingleLine(true);
+        TV1.setMaxLines(1);
+        TV1.setTypeface(null, Typeface.BOLD);
+        int DP8padPx= (int) Math.ceil(
+                8 * getResources().getDisplayMetrics().density
+        );
+        TV1.setPadding(DP8padPx,DP8padPx,DP8padPx,DP8padPx);
+        TV1.setTextSize( (int) Math.ceil(
+                20 * getResources().getDisplayMetrics().density )
+        );
+        TV1.setGravity(Gravity.CENTER); TV1.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        TV1.setTextColor(TxtCol);
+        TV1.setEllipsize(TextUtils.TruncateAt.START);
+        TV1.setText(Txt);
+        TV1.setOnClickListener(this::ShowFullPath);
+
+        //TV2
+        TV2.setLayoutParams(new TableRow.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT,0.5f));
+        TV2.setSingleLine(true);
+        TV2.setMaxLines(1);
+        TV2.setTypeface(null, Typeface.BOLD);
+        TV2.setPadding(DP8padPx,DP8padPx,DP8padPx,DP8padPx);
+        TV2.setTextSize(
+                20 * getResources().getDisplayMetrics().densityDpi //todo fix size
+        );
+        TV2.setGravity(Gravity.CENTER); TV2.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        TV2.setTextColor(TxtCol);
+        TV2.setText(PlaySymbol);
+        TV2.setOnClickListener(this::PlayPause);
+
+        //Add to TL
+        TR.addView(TV1,0);TR.addView(TV2,1); //TR alrdy has child ??????
+        TableLayout TL = findViewById(R.id.BGM_Table);
+        TL.addView(TR); //TL alrdy has child ??????
+
+        ta.recycle();
+    }
+
+    private void ShowFullPath(View v){
+        TextView tv = (TextView) v;
+        Toast.makeText(this,tv.getText(),Toast.LENGTH_SHORT).show();
+    }
+
+    private final static MediaPlayer MediaBGM = new MediaPlayer();
+    private String PlaySymbol="▶️", PauseSymbol="⏸️", CurrSong="";
+
+    private void PlayPause(View v){
+        v.setOnClickListener(null); //Avoid spamming and other potential problems during media change
+
+        TextView tv = (TextView) v;
+        String songLoc = ((TextView)((TableRow)tv.getParent()).getChildAt(0)).getText().toString(); //Filepath always left/first
+        if(tv.getText().toString().equals(PlaySymbol)){
+            tv.setText(PauseSymbol);
+
+            //If isnt curr paused, prepare it!
+            if(! CurrSong.equals(songLoc) ){
+                try {
+                    MediaBGM.reset();
+                    MediaBGM.setDataSource(songLoc); MediaBGM.prepare();
+                    CurrSong=songLoc;
+                } catch (Exception e) {
+                    System.err.println(""+e); Toast.makeText(this, "Error occured playing, possibly file moved!", Toast.LENGTH_SHORT).show();
+                }
+            }else{
+                MediaBGM.start(); //Continue if curr song
+            }
+            ////todo fix sort 3 paths -- same song paused -- new song to play -- pause curr song
+        }else{
+            tv.setText(PlaySymbol);
+            //Remove/pause song from media player
+            MediaBGM.pause();
+        }
+
+        v.setOnClickListener(this::PlayPause);
     }
 }
 
