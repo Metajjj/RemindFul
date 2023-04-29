@@ -11,6 +11,10 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Objects;
+
 public class BGM extends AppCompatActivity {
 
     @Override
@@ -19,7 +23,10 @@ public class BGM extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
 
+        Objects.requireNonNull(getSupportActionBar()).hide(); //Hides default header
+        setContentView(R.layout.bgm);
 
+        Toast.makeText(this,"Needs permission to find and play your songs!",Toast.LENGTH_LONG).show();
 
         GrabPerms();
     }
@@ -51,10 +58,32 @@ public class BGM extends AppCompatActivity {
         GrabMusic();
     }
 
+    private ArrayList<String> FileList = new ArrayList<>();
+
     private void GrabMusic(){
         System.out.println(
             Environment.getExternalStorageDirectory().toString() +"|"+ Environment.getRootDirectory()
         );
+
+        GrabMfiles(Environment.getExternalStorageDirectory()); //Appears to get the general files
+        System.out.println("======"); System.out.println(FileList.toString());
+        FileList = new ArrayList<>();
+        GrabMfiles(Environment.getRootDirectory()); //Appears to access system reserved storage
+        System.out.println("======"); System.out.println(FileList.toString());
+    }
+
+    //TODO NPE for rootdir
+    private void GrabMfiles(File F){
+        if(F.isDirectory() && F.listFiles() != null){
+            for(File f : F.listFiles()){
+                if (f.isFile() && f.getName().endsWith(".mp3") | f.getName().endsWith(".mp4") | f.getName().endsWith(".ogg") | f.getName().endsWith(".wav")){
+                    //System.out.println("File: "+f.getName());
+                    FileList.add(f.getName()+"|"+f.getAbsolutePath());
+                }else{
+                    GrabMfiles(f);
+                }
+            }
+        }
     }
 }
 

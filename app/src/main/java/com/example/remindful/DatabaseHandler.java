@@ -48,7 +48,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     protected void Insert(String TableName, String NullColHck, ContentValues CV){
         //Put incr if lower better
-        RecheckAutoIncrement(); //Should insert automatically into empty slots in DB w o affecting rest of DB
+        RecheckAutoIncrement(); //Should insert automatically into empty slots in DB w o affecting rest of DB existing rows
 
         CV.remove(ID); CV.put(ID,getAutoIncrement()); //Re-adds if better slot available else should be same
         DatabaseHandler.this.getWritableDatabase().insert(TableName,NullColHck,CV);
