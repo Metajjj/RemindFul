@@ -188,12 +188,9 @@ public class BGM extends AppCompatActivity {
         return Dr1.sameAs(Dr2);
     }
     private Bitmap DrwBtmp(Drawable dr){
-        Bitmap Res;
-        System.out.println("Comparing bits..");
+        if(dr instanceof BitmapDrawable){ return ((BitmapDrawable) dr).getBitmap(); }
 
-        if(dr instanceof BitmapDrawable){
-            return ((BitmapDrawable) dr).getBitmap();
-        }
+        Bitmap Res;
         int w= (dr.getIntrinsicWidth()<=0) ? 1 : dr.getIntrinsicWidth(), h = (dr.getIntrinsicHeight()<=0) ? 1 : dr.getIntrinsicHeight();
 
         Res = Bitmap.createBitmap(w,h, Bitmap.Config.ARGB_8888);
@@ -213,21 +210,20 @@ public class BGM extends AppCompatActivity {
         TextView tv = (TextView) v;
         String songLoc = ((TextView)((TableRow)tv.getParent()).getChildAt(0)).getText().toString(); //Filepath always left/first
 
-        //todo prepare for starting mult song
+        //todo prepare for starting mult song ?
 
         Drawable dr1 = tv.getBackground(), dr2 = ResourcesCompat.getDrawable(getResources(),R.drawable.tri,getTheme());
         //System.out.println("TvBg: "+dr1+" | Res: "+dr2.toString()+"\n Compared: "+CompareDrawables(dr1,dr2);
-        System.out.println("Comparing bit: "+ DrwBtmp(dr1).sameAs( DrwBtmp(dr2) ) );
+        //System.out.println("Comparing bit: "+ DrwBtmp(dr1).sameAs( DrwBtmp(dr2) ) );
 
         if( DrwBtmp(dr1).sameAs( DrwBtmp(dr2) ) ){
             //Loop and make everything else a play symbol
             TableLayout TL = findViewById(R.id.BGM_Table);
             for(int i=1;i<TL.getChildCount();i++){
-                TableRow TR = (TableRow) TL.getChildAt(i);
-                TextView TV2 = (TextView) TR.getChildAt(1);
-                tv.setBackgroundResource(R.drawable.tri); //todo doesnt overwrite and reset bg
-                TV2.setTextColor(ta.getColor(0,-1) );
-                System.out.println("MP reset all symbols");
+                TextView TV2 = (TextView) ((TableRow) TL.getChildAt(i)).getChildAt(1);
+
+                TV2.setBackgroundResource(R.drawable.tri);
+                //TV2.setTextColor(ta.getColor(0,-1) );
             }
 
 
@@ -256,7 +252,7 @@ public class BGM extends AppCompatActivity {
             }
         }else{
             tv.setBackgroundResource(R.drawable.tri);
-            tv.setTextColor( ta.getColor(0,-1) );
+            //tv.setTextColor( ta.getColor(0,-1) );
             //Remove/pause song from media player
             MediaBGM.pause();
             System.out.println("MP pause");

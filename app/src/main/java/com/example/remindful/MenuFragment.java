@@ -63,6 +63,8 @@ public class MenuFragment extends DialogFragment {
         });
 
         getActivity().findViewById(R.id.MenuFragMusic).setOnClickListener(v->{
+            getActivity().findViewById(R.id.MenuFragBg).performClick();
+
             startActivity(new Intent(context, BGM.class));
         });
     }

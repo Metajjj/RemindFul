@@ -17,13 +17,10 @@ import java.util.HashMap;
 import java.util.Objects;
 
 public class NewNote extends AppCompatActivity {
-    private DatabaseHandler DH;
     private String G_ID,G_YMDHMS; private Boolean DataExist=false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        DH = new DatabaseHandler(getApplicationContext());
-
         setTheme(new Home().Themes.get(new Home().ThemeNum));
 
         super.onCreate(savedInstanceState);
@@ -44,6 +41,8 @@ public class NewNote extends AppCompatActivity {
     }
 
     private void DataExists(HashMap<String,String> S){
+        DatabaseHandler DH = new DatabaseHandler(getApplicationContext());
+
         DataExist = true;
         ((TextView)findViewById(R.id.NewNoteTitle)).setText("Update Note");
 
@@ -52,6 +51,8 @@ public class NewNote extends AppCompatActivity {
 
         G_YMDHMS = S.get(DH.YMDHMS);
         G_ID = S.get(DH.ID);
+
+        DH.close();
     }
 
     private void Remind(View v){
@@ -109,11 +110,11 @@ public class NewNote extends AppCompatActivity {
 
             findViewById(R.id.NewNoteCheckBox).setOnClickListener(this::Remind);
 
-            DH.close();
             },1300);
     }
 
     private void TrueSave(){
+        DatabaseHandler DH = new DatabaseHandler(getApplicationContext());
 
         if(DataExist){
             Update();
@@ -137,10 +138,12 @@ public class NewNote extends AppCompatActivity {
                 DataExists(HM);
             },1300);
         }
+
+        DH.close();
     }
 
     private void Remind(){
-        //Set new activity... do stuff.. grab R_Time //If no diff between year/day/ wutevs.. dont convert to sec and ignore
+        DatabaseHandler DH = new DatabaseHandler(getApplicationContext());
         //Have to declare bundle outside
 
         ArrayList<HashMap<String,String>> AL = DH.CursorSorter( DH.getReadableDatabase().query(DH.DBname,null,null,null,null,null,DH.YMDHMS+" DESC"));
@@ -152,18 +155,20 @@ public class NewNote extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction().replace(R.id.NewNoteFragHolder,RemindFragment.class, b ).commit();
 
         findViewById(R.id.NewNoteFragHolder).bringToFront();
+
+        DH.close();
     }
 
     private void Update(){
+        DatabaseHandler DH = new DatabaseHandler(getApplicationContext());
+
         String title=((TextView)findViewById(R.id.NewNoteNoteTitle)).getText().toString();
         String note=((TextView)findViewById(R.id.NewNoteNoteDetail)).getText().toString();
 
-        //String Query = MessageFormat.format("UPDATE `{0}` SET `{1}` = \"{2}\", `{3}` = \"{4}\", `{5}` = {6} WHERE `{7}` = {8} AND `{9}` = {10}",DH.DBname, DH.TITLE, title, DH.NOTE, note, DH.YMDHMS, CalYMDHMS(), DH.ID, G_ID, DH.YMDHMS, G_YMDHMS);
-        //new Home().WriteLine(Query+"\n"+getIntent().getExtras().get("i"));
-        //DH.Writequery(Query);
-
         ContentValues CV = new ContentValues(); CV.put(DH.TITLE,title);CV.put(DH.NOTE,note);CV.put(DH.YMDHMS,CalYMDHMS());
         DH.getWritableDatabase().update(DH.DBname,CV,MessageFormat.format("{0}=? AND {1}=?",DH.ID,DH.YMDHMS),new String[]{G_ID,G_YMDHMS});
+
+        DH.close();
     }
 
 }

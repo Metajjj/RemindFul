@@ -26,10 +26,8 @@ public class Home2 extends AppCompatActivity {
     //CTRL SHIFT +   opens all brackets
     //CTRL SHIFT -   closes all brackets
 
-    private DatabaseHandler DH;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        DH = new DatabaseHandler(getApplicationContext());
         setTheme(new Home().Themes.get(new Home().ThemeNum));
 
         super.onCreate(savedInstanceState);
@@ -74,6 +72,8 @@ public class Home2 extends AppCompatActivity {
     }
 
     protected void switchy(){
+        DatabaseHandler DH = new DatabaseHandler(getApplicationContext());
+
         TextView tv = findViewById(R.id.home2ViewStyle);
         switch (tv.getText()+""){
             case "Recent":
@@ -85,9 +85,13 @@ public class Home2 extends AppCompatActivity {
             default:
                 Toast.makeText(this, "ERROR OCCURRED!", Toast.LENGTH_SHORT).show();
         }
+
+        DH.close();
     }
 
     private void TempLoad(String sort){
+        DatabaseHandler DH = new DatabaseHandler(getApplicationContext());
+
         ((TableLayout)findViewById(R.id.NewNoteTable)).removeAllViews();
 
         ArrayList<HashMap<String,String>> catc = DH.CursorSorter( DH.getReadableDatabase().query(DH.DBname,null,null,null,null,null,sort) );
@@ -102,6 +106,8 @@ public class Home2 extends AppCompatActivity {
                 Toast.makeText(this, "Serious error occured! If you have created a lot of notes, try wiping all notes to reset DB", Toast.LENGTH_SHORT).show();
             }
         }
+
+        DH.close();
     }
 
     private void Menu(){
@@ -110,6 +116,8 @@ public class Home2 extends AppCompatActivity {
     }
 
     private void OpenNote(View v){
+        DatabaseHandler DH = new DatabaseHandler(getApplicationContext());
+
         String ID = v.getTag()+"";
         if (ID.equals("")){ startActivity(new Intent(this,NewNote.class)); }
         else{
@@ -119,6 +127,8 @@ public class Home2 extends AppCompatActivity {
 
             startActivity(new Intent(Home2.this,NewNote.class).putExtra("i", o.get(0)));
         }
+
+        DH.close();
     }
 
     private void NotesMissing(){
@@ -196,6 +206,8 @@ public class Home2 extends AppCompatActivity {
     }
 
     private void DisplayNotes(ArrayList<HashMap<String,String>> notes){
+        DatabaseHandler DH = new DatabaseHandler(getApplicationContext());
+
         ArrayList<TextView[]> TVHldr = new ArrayList<>(); ArrayList<TextView> Notes=new ArrayList<>(),Titles=new ArrayList<>();
 
         for( HashMap<String,String> s : notes ) {
@@ -226,6 +238,8 @@ public class Home2 extends AppCompatActivity {
             //1,2,3 notes, titles 2?1?3?
             //new Home().WriteLine("CheckRows\n"+tv1.get(0).getText()+"|"+tv1.get(1).getText()+"\n"+tv2.get(0).getText()+"|"+tv2.get(1).getText());
         }
+
+        DH.close();
     }
 
     private float DPtoPixel(int DP){
