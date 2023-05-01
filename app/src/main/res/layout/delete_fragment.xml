@@ -46,8 +46,6 @@
                     android:padding="8dp"
 
                     android:textSize="31sp"
-
-                    android:background="@drawable/roundborderdel"
                     />
 
                 <CheckBox

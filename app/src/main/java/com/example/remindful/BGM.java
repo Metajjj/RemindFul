@@ -2,11 +2,13 @@ package com.example.remindful;
 
 import android.Manifest;
 import android.content.res.TypedArray;
+import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
@@ -20,6 +22,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -30,6 +33,8 @@ public class BGM extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         SetupPermGrabber();
+
+        setTheme(new Home().Themes.get(new Home().ThemeNum));
 
         MediaBGM.setLooping(true); //Loop true for media
 
@@ -42,8 +47,11 @@ public class BGM extends AppCompatActivity {
 
         GrabPerms();
 
-        for (String fpath: FileList ) { SetupRow(fpath); }
+        findViewById(R.id.BGM_URI).setOnClickListener(this::ShowFullPath);
 
+        new Handler().post(()->{
+            for (String fpath: FileList ) { SetupRow(fpath); }
+        });
     }
 
     ActivityResultLauncher<String> ARL;
@@ -107,7 +115,7 @@ public class BGM extends AppCompatActivity {
         //TableRow
         TR.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
-        TypedArray ta = this.obtainStyledAttributes(new int[]{R.attr.Text});
+        TypedArray ta = this.obtainStyledAttributes(new int[]{R.attr.Title});
         int TxtCol = ta.getColor(0,-1);
 
         //TV1
@@ -120,13 +128,17 @@ public class BGM extends AppCompatActivity {
         );
         TV1.setPadding(DP8padPx,DP8padPx,DP8padPx,DP8padPx);
         TV1.setTextSize( (int) Math.ceil(
-                20 * getResources().getDisplayMetrics().density )
+                5 * getResources().getDisplayMetrics().density )
         );
         TV1.setGravity(Gravity.CENTER); TV1.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         TV1.setTextColor(TxtCol);
         TV1.setEllipsize(TextUtils.TruncateAt.START);
         TV1.setText(Txt);
         TV1.setOnClickListener(this::ShowFullPath);
+        TV1.setOnLongClickListener(v->{
+            ShowFullPath(v);
+            return true;
+        });
 
         //TV2
         TV2.setLayoutParams(new TableRow.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT,0.5f));
@@ -134,13 +146,20 @@ public class BGM extends AppCompatActivity {
         TV2.setMaxLines(1);
         TV2.setTypeface(null, Typeface.BOLD);
         TV2.setPadding(DP8padPx,DP8padPx,DP8padPx,DP8padPx);
+        //float PxToDP = 20 * getResources().getDisplayMetrics().density; //System.out.println(PxToDP+" : DP == 20px"); 55dp
         TV2.setTextSize(
-                20 * getResources().getDisplayMetrics().densityDpi //todo fix size
+                55 / getResources().getDisplayMetrics().density
         );
         TV2.setGravity(Gravity.CENTER); TV2.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-        TV2.setTextColor(TxtCol);
-        TV2.setText(PlaySymbol);
+        TV2.setTextColor(TxtCol); ////todo doesnt work changing col for symbols -- all blue
+        TV2.setText( (CurrSong.equals(Txt)) ? PauseSymbol : PlaySymbol); //Make pause symbol if playing song
         TV2.setOnClickListener(this::PlayPause);
+
+        (ResourcesCompat.getDrawable(getResources(),R.drawable.tri,getTheme())).setColorFilter(TxtCol, PorterDuff.Mode.SRC_IN);
+        TV2.setBackgroundResource(R.drawable.tri);
+
+
+        //TV2.setColorFilter( TxtCol, android.graphics.PorterDuff.Mode.SRC_IN );
 
         //Add to TL
         TR.addView(TV1,0);TR.addView(TV2,1); //TR alrdy has child ??????
@@ -156,35 +175,63 @@ public class BGM extends AppCompatActivity {
     }
 
     private final static MediaPlayer MediaBGM = new MediaPlayer();
-    private String PlaySymbol="▶️", PauseSymbol="⏸️", CurrSong="";
+    private static String CurrSong=""; //Static to keep track when activity closed
+    private String PlaySymbol="▶", PauseSymbol="⏸"; //▶️ ⏸️
+    //todo make drawable??
 
     private void PlayPause(View v){
         v.setOnClickListener(null); //Avoid spamming and other potential problems during media change
 
+        TypedArray ta = this.obtainStyledAttributes(new int[]{R.attr.Title});
         TextView tv = (TextView) v;
         String songLoc = ((TextView)((TableRow)tv.getParent()).getChildAt(0)).getText().toString(); //Filepath always left/first
+
+        //todo prepare for starting mult song
+
         if(tv.getText().toString().equals(PlaySymbol)){
+            //Loop and make everything else a play symbol
+            TableLayout TL = findViewById(R.id.BGM_Table);
+            for(int i=1;i<TL.getChildCount();i++){
+                TableRow TR = (TableRow) TL.getChildAt(i);
+                TextView TV2 = (TextView) TR.getChildAt(1);
+                TV2.setText(PlaySymbol);
+                TV2.setTextColor(ta.getColor(0,-1) );
+                System.out.println("MP reset all symbols");
+            }
+
+
             tv.setText(PauseSymbol);
+
+            if(MediaBGM.isPlaying()){
+                MediaBGM.stop(); MediaBGM.reset();
+                System.out.println("MP stop + reset");
+            }
 
             //If isnt curr paused, prepare it!
             if(! CurrSong.equals(songLoc) ){
                 try {
                     MediaBGM.reset();
+
                     MediaBGM.setDataSource(songLoc); MediaBGM.prepare();
+                    System.out.println("MP data source + prepare");
                     CurrSong=songLoc;
+                    MediaBGM.start();
                 } catch (Exception e) {
-                    System.err.println(""+e); Toast.makeText(this, "Error occured playing, possibly file moved!", Toast.LENGTH_SHORT).show();
+                    System.err.println(""+e); Toast.makeText(this, "Error occured playing, possibly file moved!\nRecommended to re-enter page", Toast.LENGTH_SHORT).show();
                 }
             }else{
                 MediaBGM.start(); //Continue if curr song
+                System.out.println("MP resume");
             }
-            ////todo fix sort 3 paths -- same song paused -- new song to play -- pause curr song
         }else{
             tv.setText(PlaySymbol);
+            tv.setTextColor( ta.getColor(0,-1) );
             //Remove/pause song from media player
             MediaBGM.pause();
+            System.out.println("MP pause");
         }
 
+        ta.recycle();
         v.setOnClickListener(this::PlayPause);
     }
 }

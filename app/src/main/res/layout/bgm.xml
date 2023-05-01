@@ -34,6 +34,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TableLayout
+            android:background="?attr/Interactable"
             android:id="@+id/BGM_Table"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -58,9 +59,8 @@
                     android:textColor="?attr/Text"
                     android:padding="8dp"
 
-                    android:textSize="20dp"
+                    android:textSize="25dp"
 
-                    android:background="@drawable/roundborderdel"
                     />
 
                 <TextView
@@ -79,7 +79,6 @@
 
                     android:textSize="20dp"
                     />
-
             </TableRow>
         </TableLayout>
 

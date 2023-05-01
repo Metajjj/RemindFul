@@ -1,7 +1,7 @@
 package com.example.remindful;
 
 import android.content.Intent;
-import android.graphics.Color;
+import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
@@ -171,19 +171,23 @@ public class DeleteFragment extends DialogFragment {
     private void DelFragButtClicked(View v){
         //default set background to drawable.. on click make whole bg same col.. change txt from brown to yellow
         TableRow tr = (TableRow) v;
-        String TextCol="";
+        int TextCol=0;
         CheckBox cb = (CheckBox) tr.getChildAt(1);
         cb.setChecked( !cb.isChecked() );
 
-        if (cb.isChecked()){
-            TextCol="#f4d882";
-            tr.getChildAt(0).setBackgroundColor(Color.parseColor("#660000"));
+        TypedArray ta = this.getActivity().obtainStyledAttributes(new int[]{R.attr.Title,R.attr.Interactable,R.attr.Text});
+
+        if (cb.isChecked()){ //todo Sort Txt col here
+            TextCol= ta.getColor(0,-1); //title
+            tr.getChildAt(0).setBackgroundColor(ta.getColor(1,-1)); //Interactable
         }else{
-            TextCol="#6C5346";
+            TextCol=ta.getColor(2,-1); //text
             tr.getChildAt(0).setBackgroundResource(R.drawable.roundborderdel);
         }
 
-        ((TextView)tr.getChildAt(0)).setTextColor(Color.parseColor(TextCol));
+        ta.recycle();
+
+        ((TextView)tr.getChildAt(0)).setTextColor(TextCol);
     }
 
     private void DelFragDelBut(View v){

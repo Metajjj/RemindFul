@@ -16,39 +16,60 @@
     <!-- Main theme(s), declare the cols that attribute can access and treat as colours stated in format -->
 
     <style name="MainTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-        <item name="colorAccent">#00000000</item>
-        <item name="Background">#AB9866</item>
-        <item name="Title">#f4d882</item>
-        <item name="Interactable">#db863e</item>
-        <item name="Text">#59453F</item>
-        <item name="EditTextBorder">#c9a473</item>
+        <item name="Background">#FFAB9866</item>
+        <item name="Title">#FFf4d882</item>
+        <item name="Interactable">#FFdb863e</item>
+        <item name="Text">#FF6C5346</item>
+        <item name="EditTextBorder">#FFc9a473</item>
         <item name="FragBackground">#8F000000</item>
-        <item name="DelHighlight">#CAB377</item>
-        <item name="NoteTextBorder">#d9b453</item>
+        <item name="DelHighlight">#FFCAB377</item>
+        <item name="NoteTextBorder">#FFd9b453</item>
     </style>
 
     <style name="PinkTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-        <item name="Title">#F482EE</item>
-        <item name="Interactable">#5BDB3E</item>
-        <item name="Background">#AB66AA</item>
+        <item name="Title">#FFF482EE</item>
+        <item name="Interactable">#FF5BDB3E</item>
+        <item name="Background">#FFAB66AA</item>
         <item name="FragBackground">#8F491A51</item>
-        <item name="Text">#85C89F</item>
-        <item name="DelHighlight">#AA77CA</item>
-        <item name="EditTextBorder">#B37CBF</item>
-        <item name="NoteTextBorder">#9653D9</item>
+        <item name="Text">#FF85C89F</item>
+        <item name="DelHighlight">#FFAA77CA</item>
+        <item name="EditTextBorder">#FFB37CBF</item>
+        <item name="NoteTextBorder">#FF9653D9</item>
     </style>
 
     <style name="GrayTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-        <item name="Title">#FFFFFF</item>
-        <item name="Interactable">#AAAAAA</item>
-        <item name="Background">#999999</item>
+        <item name="Title">#FFFF</item>
+        <item name="Interactable">#FFAAAAAA</item>
+        <item name="Background">#FF999999</item>
         <item name="FragBackground">#8F000000</item>
-        <item name="Text">#DDDDDD</item>
-        <item name="DelHighlight">#BBBBBB</item>
-        <item name="EditTextBorder">#444444</item>
-        <item name="NoteTextBorder">#666666</item>
+        <item name="Text">#FFDDDDDD</item>
+        <item name="DelHighlight">#FFBBBBBB</item>
+        <item name="EditTextBorder">#FF444444</item>
+        <item name="NoteTextBorder">#FF666666</item>
     </style>
 
-    <!-- TODO: more themes -->
+    <style name="GreenTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <item name="Title">#FFDD4D4D</item>
+        <item name="Interactable">#FF99D651</item>
+        <item name="Background">#FF075E05</item>
+        <item name="FragBackground">#8F095309</item>
+        <item name="Text">#FFEA0E0E</item>
+        <item name="DelHighlight">#FF712F2F</item>
+        <item name="EditTextBorder">#FF567806</item>
+        <item name="NoteTextBorder">#FF37915A</item>
+    </style>
+
+    <style name="BlueTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <item name="Title">#FFFFEE00</item>
+        <item name="Interactable">#FF52C5E3</item>
+        <item name="Background">#FF0065FF</item>
+        <item name="FragBackground">#8F0065FF</item>
+        <item name="Text">#FFe7dd50</item>
+        <item name="DelHighlight">#FFA10404</item>
+        <item name="EditTextBorder">#FF18AAAA</item>
+        <item name="NoteTextBorder">#FF1e1bee</item>
+    </style>
+
+    <!-- TODO: more themes  Green+RedTxt -->
 
 </resources>
