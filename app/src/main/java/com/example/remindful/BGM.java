@@ -2,8 +2,12 @@ package com.example.remindful;
 
 import android.Manifest;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
@@ -151,15 +155,15 @@ public class BGM extends AppCompatActivity {
                 55 / getResources().getDisplayMetrics().density
         );
         TV2.setGravity(Gravity.CENTER); TV2.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-        TV2.setTextColor(TxtCol); ////todo doesnt work changing col for symbols -- all blue
-        TV2.setText( (CurrSong.equals(Txt)) ? PauseSymbol : PlaySymbol); //Make pause symbol if playing song
+        //TV2.setTextColor(TxtCol); ////todo doesnt work changing col for symbols -- all blue
+        //TV2.setText( (CurrSong.equals(Txt)) ? PauseSymbol : PlaySymbol); //Make pause symbol if playing song
         TV2.setOnClickListener(this::PlayPause);
 
+        //Setting up drawable resource
         (ResourcesCompat.getDrawable(getResources(),R.drawable.tri,getTheme())).setColorFilter(TxtCol, PorterDuff.Mode.SRC_IN);
-        TV2.setBackgroundResource(R.drawable.tri);
+        (ResourcesCompat.getDrawable(getResources(),R.drawable.octa,getTheme())).setColorFilter(TxtCol, PorterDuff.Mode.SRC_IN);
 
-
-        //TV2.setColorFilter( TxtCol, android.graphics.PorterDuff.Mode.SRC_IN );
+        TV2.setBackgroundResource( (CurrSong.equals(Txt)) ? R.drawable.octa : R.drawable.tri );
 
         //Add to TL
         TR.addView(TV1,0);TR.addView(TV2,1); //TR alrdy has child ??????
@@ -176,8 +180,31 @@ public class BGM extends AppCompatActivity {
 
     private final static MediaPlayer MediaBGM = new MediaPlayer();
     private static String CurrSong=""; //Static to keep track when activity closed
-    private String PlaySymbol="▶", PauseSymbol="⏸"; //▶️ ⏸️
-    //todo make drawable??
+    //private String PlaySymbol="▶", PauseSymbol="⏸"; //▶️ ⏸️
+
+    private boolean CmprDrw(Drawable dr1, Drawable dr2){
+        Bitmap Dr1 = DrwBtmp(dr1), Dr2 = DrwBtmp(dr2);
+
+        return Dr1.sameAs(Dr2);
+    }
+    private Bitmap DrwBtmp(Drawable dr){
+        Bitmap Res;
+        System.out.println("Comparing bits..");
+
+        if(dr instanceof BitmapDrawable){
+            return ((BitmapDrawable) dr).getBitmap();
+        }
+        int w= (dr.getIntrinsicWidth()<=0) ? 1 : dr.getIntrinsicWidth(), h = (dr.getIntrinsicHeight()<=0) ? 1 : dr.getIntrinsicHeight();
+
+        Res = Bitmap.createBitmap(w,h, Bitmap.Config.ARGB_8888);
+        Canvas C = new Canvas(Res);
+        dr.setBounds(0,0,C.getWidth(),C.getHeight());
+        dr.draw(C);
+
+        new Handler().post(()->{System.gc();}); //Memory intensive when dealing with bitmaps  best to preemptively deallocate
+
+        return Res;
+    }
 
     private void PlayPause(View v){
         v.setOnClickListener(null); //Avoid spamming and other potential problems during media change
@@ -188,19 +215,23 @@ public class BGM extends AppCompatActivity {
 
         //todo prepare for starting mult song
 
-        if(tv.getText().toString().equals(PlaySymbol)){
+        Drawable dr1 = tv.getBackground(), dr2 = ResourcesCompat.getDrawable(getResources(),R.drawable.tri,getTheme());
+        //System.out.println("TvBg: "+dr1+" | Res: "+dr2.toString()+"\n Compared: "+CompareDrawables(dr1,dr2);
+        System.out.println("Comparing bit: "+ DrwBtmp(dr1).sameAs( DrwBtmp(dr2) ) );
+
+        if( DrwBtmp(dr1).sameAs( DrwBtmp(dr2) ) ){
             //Loop and make everything else a play symbol
             TableLayout TL = findViewById(R.id.BGM_Table);
             for(int i=1;i<TL.getChildCount();i++){
                 TableRow TR = (TableRow) TL.getChildAt(i);
                 TextView TV2 = (TextView) TR.getChildAt(1);
-                TV2.setText(PlaySymbol);
+                tv.setBackgroundResource(R.drawable.tri); //todo doesnt overwrite and reset bg
                 TV2.setTextColor(ta.getColor(0,-1) );
                 System.out.println("MP reset all symbols");
             }
 
 
-            tv.setText(PauseSymbol);
+            tv.setBackgroundResource(R.drawable.octa);
 
             if(MediaBGM.isPlaying()){
                 MediaBGM.stop(); MediaBGM.reset();
@@ -224,7 +255,7 @@ public class BGM extends AppCompatActivity {
                 System.out.println("MP resume");
             }
         }else{
-            tv.setText(PlaySymbol);
+            tv.setBackgroundResource(R.drawable.tri);
             tv.setTextColor( ta.getColor(0,-1) );
             //Remove/pause song from media player
             MediaBGM.pause();
