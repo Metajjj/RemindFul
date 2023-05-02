@@ -50,6 +50,8 @@ public class DeleteFragment extends DialogFragment {
             getParentFragmentManager().beginTransaction().remove(DeleteFragment.this).commit();
             startActivity(new Intent(getContext().getApplicationContext(), Home2.class).setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP));
         });
+
+        //Deleting from table in database and activity
         getActivity().findViewById(R.id.DelFragButt).setOnClickListener(this::DelFragDelBut);
         final DatabaseHandler DH = new DatabaseHandler(getContext());
 
@@ -102,7 +104,12 @@ public class DeleteFragment extends DialogFragment {
             //action.resolve();
         //}).then((a,d)->{
 
-            ((View)(SelAllTv).getParent()).setOnClickListener(v-> DelFragTopButtClicked() );
+            ((View)(SelAllTv).getParent()).setOnClickListener(v->{
+                CheckBox cb = (CheckBox) ((ViewGroup)v).getChildAt(1);
+                cb.setChecked( ! cb.isChecked() ); //Reverse check of checkbox
+
+                DelFragTopButtClicked();
+            } );
 
             //a.resolve();
         //}).start();
@@ -163,7 +170,7 @@ public class DeleteFragment extends DialogFragment {
 
     private void DelFragTopButtClicked(){
         TableLayout TL = getActivity().findViewById(R.id.DelFragTable);
-        for(int i=0;i<TL.getChildCount();i++){
+        for(int i=1;i<TL.getChildCount();i++){
             DelFragButtClicked( TL.getChildAt(i) );
         }
     }
