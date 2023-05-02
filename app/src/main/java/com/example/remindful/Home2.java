@@ -147,11 +147,13 @@ public class Home2 extends AppCompatActivity {
                 }
         } }
 
-        for(int i=0;i<Notes.size();i+=3){
-            AddTblRow(new TextView[]{ Notes.get(i),Notes.get(i+1),Notes.get(i+2) },
-                    new TextView[]{ Titles.get(i),Titles.get(i+1),Titles.get(i+2) }
-            ); //1,2,3 notes, titles
-        }
+        new Handler().post(()-> {
+            for (int i = 0; i < Notes.size(); i += 3) {
+                AddTblRow(new TextView[]{Notes.get(i), Notes.get(i + 1), Notes.get(i + 2)},
+                        new TextView[]{Titles.get(i), Titles.get(i + 1), Titles.get(i + 2)}
+                ); //1,2,3 notes, titles
+            }
+        });
     }
 
     private void AddTblRow(TextView[] Notes3, TextView[] Titles3){

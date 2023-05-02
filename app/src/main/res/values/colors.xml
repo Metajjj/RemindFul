@@ -12,15 +12,6 @@
     -->
     <color name="GreenTick">#AA32C95E</color>
 
-    <color name="White">#FFFFFF</color>
-    <color name="Red">#FF0000</color>
-    <color name="Blue">#0000FF</color>
-    <color name="Green">#00FF00</color>
-    <color name="Yellow">#FFFF00</color>
-    <color name="Pink">#FF00FF</color>
-    <color name="Cyan">#00FFFF</color>
-    <color name="Black">#000000</color>
-
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
     <color name="purple_700">#FF3700B3</color>

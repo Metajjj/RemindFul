@@ -55,7 +55,7 @@
                     android:textStyle="bold"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
-                    android:text="Song location/name"
+                    android:text="Click for full name"
                     android:textColor="?attr/Text"
                     android:padding="8dp"
 
