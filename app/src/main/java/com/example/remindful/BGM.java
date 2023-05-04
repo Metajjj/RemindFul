@@ -155,7 +155,7 @@ public class BGM extends AppCompatActivity {
                 55 / getResources().getDisplayMetrics().density
         );
         TV2.setGravity(Gravity.CENTER); TV2.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-        //TV2.setTextColor(TxtCol); ////todo doesnt work changing col for symbols -- all blue
+        //TV2.setTextColor(TxtCol);
         //TV2.setText( (CurrSong.equals(Txt)) ? PauseSymbol : PlaySymbol); //Make pause symbol if playing song
         TV2.setOnClickListener(this::PlayPause);
 

@@ -78,8 +78,6 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.63" />
 
-        <!-- todo 4th one for music? -->
-
         <TextView
             android:id="@+id/MenuFragMusic"
             android:layout_width="match_parent"

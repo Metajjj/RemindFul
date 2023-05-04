@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TableLayout;
@@ -248,5 +249,15 @@ public class Home2 extends AppCompatActivity {
         //PixeltoDP
         ////get resources from frag - fix
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,DP,getApplicationContext().getResources().getDisplayMetrics());
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if( keyCode == KeyEvent.KEYCODE_BACK ){
+            System.out.println("Back key pressed!");
+            //check backstack?
+            startActivity(new Intent(this, Home.class));
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

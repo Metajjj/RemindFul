@@ -25,7 +25,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     protected void RecheckAutoIncrement(){
 
-        //TODO what about notifications / pending intent??? -- dont rearrange DB just fill in gaps ??
         this.close();
         //Loop thru database = highest ID + 1
         ArrayList<HashMap<String,String>> Notes = CursorSorter( this.getReadableDatabase().query(DBname,new String[]{ID},null,null,null,null,ID+" ASC") );

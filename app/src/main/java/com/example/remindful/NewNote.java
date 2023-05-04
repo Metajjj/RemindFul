@@ -1,8 +1,10 @@
 package com.example.remindful;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.TextView;
@@ -171,6 +173,15 @@ public class NewNote extends AppCompatActivity {
         DH.close();
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if( keyCode == KeyEvent.KEYCODE_BACK ){
+            System.out.println("Back key pressed!");
+            //check backstack?
+            startActivity(new Intent(this, Home2.class));
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 }
 
 

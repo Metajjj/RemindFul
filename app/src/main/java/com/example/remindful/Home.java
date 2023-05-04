@@ -26,6 +26,7 @@ public class Home extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+
         //Move to alt thread??
         new Handler().post(()-> {
             if (Themes.size() <= 1) {
@@ -66,8 +67,11 @@ public class Home extends AppCompatActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if( keyCode == KeyEvent.KEYCODE_BACK ){
-            System.out.println("Back key pressed to leave app!");
+            System.out.println("Back key pressed!");
             HomeLoadingHandler.removeCallbacksAndMessages(null);
+
+            finishAffinity(); //Closes app - avoid looping to home2
+            //System.runFinalization();
         }
         return super.onKeyDown(keyCode, event);
     }
