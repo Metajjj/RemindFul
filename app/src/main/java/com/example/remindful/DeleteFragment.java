@@ -43,6 +43,8 @@ public class DeleteFragment extends DialogFragment {
     public void onStart() {
         super.onStart();
 
+        Toast.makeText(getActivity(),"Hold-click titles to get full name!",Toast.LENGTH_LONG).show();
+
         //onClick listeners
 
         //Removing fragment
@@ -184,7 +186,7 @@ public class DeleteFragment extends DialogFragment {
 
         TypedArray ta = this.getActivity().obtainStyledAttributes(new int[]{R.attr.Title,R.attr.Interactable,R.attr.Text});
 
-        if (cb.isChecked()){ //todo Sort Txt col here
+        if (cb.isChecked()){
             TextCol= ta.getColor(0,-1); //title
             tr.getChildAt(0).setBackgroundColor(ta.getColor(1,-1)); //Interactable
         }else{
