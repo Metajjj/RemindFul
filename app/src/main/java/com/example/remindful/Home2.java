@@ -43,48 +43,43 @@ public class Home2 extends AppCompatActivity {
         super.onStart();
 
         findViewById(R.id.home2Menu).setOnClickListener(v-> Menu());
-        findViewById(R.id.home2ViewStyle).setOnClickListener(this::Switchy);
+        findViewById(R.id.home2ViewStyle).setOnClickListener(this::ChangeOrder);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        new Handler().post(()->{
-            findViewById(R.id.home2ViewStyle).performClick();
-            findViewById(R.id.home2ViewStyle).performClick();
-        });
+        new Handler().post(this::NewDisplayOrder);
     }
 
-    private void Switchy(View v){
+    //TODO change how switchy works so grabs db once and not based on txt switch
+    private void ChangeOrder(View v){
+        String Al="Alphabetical", Re="Recent";
         TextView tv = (TextView) v;
-        //new Home().WriteLine(tv.getText()+"");
-        switch (tv.getText()+""){
-            case "Recent":
-                switchy();
-                tv.setText("Alphabetical");
-                break;
-            case "Alphabetical":
-                switchy();
-                tv.setText("Recent");
-                break;
-            default:
-                Toast.makeText(this, "ERROR OCCURRED!", Toast.LENGTH_SHORT).show();
+        if(tv.getText().toString().equals(Re)){
+            tv.setText(Al);
+        }else if(tv.getText().toString().equals(Al)) {
+            tv.setText(Re);
+        } else{
+            Toast.makeText(this, "Error occured switching order!", Toast.LENGTH_SHORT).show();
+            return;
         }
+        NewDisplayOrder();
     }
 
-    protected void switchy(){
-        DatabaseHandler DH = new DatabaseHandler(getApplicationContext());
+    private void NewDisplayOrder(){
+        DatabaseHandler DH = new DatabaseHandler(this);
 
         TextView tv = findViewById(R.id.home2ViewStyle);
         switch (tv.getText()+""){
             case "Recent":
-                new Handler().post(()-> { TempLoad("`"+DH.TITLE+"` ASC,`"+DH.YMDHMS+"` DESC"); });
-                break;
-            case "Alphabetical":
                 new Handler().post(()-> { TempLoad("`"+DH.YMDHMS+"` DESC, `"+DH.TITLE+"` ASC"); });
                 break;
+            case "Alphabetical":
+                new Handler().post(()-> { TempLoad("`"+DH.TITLE+"` ASC,`"+DH.YMDHMS+"` DESC"); });
+                break;
             default:
-                Toast.makeText(this, "ERROR OCCURRED!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Err in NewDisplayOrder!", Toast.LENGTH_SHORT).show();
         }
 
         DH.close();

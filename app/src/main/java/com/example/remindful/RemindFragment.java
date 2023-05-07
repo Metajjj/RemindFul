@@ -395,8 +395,12 @@ public class RemindFragment extends DialogFragment {
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
 
             NotificationManagerCust CustNM = new NotificationManagerCust(context);
+
+            String rtime = CurrNote.get(DH.R_TIME); //YYYYMMDDhhmmss 0-3/4-5/6-7  8-9:10-11:12-13
+            rtime = rtime.substring(0,4)+"(Y)/"+rtime.substring(4,6)+"(M)/"+rtime.substring(6,8)+"(D)  "+rtime.substring(8,10)+"h:"+rtime.substring(10,12)+"m:"+rtime.substring(12,14)+"s";
+
             CustNM.BuildNotification(
-                     CustNM.NotificationBuilder(CurrNote.get(DH.TITLE),"Expand to see snippet of note!",CurrNote.get(DH.NOTE),
+                     CustNM.NotificationBuilder(CurrNote.get(DH.TITLE),""+rtime,CurrNote.get(DH.NOTE),
                              new Object[]{"Cancel Remind", PendingIntent.getBroadcast(context,LinkID*-1,new Intent(context,NotiActionHandler.class).putExtra("LinkageID",LinkID).putExtra("D1","RemindFulNoti").putExtra("Code","CANCEL"),PendingIntent.FLAG_MUTABLE) },
                              new Object[]{"Hide Noti (not cancel)", PendingIntent.getBroadcast(context,LinkID,new Intent(context,NotiActionHandler.class).putExtra("LinkageID",LinkID).putExtra("D1","RemindFulNoti").putExtra("Code","HIDE"),PendingIntent.FLAG_MUTABLE) },
                              null
