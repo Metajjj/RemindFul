@@ -107,7 +107,7 @@ public class Home2 extends AppCompatActivity {
     }
 
     private void Menu(){
-        getSupportFragmentManager().beginTransaction().replace(R.id.home2FragHolder, MenuFragment.class,null).commit();
+        getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.anim_in, R.anim.anim_out).replace(R.id.home2FragHolder, MenuFragment.class,null).commit();
         findViewById(R.id.home2FragHolder).bringToFront();
     }
 

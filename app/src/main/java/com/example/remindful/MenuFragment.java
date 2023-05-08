@@ -11,6 +11,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+import androidx.transition.TransitionInflater;
 
 public class MenuFragment extends DialogFragment {
 
@@ -20,6 +21,10 @@ public class MenuFragment extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater,container,savedInstanceState);
         context = getContext().getApplicationContext();
+
+        TransitionInflater TI = TransitionInflater.from(context);
+        /*setEnterTransition(TI.inflateTransition(R.anim.anim_in));
+        setExitTransition(TI.inflateTransition(R.anim.anim_out));*/
 
         return inflater.inflate(R.layout.menu_fragment, container, false);
     }
@@ -32,7 +37,7 @@ public class MenuFragment extends DialogFragment {
 
         //Remove fragment and updates activity
         getActivity().findViewById(R.id.MenuFragBg).setOnClickListener(v-> {
-            getParentFragmentManager().beginTransaction().remove(MenuFragment.this).commit();
+            getParentFragmentManager().beginTransaction().setCustomAnimations(R.anim.anim_in, R.anim.anim_out).remove(MenuFragment.this).commit();
             startActivity(new Intent(context, Home2.class).setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP));
         } );
 
