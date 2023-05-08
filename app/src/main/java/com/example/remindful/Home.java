@@ -39,6 +39,8 @@ public class Home extends AppCompatActivity {
                     if (i != Integer.MIN_VALUE) { Themes.add(i); }
                 }
             }
+            ((TextView)findViewById(R.id.HomeTitle)).setText(
+                    "RemindFul\n"+getResources().getResourceEntryName(Themes.get(ThemeNum))+" : "+ThemeNum+"/"+ (Themes.size()-1) );
         });
 
         setTheme(Themes.get(ThemeNum));
@@ -60,6 +62,7 @@ public class Home extends AppCompatActivity {
         ((ProgressBar)findViewById(R.id.HomeProBar)).getIndeterminateDrawable().setColorFilter(
                 ThemeTxtCol, android.graphics.PorterDuff.Mode.SRC_IN
         );
+
     }
 
     private Handler HomeLoadingHandler = new Handler();

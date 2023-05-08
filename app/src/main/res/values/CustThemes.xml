@@ -21,7 +21,7 @@
         <item name="Interactable">#FFdb863e</item>
         <item name="Text">#FF6C5346</item>
         <item name="EditTextBorder">#FFc9a473</item>
-        <item name="FragBackground">#8FAB9866</item>
+        <item name="FragBackground">#8F000000</item>
         <item name="DelHighlight">#FFCAB377</item>
         <item name="NoteTextBorder">#FFd9b453</item>
     </style>
@@ -30,7 +30,7 @@
         <item name="Title">#FFF482EE</item>
         <item name="Interactable">#FF5BDB3E</item>
         <item name="Background">#FFAB66AA</item>
-        <item name="FragBackground">#8FAB66AA</item>
+        <item name="FragBackground">#8F000000</item>
         <item name="Text">#FF85C89F</item>
         <item name="DelHighlight">#FFAA77CA</item>
         <item name="EditTextBorder">#FFB37CBF</item>
@@ -38,10 +38,10 @@
     </style>
 
     <style name="GrayTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-        <item name="Title">#FFFF</item>
+        <item name="Title">#FFFFFFFF</item>
         <item name="Interactable">#FF000000</item>
         <item name="Background">#FF999999</item>
-        <item name="FragBackground">#8F999999</item>
+        <item name="FragBackground">#8F000000</item>
         <item name="Text">#FFDDDDDD</item>
         <item name="DelHighlight">#FF606060</item>
         <item name="EditTextBorder">#FF444444</item>
@@ -53,7 +53,7 @@
         <item name="Title">#FFEA0E0E</item>
         <item name="Interactable">#FF99D651</item>
         <item name="Background">#FF075E05</item>
-        <item name="FragBackground">#8F095309</item>
+        <item name="FragBackground">#8F000000</item>
         <item name="Text">#FFDD4D4D</item>
         <item name="DelHighlight">#FF712F2F</item>
         <item name="EditTextBorder">#FF567806</item>
@@ -64,7 +64,7 @@
         <item name="Title">#FFFFEE00</item>
         <item name="Interactable">#FF52C5E3</item>
         <item name="Background">#FF0065FF</item>
-        <item name="FragBackground">#8F0065FF</item>
+        <item name="FragBackground">#8F000000</item>
         <item name="Text">#FFe7dd50</item>
         <item name="DelHighlight">#FFA10404</item>
         <item name="EditTextBorder">#FF18AAAA</item>
@@ -75,14 +75,46 @@
         <item name="Title">#FF000000</item>
         <item name="Interactable">#FFE89B57</item>
         <item name="Background">#FFFA7907</item>
-        <item name="FragBackground">#8FFA7907</item>
+        <item name="FragBackground">#8F000000</item>
         <item name="Text">#FFFFFFFF</item>
         <item name="DelHighlight">#F41D1D</item>
         <item name="EditTextBorder">#FFD1870A</item>
         <item name="NoteTextBorder">#FFCC5901</item>
     </style>
 
+    <style name="CherryBlossomTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <item name="Title">#FFE3E2E3</item>
+        <item name="Interactable">#FF801498</item>
+        <item name="Background">#FFE481E3</item>
+        <item name="FragBackground">#8F000000</item>
+        <item name="Text">#FFF3F3F3</item>
+        <item name="DelHighlight">#FFB61677</item>
+        <item name="EditTextBorder">#FFF61DC5</item>
+        <item name="NoteTextBorder">#FFC445E1</item>
+    </style>
 
+    <style name="PrimeTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <item name="Title">#F1E591</item>
+        <item name="Interactable">#FFBAB47A</item>
+        <item name="Background">#E1D1A9</item>
+        <item name="FragBackground">#8F000000</item>
+        <item name="Text">#FFFDFD00</item>
+        <item name="DelHighlight">#FFCD9C08</item>
+        <item name="EditTextBorder">#FF9F9F9E</item>
+        <item name="NoteTextBorder">#FFB8B8B6</item>
+    </style>
+
+    <!--todo black/dark green + white txt-->
+    <style name="WappTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <item name="Title">#FFE3E2E3</item>
+        <item name="Interactable">#FF801498</item>
+        <item name="Background">#FFE481E3</item>
+        <item name="FragBackground">#8F000000</item>
+        <item name="Text">#FFF3F3F3</item>
+        <item name="DelHighlight">#FFB61677</item>
+        <item name="EditTextBorder">#FFF61DC5</item>
+        <item name="NoteTextBorder">#FFC445E1</item>
+    </style>
 
     <!-- TODO: more themes -->
 

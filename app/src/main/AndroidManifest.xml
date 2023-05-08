@@ -17,7 +17,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/MainTheme"
+        android:theme="@style/PrimeTheme"
         tools:targetApi="31">
 
         <!--exported == let other apps access/run it-->
