@@ -21,7 +21,7 @@ public class MenuFragment extends DialogFragment {
         super.onCreateView(inflater,container,savedInstanceState);
         context = getContext().getApplicationContext();
 
-        //TransitionInflater TI = TransitionInflater.from(context); setEnterTransition(TI.inflateTransition(R.transition.transition)); setExitTransition(TI.inflateTransition(R.anim.anim_out));
+        //TransitionInflater TI = TransitionInflater.from(context); setEnterTransition(TI.inflateTransition(R.transition.transition)); setExitTransition(TI.inflateTransition(R.anim.frag_out));
         //Animations give more control than transitions
 
         return inflater.inflate(R.layout.menu_fragment, container, false);
@@ -36,7 +36,7 @@ public class MenuFragment extends DialogFragment {
         //Remove fragment and updates activity
         getActivity().findViewById(R.id.MenuFragBg).setOnClickListener(v-> {
             getParentFragmentManager().beginTransaction()
-                    .setCustomAnimations(R.anim.anim_in, R.anim.anim_out)
+                    .setCustomAnimations(R.anim.frag_in, R.anim.frag_out)
                     .remove(MenuFragment.this).commit();
             startActivity(new Intent(context, Home2.class).setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP));
         } );
@@ -56,7 +56,7 @@ public class MenuFragment extends DialogFragment {
             Toast.makeText(context,"Del time!",Toast.LENGTH_LONG).show();
 
             getParentFragmentManager().beginTransaction()
-                    .setCustomAnimations(R.anim.anim_in, R.anim.anim_out)
+                    .setCustomAnimations(R.anim.frag_in, R.anim.frag_out)
                     .replace(R.id.home2FragHolder,DeleteFragment.class,null).commit();
 
             getActivity().findViewById(R.id.home2FragHolder).bringToFront();

@@ -11,7 +11,7 @@
     <attr name="DelHighlight" format="color"/>
     <attr name="EditTextBorder" format="color"/>
     <attr name="NoteTextBorder" format="color"/>
-    <attr name="colorAccent" format="color"/>
+    <attr name="colorAccent" format="color"/>"
 
     <!-- Main theme(s), declare the cols that attribute can access and treat as colours stated in format -->
 

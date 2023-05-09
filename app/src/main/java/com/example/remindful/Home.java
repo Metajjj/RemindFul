@@ -89,7 +89,8 @@ public class Home extends AppCompatActivity {
 
             ThemeNum = (ThemeNum+1 >= Themes.size()) ? 0 : ++ThemeNum;
 
-            startActivity(new Intent(this,Home.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+            startActivity(new Intent(this,Home.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)/*, ActivityOptionsCompat.makeSceneTransitionAnimation(this).toBundle()*/);
+            overridePendingTransition(R.anim.activity_in,R.anim.activity_out); //anim
 
         });
 

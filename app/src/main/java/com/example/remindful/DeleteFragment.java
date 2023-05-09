@@ -50,7 +50,7 @@ public class DeleteFragment extends DialogFragment {
         //Removing fragment
         getActivity().findViewById(R.id.DelFragBg).setOnClickListener(v -> {
             getParentFragmentManager().beginTransaction()
-                    .setCustomAnimations(R.anim.anim_in, R.anim.anim_out)
+                    .setCustomAnimations(R.anim.frag_in, R.anim.frag_out)
                     .remove(DeleteFragment.this).commit();
 
             startActivity(new Intent(getContext().getApplicationContext(), Home2.class).setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP));

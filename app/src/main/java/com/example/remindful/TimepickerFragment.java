@@ -38,7 +38,7 @@ public class TimepickerFragment extends DialogFragment {
 
         getActivity().findViewById(R.id.PickerFragBg).setOnClickListener(v-> {
             getParentFragmentManager().beginTransaction()
-                    .setCustomAnimations(R.anim.anim_in, R.anim.anim_out)
+                    .setCustomAnimations(R.anim.frag_in, R.anim.frag_out)
                     .remove(TimepickerFragment.this).commit();
         });
         getActivity().findViewById(R.id.PickerFragMenu).setOnClickListener(null);

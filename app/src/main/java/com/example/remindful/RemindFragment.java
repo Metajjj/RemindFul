@@ -111,14 +111,14 @@ public class RemindFragment extends DialogFragment {
                 ));
             });*/
             getParentFragmentManager().beginTransaction()
-                    .setCustomAnimations(R.anim.anim_in, R.anim.anim_out)
+                    .setCustomAnimations(R.anim.frag_in, R.anim.frag_out)
                     .add( R.id.NewNoteFragHolder , DatepickerFragment.class, null ).commit();
         });
 
         //TimePickerDialog
         getActivity().findViewById(R.id.RemFragTimeButt).setOnClickListener((v)->{
             getParentFragmentManager().beginTransaction()
-                    .setCustomAnimations(R.anim.anim_in, R.anim.anim_out)
+                    .setCustomAnimations(R.anim.frag_in, R.anim.frag_out)
                     .add( R.id.NewNoteFragHolder , TimepickerFragment.class,null ).commit();
             /*
             ((TextView)getActivity().findViewById(R.id.RemFragTimeSec)).setText("00");
@@ -424,7 +424,7 @@ public class RemindFragment extends DialogFragment {
     private void RemFragCloseFrag(View v){
 
         getParentFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.anim_in, R.anim.anim_out)
+                .setCustomAnimations(R.anim.frag_in, R.anim.frag_out)
                 .remove(RemindFragment.this).commit();
     }
 }
