@@ -52,7 +52,6 @@ public class Home2 extends AppCompatActivity {
         new Handler().post(this::NewDisplayOrder);
     }
 
-    //TODO change how switchy works so grabs db once and not based on txt switch
     private void ChangeOrder(View v){
         String Al="Alphabetical", Re="Recent";
         TextView tv = (TextView) v;
@@ -102,7 +101,6 @@ public class Home2 extends AppCompatActivity {
                 Toast.makeText(this, "Serious error occured! If you have created a lot of notes, try wiping all notes to reset DB", Toast.LENGTH_SHORT).show();
             }
         }
-
         DH.close();
     }
 

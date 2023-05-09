@@ -46,7 +46,6 @@
         <item name="DelHighlight">#FF606060</item>
         <item name="EditTextBorder">#FF444444</item>
         <item name="NoteTextBorder">#FF666666</item>
-        <!-- TODO fix grey theme del highlight to compliment text -->
     </style>
 
     <style name="GreenTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
@@ -104,7 +103,6 @@
         <item name="NoteTextBorder">#FFB8B8B6</item>
     </style>
 
-    <!--todo black/dark green + white txt-->
     <style name="WappTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <item name="Title">#FFE3E2E3</item>
         <item name="Interactable">#29A544</item>
