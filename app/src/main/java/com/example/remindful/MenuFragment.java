@@ -36,7 +36,7 @@ public class MenuFragment extends DialogFragment {
         //Remove fragment and updates activity
         getActivity().findViewById(R.id.MenuFragBg).setOnClickListener(v-> {
             getParentFragmentManager().beginTransaction()
-                    //.setCustomAnimations(R.anim.anim_in, R.anim.anim_out)
+                    .setCustomAnimations(R.anim.anim_in, R.anim.anim_out)
                     .remove(MenuFragment.this).commit();
             startActivity(new Intent(context, Home2.class).setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP));
         } );
@@ -55,7 +55,9 @@ public class MenuFragment extends DialogFragment {
         getActivity().findViewById(R.id.MenuFragWipeSel).setOnClickListener(v-> {
             Toast.makeText(context,"Del time!",Toast.LENGTH_LONG).show();
 
-            getParentFragmentManager().beginTransaction().replace(R.id.home2FragHolder,DeleteFragment.class,null).commit();
+            getParentFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.anim.anim_in, R.anim.anim_out)
+                    .replace(R.id.home2FragHolder,DeleteFragment.class,null).commit();
 
             getActivity().findViewById(R.id.home2FragHolder).bringToFront();
         } );

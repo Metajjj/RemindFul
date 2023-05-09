@@ -49,7 +49,10 @@ public class DeleteFragment extends DialogFragment {
 
         //Removing fragment
         getActivity().findViewById(R.id.DelFragBg).setOnClickListener(v -> {
-            getParentFragmentManager().beginTransaction().remove(DeleteFragment.this).commit();
+            getParentFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.anim.anim_in, R.anim.anim_out)
+                    .remove(DeleteFragment.this).commit();
+
             startActivity(new Intent(getContext().getApplicationContext(), Home2.class).setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP));
         });
 
@@ -61,7 +64,7 @@ public class DeleteFragment extends DialogFragment {
         //Promise = new handler  -  avoid ui locking and waits
         //.always takes both reject and resolve //SyncPromise makes it wait for first function before next if multithreaded..
 
-        TextView SelAllTv = ((TextView)getActivity().findViewById(R.id.DelFragSelAll));
+        TextView SelAllTv = getActivity().findViewById(R.id.DelFragSelAll);
         SelAllTv.setText("Invert Selection");
         TableLayout TL = (getActivity().findViewById(R.id.DelFragTable));
 

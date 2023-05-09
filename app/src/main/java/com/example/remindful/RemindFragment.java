@@ -110,12 +110,16 @@ public class RemindFragment extends DialogFragment {
                         "Year: {0} | Month: {1} | Day: {2}",year,month,day
                 ));
             });*/
-            getParentFragmentManager().beginTransaction().add( R.id.NewNoteFragHolder , DatepickerFragment.class, null ).commit();
+            getParentFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.anim.anim_in, R.anim.anim_out)
+                    .add( R.id.NewNoteFragHolder , DatepickerFragment.class, null ).commit();
         });
 
         //TimePickerDialog
         getActivity().findViewById(R.id.RemFragTimeButt).setOnClickListener((v)->{
-            getParentFragmentManager().beginTransaction().add( R.id.NewNoteFragHolder , TimepickerFragment.class,null ).commit();
+            getParentFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.anim.anim_in, R.anim.anim_out)
+                    .add( R.id.NewNoteFragHolder , TimepickerFragment.class,null ).commit();
             /*
             ((TextView)getActivity().findViewById(R.id.RemFragTimeSec)).setText("00");
             TimePickerDialog TPD = new TimePickerDialog(getActivity(), (timePicker, H, M) -> {
@@ -273,11 +277,13 @@ public class RemindFragment extends DialogFragment {
             long CurrTime = cal.getTimeInMillis();
             cal.setTime(DF.parse(Datetime));
             //System.out.println(MessageFormat.format( "Curr: {0} | Inp: {1} | Res: {2}", cal.getTimeInMillis() ));
-            if (CurrTime >= cal.getTimeInMillis()){ throw new Exception("Date in past!"); }
+            if (CurrTime >= cal.getTimeInMillis()){
+                throw new Exception("Date in past!");
+            }
 
         } catch (Exception e) {
             System.out.println("Err: "+e);
-            Toast.makeText(context, "Disallowed date/time detected!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Unacceptable date/time detected!\nPossibly set in past?", Toast.LENGTH_SHORT).show();
             return;
         }
         //Given DateTime is acceptable
@@ -417,8 +423,8 @@ public class RemindFragment extends DialogFragment {
 
     private void RemFragCloseFrag(View v){
 
-        getParentFragmentManager().beginTransaction().remove(RemindFragment.this).commit();
-        //getActivity().findViewById(R.id.home2FragHolder).back
-        //startActivity(new Intent(context,Home2.class));
+        getParentFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.anim_in, R.anim.anim_out)
+                .remove(RemindFragment.this).commit();
     }
 }

@@ -5,7 +5,7 @@
     <!-- How long -->
 
     <!-- Right to Left -->
-    <translate android:fromYDelta="0%" android:toYDelta="100%"/>
+    <translate android:fromXDelta="0%" android:toXDelta="100%"/>
 
     <!-- Fade out -->
     <alpha android:fromAlpha="1" android:toAlpha="0"/>

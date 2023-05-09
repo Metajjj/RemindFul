@@ -15,6 +15,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import java.util.Calendar;
+
 
 public class TimepickerFragment extends DialogFragment {
 
@@ -35,7 +37,9 @@ public class TimepickerFragment extends DialogFragment {
         super.onStart();
 
         getActivity().findViewById(R.id.PickerFragBg).setOnClickListener(v-> {
-            getParentFragmentManager().beginTransaction().remove(TimepickerFragment.this).commit();
+            getParentFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.anim.anim_in, R.anim.anim_out)
+                    .remove(TimepickerFragment.this).commit();
         });
         getActivity().findViewById(R.id.PickerFragMenu).setOnClickListener(null);
 
@@ -48,6 +52,11 @@ public class TimepickerFragment extends DialogFragment {
         TP.setPaddingRelative(0,0,0,
                 (int) Math.floor(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,10,context.getResources().getDisplayMetrics()))
         );
+
+        //set init time
+        ((TextView)getActivity().findViewById(R.id.RemFragTimeSec)).setText("00");
+        ((TextView)getActivity().findViewById(R.id.RemFragTimeMin)).setText(Calendar.getInstance().get(Calendar.MINUTE) +"");
+        ((TextView)getActivity().findViewById(R.id.RemFragTimeHour)).setText(Calendar.getInstance().get(Calendar.HOUR_OF_DAY)+"");
 
         TP.setOnTimeChangedListener((timePicker, Hour, Min) -> {
             System.out.println("H:"+Hour+" M:"+Min);
@@ -69,16 +78,16 @@ public class TimepickerFragment extends DialogFragment {
     private void ChildViewFinder(ViewGroup vg){
         for (int i = 0; i<vg.getChildCount(); i++){
             try{
-                System.out.println(vg.getClass().getName() +" -> "+ vg.getChildAt(i).getClass().getName());
+                //System.out.println(vg.getClass().getName() +" -> "+ vg.getChildAt(i).getClass().getName());
 
                 try {
                     ChildViewFinder((ViewGroup) vg.getChildAt(i));
                 }catch (ClassCastException e) {
-                    System.out.println("\t\t\t\t\t\t\t\tis child!");
+                    //System.out.println("\t\t\t\t\t\t\t\tis child!");
 
                     if (vg.getChildAt(i) instanceof TextView) {
                         TextView v = (TextView) vg.getChildAt(i);
-                        System.out.println( v.getText() ); //TxtVw is top part
+                        //System.out.println( v.getText() ); //TxtVw is top part
                         TypedArray ta = getActivity().obtainStyledAttributes(new int[]{R.attr.Title, R.attr.Interactable});
                         v.setTextColor(ta.getColor(0, -1));
                         vg.setBackgroundColor(ta.getColor(1, -1));

@@ -40,7 +40,9 @@ public class DatepickerFragment extends DialogFragment {
         super.onStart();
 
         getActivity().findViewById(R.id.PickerFragBg).setOnClickListener(v-> {
-            getParentFragmentManager().beginTransaction().remove(DatepickerFragment.this).commit();
+            getParentFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.anim.anim_in, R.anim.anim_out)
+                    .remove(DatepickerFragment.this).commit();
         });
         getActivity().findViewById(R.id.PickerFragMenu).setOnClickListener(null);
 
@@ -99,7 +101,7 @@ public class DatepickerFragment extends DialogFragment {
     private void ChildViewFinder(ViewGroup vg){
         for (int i = 0; i<vg.getChildCount(); i++){
             try{
-                System.out.println(vg.getClass().getName() +" -> "+ vg.getChildAt(i).getClass().getName());
+                //System.out.println(vg.getClass().getName() +" -> "+ vg.getChildAt(i).getClass().getName());
 
                 try {
                     ChildViewFinder((ViewGroup) vg.getChildAt(i));
