@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.KeyEvent;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,6 +22,12 @@ public class Home extends AppCompatActivity {
     //MainTheme is default always present theme
 
     public static int ThemeNum = 0;
+
+    //Setting custom anims for each activity fired
+    @Override
+    public void startActivity(Intent i) { super.startActivity(i); overridePendingTransition(R.anim.activity_in,R.anim.activity_out); }
+    @Override
+    public void startActivity(Intent i, @Nullable Bundle o) { super.startActivity(i, o); overridePendingTransition(R.anim.activity_in,R.anim.activity_out); }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -68,15 +73,15 @@ public class Home extends AppCompatActivity {
     private Handler HomeLoadingHandler = new Handler();
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if( keyCode == KeyEvent.KEYCODE_BACK ){
-            System.out.println("Back key pressed!");
-            HomeLoadingHandler.removeCallbacksAndMessages(null);
+    public void onBackPressed() {
+        super.onBackPressed();
 
-            finishAffinity(); //Closes app - avoid looping to home2
-            //System.runFinalization();
-        }
-        return super.onKeyDown(keyCode, event);
+        System.out.println("Back key pressed!");
+        HomeLoadingHandler.removeCallbacksAndMessages(null);
+
+        finishAffinity(); //Closes app - avoid looping to home2
+        overridePendingTransition(R.anim.homescreen_in,R.anim.app_out);
+        //System.runFinalization();
     }
 
     @Override
@@ -89,8 +94,8 @@ public class Home extends AppCompatActivity {
 
             ThemeNum = (ThemeNum+1 >= Themes.size()) ? 0 : ++ThemeNum;
 
-            startActivity(new Intent(this,Home.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)/*, ActivityOptionsCompat.makeSceneTransitionAnimation(this).toBundle()*/);
-            overridePendingTransition(R.anim.activity_in,R.anim.activity_out); //anim
+            startActivity(new Intent(this,Home.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+            overridePendingTransition(R.anim.theme_in,R.anim.theme_out);
 
         });
 
@@ -99,6 +104,7 @@ public class Home extends AppCompatActivity {
         HomeLoadingHandler.postDelayed(() -> {
 
             startActivity(new android.content.Intent(this,Home2.class));
+            overridePendingTransition(R.anim.activity_in,R.anim.activity_out);
 
             //for(Field f : R.attr.class.getDeclaredFields()){ System.out.println("f: "+f); }
 

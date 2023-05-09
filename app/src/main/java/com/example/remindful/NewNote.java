@@ -4,13 +4,13 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -33,6 +33,12 @@ public class NewNote extends AppCompatActivity {
         //check for extra bundle intent crap and load it up === INSTERT => UPDATE colInfo /ALTER tableInfo
         try{ DataExists( (HashMap<String,String>) getIntent().getExtras().get("i")); } catch (Exception e){}
     }
+
+    //Setting custom anims for each activity fired
+    @Override
+    public void startActivity(Intent i) { super.startActivity(i); overridePendingTransition(R.anim.activity_in,R.anim.activity_out); }
+    @Override
+    public void startActivity(Intent i, @Nullable Bundle o) { super.startActivity(i, o); overridePendingTransition(R.anim.activity_in,R.anim.activity_out); }
 
     @Override
     protected void onStart() {
@@ -176,13 +182,21 @@ public class NewNote extends AppCompatActivity {
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if( keyCode == KeyEvent.KEYCODE_BACK ){
-            System.out.println("Back key pressed!");
-            //check backstack?
-            startActivity(new Intent(this, Home2.class));
+    public void onBackPressed() {
+        System.out.println("Back key pressed!");
+
+        //Check if any frag open
+        for(Fragment Frag : getSupportFragmentManager().getFragments()) {
+            //System.out.println("NumOfFrags: "+getSupportFragmentManager().getFragments().size()+" | Frag up: "+Frag.isAdded()+" | ID:"+Frag.getId());
+            if (Frag.isVisible()){
+                System.out.println("REMOVING FRAG");
+                getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.frag_in,R.anim.frag_out).remove(Frag).commit();
+                return;
+            }
         }
-        return super.onKeyDown(keyCode, event);
+        System.out.println("Backing activity");
+        startActivity(new Intent(this, Home2.class));
+        overridePendingTransition(R.anim.activity_in,R.anim.activity_out);
     }
 }
 

@@ -1,6 +1,7 @@
 package com.example.remindful;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -27,6 +28,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.fragment.app.Fragment;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -57,6 +59,12 @@ public class BGM extends AppCompatActivity {
             for (String fpath: FileList ) { SetupRow(fpath); }
         });
     }
+
+    //Setting custom anims for each activity fired
+    @Override
+    public void startActivity(Intent i) { super.startActivity(i); overridePendingTransition(R.anim.activity_in,R.anim.activity_out); }
+    @Override
+    public void startActivity(Intent i, @Nullable Bundle o) { super.startActivity(i, o); overridePendingTransition(R.anim.activity_in,R.anim.activity_out); }
 
     ActivityResultLauncher<String> ARL;
 
@@ -182,11 +190,6 @@ public class BGM extends AppCompatActivity {
     private static String CurrSong=""; //Static to keep track when activity closed
     //private String PlaySymbol="▶", PauseSymbol="⏸"; //▶️ ⏸️
 
-    private boolean CmprDrw(Drawable dr1, Drawable dr2){
-        Bitmap Dr1 = DrwBtmp(dr1), Dr2 = DrwBtmp(dr2);
-
-        return Dr1.sameAs(Dr2);
-    }
     private Bitmap DrwBtmp(Drawable dr){
         if(dr instanceof BitmapDrawable){ return ((BitmapDrawable) dr).getBitmap(); }
 
@@ -260,6 +263,24 @@ public class BGM extends AppCompatActivity {
 
         ta.recycle();
         v.setOnClickListener(this::PlayPause);
+    }
+
+    public void onBackPressed() {
+        System.out.println("Back key pressed!");
+
+        //Check if any frag open
+
+        for(Fragment Frag : getSupportFragmentManager().getFragments()) {
+            //System.out.println("NumOfFrags: "+getSupportFragmentManager().getFragments().size()+" | Frag up: "+Frag.isAdded()+" | ID:"+Frag.getId());
+            if (Frag.isVisible()){
+                System.out.println("REMOVING FRAG");
+                getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.frag_in,R.anim.frag_out).remove(Frag).commit();
+                return;
+            }
+        }
+        System.out.println("Backing activity");
+        startActivity(new Intent(this, Home2.class));
+        overridePendingTransition(R.anim.activity_in,R.anim.activity_out);
     }
 }
 
