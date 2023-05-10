@@ -113,22 +113,5 @@
         <item name="EditTextBorder">#FF206719</item>
         <item name="NoteTextBorder">#FF35774F</item>
     </style>
-
-    <!-- orange /red ? -->
-    <style name="BlueRedTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-        <item name="Title">#FFE3E2E3</item>
-        <item name="Interactable">#FF801498</item>
-        <item name="Background">#FFE481E3</item>
-        <item name="FragBackground">#8F000000</item>
-        <item name="Text">#FFF3F3F3</item>
-        <item name="DelHighlight">#FFB61677</item>
-        <item name="EditTextBorder">#FFF61DC5</item>
-        <item name="NoteTextBorder">#FFC445E1</item>
-    </style>
-
-    <style name="WIPTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-
-    </style>
-    <!-- TODO: more themes -->
-
+    
 </resources>

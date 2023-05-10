@@ -140,33 +140,6 @@ public class RemindFragment extends DialogFragment {
         });
     }
 
-    private void DDInterSet(int ResID, String Txt){
-        //Need to use this else stringRes err
-
-        switch(ResID){
-            case R.id.RemFragTimeHour:
-                Txt = ( Integer.parseInt(Txt) < 24 ) ? Txt : "";
-                break;
-            case R.id.RemFragTimeMin:
-                Txt = ( Integer.parseInt(Txt) < 60 ) ? Txt : "";
-                break;
-            case R.id.RemFragDateYear:
-                Txt = ( Integer.parseInt(Txt) >= Calendar.getInstance().get(Calendar.YEAR) ) ? Txt : "";
-                break;
-            case R.id.RemFragDateMonth:
-                Txt = ( Integer.parseInt(Txt) <= 12 ) ? Txt : "";
-                break;
-            case R.id.RemFragDateDay:
-                Txt = ( Integer.parseInt(Txt) <= 31 ) ? Txt : "";
-                break;
-        }
-
-        ((TextView)getActivity().findViewById(ResID)).setText(Txt);
-    }
-    private String DDInterGet(int ResID){
-        return ((TextView)getActivity().findViewById(ResID)).getText() +"";
-    }
-
     private void RemFragHourCheck(View v, boolean isFocused){
         //Guarantee check
         if (isFocused || ((TextView)v).getText().toString().equals("")){ return; }

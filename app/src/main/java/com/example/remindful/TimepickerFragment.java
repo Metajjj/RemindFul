@@ -59,7 +59,7 @@ public class TimepickerFragment extends DialogFragment {
         ((TextView)getActivity().findViewById(R.id.RemFragTimeHour)).setText(Calendar.getInstance().get(Calendar.HOUR_OF_DAY)+"");
 
         TP.setOnTimeChangedListener((timePicker, Hour, Min) -> {
-            System.out.println("H:"+Hour+" M:"+Min);
+            //System.out.println("H:"+Hour+" M:"+Min);
             ((TextView)getActivity().findViewById(R.id.RemFragTimeSec)).setText("00");
             ((TextView)getActivity().findViewById(R.id.RemFragTimeMin)).setText(Min+"");
             ((TextView)getActivity().findViewById(R.id.RemFragTimeHour)).setText(Hour+"");

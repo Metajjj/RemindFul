@@ -213,7 +213,7 @@ public class BGM extends AppCompatActivity {
         TextView tv = (TextView) v;
         String songLoc = ((TextView)((TableRow)tv.getParent()).getChildAt(0)).getText().toString(); //Filepath always left/first
 
-        //todo prepare for starting mult song ?
+        //// prepare for starting mult song ?
 
         Drawable dr1 = tv.getBackground(), dr2 = ResourcesCompat.getDrawable(getResources(),R.drawable.tri,getTheme());
         //System.out.println("TvBg: "+dr1+" | Res: "+dr2.toString()+"\n Compared: "+CompareDrawables(dr1,dr2);

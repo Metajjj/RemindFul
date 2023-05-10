@@ -1,5 +1,6 @@
 package com.example.remindful;
 
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
@@ -8,6 +9,7 @@ import android.os.Handler;
 import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TableLayout;
@@ -36,6 +38,43 @@ public class Home2 extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).hide(); //Hides default header
 
         setContentView(R.layout.home2);
+
+        //Add touch listeners to all views for gestures
+        ViewGroup BG = ((ViewGroup)findViewById(R.id.home2Bg));
+        BG.setOnTouchListener( (view,event) -> { CustTouchEvent(event); return true;} );
+        for(int i=0;i<BG.getChildCount();i++ ){
+            BG.getChildAt(i).setOnTouchListener( (view,event) -> { CustTouchEvent(event); return true;} );
+        }
+
+        new Handler().post(this::MovingTitle);
+    }
+
+    private void MovingTitle(){
+        TextView tv = findViewById(R.id.home2Title);
+
+        //todo progrmatically do anims
+
+        //android.graphics.Path p = new android.graphics.Path(); p.arcTo(null,0,0); //curves
+        ObjectAnimator oa = ObjectAnimator.ofFloat(tv,"translationX", 100 ); //Moves via x //get % of screen? - value is pixels
+
+        //Freezes blank
+        int cap=100;
+
+        if(cap>0) {
+            for (int i = 0; i < cap; i++) {
+                oa = ObjectAnimator.ofFloat(tv,"translationX",i);
+                oa.setDuration(10); oa.start();
+            }
+        } else{
+            for (int i = 0; i > cap; i--) {
+                oa = ObjectAnimator.ofFloat(tv,"translationX",i);
+                oa.setDuration(10); oa.start();
+            }
+        }
+        cap *= -1;
+
+        try{ Thread.sleep(5000); }catch (Exception e){}
+        MovingTitle();
     }
 
     //Setting custom anims for each activity fired
@@ -206,6 +245,7 @@ public class Home2 extends AppCompatActivity {
         TvNote.setText(note); TvTitle.setText(title);
         TvNote.setTag(""+TagID); TvTitle.setTag(""+TagID);
         TvNote.setOnClickListener(this::OpenNote); TvTitle.setOnClickListener(this::OpenNote);
+        TvNote.setOnLongClickListener(null); TvTitle.setOnLongClickListener(null);
         return new TextView[]{TvNote,TvTitle};
     }
 
@@ -270,5 +310,30 @@ public class Home2 extends AppCompatActivity {
         }
         System.out.println("Backing activity");
         startActivity(new Intent(this, Home.class));
+    }
+
+    //Gesture to animate in a frag for detailed view of notes ??
+    public boolean CustTouchEvent(MotionEvent event) {
+        // !! views on top stop click event
+        //https://developer.android.com/develop/ui/views/touch-and-input/gestures/detector#capture-touch-events-for-an-activity-or-view
+
+        System.out.println("event: "+event);
+
+        //Down = click down | Up = release | Move = down + move
+        //Only detects when starting from top of activity??
+
+        switch ( event.getAction() ){
+            case (MotionEvent.ACTION_DOWN): System.out.println("MotionDown"); break;
+            case (MotionEvent.ACTION_MOVE): System.out.println("MotionMove"); break;
+            case (MotionEvent.ACTION_UP): System.out.println("MotionUp"); break;
+            case (MotionEvent.ACTION_OUTSIDE): System.out.println("MotionOutside"); break;
+            default: break;
+        }
+
+        //Get how long dragging for etc pos
+
+        //todo gestures and setup compat view frag
+
+        return super.onTouchEvent(event);
     }
 }
