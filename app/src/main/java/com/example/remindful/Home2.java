@@ -46,7 +46,7 @@ public class Home2 extends AppCompatActivity {
             BG.getChildAt(i).setOnTouchListener( (view,event) -> { CustTouchEvent(event); return true;} );
         }
 
-        new Handler().post(this::MovingTitle);
+        //new Handler().post(this::MovingTitle);
     }
 
     private void MovingTitle(){
@@ -313,20 +313,39 @@ public class Home2 extends AppCompatActivity {
     }
 
     //Gesture to animate in a frag for detailed view of notes ??
+    private float TouchX=0, PCT=TouchX;
     public boolean CustTouchEvent(MotionEvent event) {
         // !! views on top stop click event
         //https://developer.android.com/develop/ui/views/touch-and-input/gestures/detector#capture-touch-events-for-an-activity-or-view
 
-        System.out.println("event: "+event);
+        //System.out.println("event: "+event);
+        //System.out.println("X:"+event.getX()+" Y:"+event.getY()+" | "+getResources().getDisplayMetrics().widthPixels+":"+getResources().getDisplayMetrics().heightPixels);
+        //System.out.println( "1dp = "+ 1 * getResources().getDisplayMetrics().density );
+        //Y is greater as goes down , X is greater as goes right
 
         //Down = click down | Up = release | Move = down + move
         //Only detects when starting from top of activity??
 
         switch ( event.getAction() ){
-            case (MotionEvent.ACTION_DOWN): System.out.println("MotionDown"); break;
-            case (MotionEvent.ACTION_MOVE): System.out.println("MotionMove"); break;
-            case (MotionEvent.ACTION_UP): System.out.println("MotionUp"); break;
-            case (MotionEvent.ACTION_OUTSIDE): System.out.println("MotionOutside"); break;
+            case (MotionEvent.ACTION_DOWN): System.out.println("Mdown");
+                TouchX = event.getX();
+                break;
+            case (MotionEvent.ACTION_MOVE):
+                //Compare
+                PCT = ((event.getX() - TouchX) * getResources().getDisplayMetrics().density) /10 ;
+                System.out.println( PCT +"%" );
+                //Do animation thing update
+                break;
+            case (MotionEvent.ACTION_UP): System.out.println("Mup");
+                //If CurrX ~ = 100% .. new frag? new animation play else undo
+                if(PCT>=100){
+                    PCT=100;
+                    //let new frag appear  https://stackoverflow.com/questions/38594677/how-to-make-animation-programmatically
+                }else{
+                    PCT=0;
+                    //Undo anim..
+                }
+                break;
             default: break;
         }
 

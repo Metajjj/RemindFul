@@ -11,6 +11,10 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,8 +36,11 @@ public class Home extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
 
-        //Move to alt thread??
-        new Handler().post(()-> {
+        super.onCreate(savedInstanceState);
+        Objects.requireNonNull(getSupportActionBar()).hide(); //Hides default header
+
+        //new Handler().post(()-> {
+            // if Themes isnt set up (first launch of app since killed) - setup
             if (Themes.size() <= 1) {
                 for (Field f : R.style.class.getDeclaredFields()) {
                     if(f.getName().equals("MainTheme")){ continue; }
@@ -44,16 +51,35 @@ public class Home extends AppCompatActivity {
                     if (i != Integer.MIN_VALUE) { Themes.add(i); }
                 }
             }
-            ((TextView)findViewById(R.id.HomeTitle)).setText(
-                    "RemindFul\n"+getResources().getResourceEntryName(Themes.get(ThemeNum))+" : "+ThemeNum+"/"+ (Themes.size()-1) );
-        });
+        //});
 
-        setTheme(Themes.get(ThemeNum));
+        if ( ! new File(getApplicationContext().getFilesDir(), "F").exists() ){
+            //If file doesnt exist.. make it
+            try {
+                FileWriter FW = new FileWriter(new File(getApplicationContext().getFilesDir(), "F"));
+                FW.write( getResources().getResourceEntryName(Themes.get(ThemeNum)) ); FW.flush(); FW.close();
+            } catch (Exception e) {
+                System.err.println("Err making new file in internal\n "+e);
+            }
+        }
 
-        super.onCreate(savedInstanceState);
+        try {
+            BufferedReader bfr = new BufferedReader( new FileReader( new File(getApplicationContext().getFilesDir(), "F")) );
+            String l = bfr.readLine();
+            //System.out.println(MessageFormat.format( "Read: {0}  ID: {1} | CurrThemeID: {2}", l, getResources().getIdentifier(l, "style", getPackageName() ) , Themes.get(ThemeNum) ));
+            bfr.close();
 
-        Objects.requireNonNull(getSupportActionBar()).hide(); //Hides default header
+                                        //Find resID via name
+            ThemeNum = Themes.indexOf( getResources().getIdentifier(l, "style", getPackageName() ) );
+
+        }catch (Exception e){ System.err.println("Err w bfr? "+e); }
+
+        setTheme(Themes.get(ThemeNum)); //Have to set theme before layout
         setContentView(R.layout.home);
+
+        //Have to set after layout
+        ((TextView)findViewById(R.id.HomeTitle)).setText(
+                "RemindFul\n"+getResources().getResourceEntryName(Themes.get(ThemeNum))+" : "+ThemeNum+"/"+ (Themes.size()-1) );
 
         Toast.makeText(this, "!!!RECOMMENDED TO PUT THIS APP's NOTIFICATIONS AS SILENT!!!", Toast.LENGTH_LONG).show();
 
@@ -94,12 +120,19 @@ public class Home extends AppCompatActivity {
 
             ThemeNum = (ThemeNum+1 >= Themes.size()) ? 0 : ++ThemeNum;
 
+            //Record theme
+            try {
+                FileWriter FW = new FileWriter( new File(getApplicationContext().getFilesDir(), "F") );
+                FW.write( getResources().getResourceEntryName(Themes.get(ThemeNum)) ); FW.flush(); FW.close();
+            }catch (Exception e){ System.err.println("File Err: "+e); }
+
             startActivity(new Intent(this,Home.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
             overridePendingTransition(R.anim.theme_in,R.anim.theme_out);
 
         });
 
         super.onStart();
+
 
         HomeLoadingHandler.postDelayed(() -> {
 
@@ -109,5 +142,6 @@ public class Home extends AppCompatActivity {
             //for(Field f : R.attr.class.getDeclaredFields()){ System.out.println("f: "+f); }
 
         }, 3000);
+        // */
     }
 }

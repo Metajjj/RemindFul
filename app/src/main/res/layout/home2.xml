@@ -6,6 +6,15 @@
     android:layout_height="match_parent"
     android:background="?attr/Background">
 
+    <!-- TableLayout
+        android:id="@+id/home2DetailedView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_editor_absoluteX="100dp"
+        >
+
+    </TableLayout  -->
+
     <FrameLayout
         android:id="@+id/home2FragHolder"
         android:layout_width="match_parent"

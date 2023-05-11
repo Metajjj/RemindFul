@@ -127,7 +127,7 @@ public class DeleteFragment extends DialogFragment {
 
         ////Use this for dimension convert PXtoDP DPtoPX
         //Density vs dpi --similar
-        //float Dp = Pixel / getResources().getDisplayMetrics().densityDpi;
+        //float Dp = Pixel / getResources().getDisplayMetrics().density;
         //float Pixel = Dp * getResources().getDisplayMetrics().density;
     }
 
