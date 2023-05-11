@@ -39,6 +39,9 @@ public class Home2 extends AppCompatActivity {
 
         setContentView(R.layout.home2);
 
+        findViewById(R.id.home2DetailedView).setTranslationX( getResources().getDisplayMetrics().widthPixels *-1 );
+        //Moves left and hides view
+
         //Add touch listeners to all views for gestures
         ViewGroup BG = ((ViewGroup)findViewById(R.id.home2Bg));
         BG.setOnTouchListener( (view,event) -> { CustTouchEvent(event); return true;} );
@@ -334,7 +337,9 @@ public class Home2 extends AppCompatActivity {
                 //Compare
                 PCT = ((event.getX() - TouchX) * getResources().getDisplayMetrics().density) /10 ;
                 System.out.println( PCT +"%" );
-                //Do animation thing update
+                //Do animation thing update     -- auto adds on screen before new translation ?? - overrides?
+                findViewById(R.id.home2DetailedView).setTranslationX( getResources().getDisplayMetrics().widthPixels/100f*PCT );
+
                 break;
             case (MotionEvent.ACTION_UP): System.out.println("Mup");
                 //If CurrX ~ = 100% .. new frag? new animation play else undo
