@@ -11,6 +11,7 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -45,7 +46,13 @@ public class Home2 extends AppCompatActivity {
             BG.getChildAt(i).setOnTouchListener( this::CustTouchEvent );
         }
 
-        ViewGroup DV = findViewById(R.id.home2DvBg); DV.setOnClickListener(null);
+        ViewGroup DV = findViewById(R.id.home2DvBg); DV.setOnClickListener(v->{
+            DvOpen=0;
+            System.out.println("DV clciked");
+            v.startAnimation( AnimationUtils.loadAnimation(this,R.anim.activity_out) );
+            v.setTranslationX( getResources().getDisplayMetrics().widthPixels *-1 );
+
+        });
         for(int i=0;i<DV.getChildCount();i++){ DV.getChildAt(i).setOnClickListener(null); }
 
         findViewById(R.id.home2DvBg).setTranslationX(getResources().getDisplayMetrics().widthPixels *-1 ); //Moves left and hides view
@@ -303,7 +310,9 @@ public class Home2 extends AppCompatActivity {
         TableLayout mLayout = findViewById(R.id.home2DvTable);
         mLayout.addView(tr);
 
+        ta.recycle();
         if(Changed){ DetailedViewSetup(title,tag); }
+
     }
 
     private float DPtoPixel(int DP){
@@ -333,7 +342,7 @@ public class Home2 extends AppCompatActivity {
     }
 
     //programatic anim  https://stackoverflow.com/questions/38594677/how-to-make-animation-programmatically
-    private float TouchX=0, PCT=TouchX, DvOpen=PCT;  //todo MERGE BOTH TOUCH EVENTES? ALL AFFECTED NO DV
+    private float TouchX=0, PCT=TouchX, DvOpen=PCT;  //todo MERGE BOTH TOUCH EVENTS? ALL AFFECTED NO DV
     private boolean CustTouchEvent(View v,MotionEvent event) {
         // !! views on top stop click event
         //https://developer.android.com/develop/ui/views/touch-and-input/gestures/detector#capture-touch-events-for-an-activity-or-view
@@ -355,9 +364,14 @@ public class Home2 extends AppCompatActivity {
                 break;
             case (MotionEvent.ACTION_MOVE):
                 //Compare     TODO place at pointer x coord?
-                PCT = ((event.getX() - TouchX) * (getResources().getDisplayMetrics().density) * 0.1f);
-
-                PCT = (PCT > 100) ? 100 : PCT; //todo makes it flip between 100 and neg when removing
+                System.out.println("Gx: "+event.getX()+" Tx:"+TouchX);
+                if(DvOpen==0) {
+                    PCT = ((event.getX() - TouchX) * (getResources().getDisplayMetrics().density) * 0.1f);
+                    PCT = (PCT > 100) ? 100 : PCT; //todo makes it flip between 100 and neg when removing
+                }else if (DvOpen==1){
+                    PCT = ((TouchX - event.getX()) * (getResources().getDisplayMetrics().density) * 0.1f);
+                    PCT = (PCT>100) ? 100 : PCT;
+                }
 
                 System.out.println(PCT+"%");
 
@@ -384,6 +398,7 @@ public class Home2 extends AppCompatActivity {
                         Dv.setTranslationX(getResources().getDisplayMetrics().widthPixels * -1);
                     }
                 } else if (DvOpen==1) {
+                    /*
                     if (PCT <= 30) {
                         PCT = 0; DvOpen=0;
 
@@ -392,7 +407,7 @@ public class Home2 extends AppCompatActivity {
                         PCT = 100;
                         //Undo anim..
                         Dv.setTranslationX(0);
-                    }
+                    }*/
                 }
                 break;
             default:
