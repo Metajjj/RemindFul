@@ -11,7 +11,6 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AnimationUtils;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -46,17 +45,13 @@ public class Home2 extends AppCompatActivity {
             BG.getChildAt(i).setOnTouchListener( this::CustTouchEvent );
         }
 
-        ViewGroup DV = findViewById(R.id.home2DvBg); DV.setOnClickListener(v->{
-            DvOpen=0;
-            System.out.println("DV clciked");
-            v.startAnimation( AnimationUtils.loadAnimation(this,R.anim.activity_out) );
-            v.setTranslationX( getResources().getDisplayMetrics().widthPixels *-1 );
+        ViewGroup DV = findViewById(R.id.home2DvBg); DV.setOnClickListener(null); DV.setOnTouchListener(this::CustTouchEvent);
+        for(int i=0;i<DV.getChildCount();i++){ DV.getChildAt(i).setOnClickListener(null);
+            DV.getChildAt(i).setOnTouchListener(this::CustTouchEvent);
+        }
 
-        });
-        for(int i=0;i<DV.getChildCount();i++){ DV.getChildAt(i).setOnClickListener(null); }
-
-        findViewById(R.id.home2DvBg).setTranslationX(getResources().getDisplayMetrics().widthPixels *-1 ); //Moves left and hides view
-        findViewById(R.id.home2DvBg).bringToFront();
+        DV.setTranslationX(getResources().getDisplayMetrics().widthPixels *-1 ); //Moves left and hides view
+        DV.bringToFront(); //((ViewGroup)((ViewGroup)DV.getChildAt(1)).getChildAt(0)).removeAllViews();
     }
 
     //Setting custom anims for each activity fired
@@ -246,6 +241,7 @@ public class Home2 extends AppCompatActivity {
             ));
 
             new Handler().post(()->DetailedViewSetup(s.get(DH.TITLE)+"",s.get(DH.YMDHMS)+"-"+s.get(DH.ID)));
+            //DetailedViewSetup(s.get(DH.TITLE)+"",s.get(DH.YMDHMS)+"-"+s.get(DH.ID));
         }
 
         //Splits Cols into their rows/arrays
@@ -276,39 +272,49 @@ public class Home2 extends AppCompatActivity {
     private String RecentInputDate="";
     private void DetailedViewSetup(String title, String tag){
         boolean Changed=false;
-        TypedArray ta = this.obtainStyledAttributes(new int[]{R.attr.Text,R.attr.NoteTextBorder});
+        TypedArray ta = this.obtainStyledAttributes(new int[]{R.attr.Text,R.attr.NoteTextBorder, R.attr.DelHighlight});
         TableRow tr = new TableRow(this);
         TextView tv = new TextView(this);
 
         tv.setTextColor(ta.getColor(0,-1));
 
-        //reversing string so DD first      YYYYMMDDhhmmss
-        String RID = new StringBuilder(""+tag.split("-")[0].substring(0,8)).reverse().toString();
+        String RID = tag.split("-")[0].substring(0, 8);
+        //reversing string so DD first      YYYYMMDD
+        RID = ""+RID.substring(6)+"/"+RID.substring(4,6)+"/"+RID.substring(0,4);
+
+        TableRow.LayoutParams LP = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,TableRow.LayoutParams.WRAP_CONTENT); //To add margin where necessary
 
         if (! RID.equals(RecentInputDate)){
-            System.out.println("DV running changed..");
+            //System.out.println("DV running changed..");
             RecentInputDate = RID; Changed=true;
             int Dp5ToPix = (int) Math.ceil( 5 * getResources().getDisplayMetrics().density );
             tv.setPadding(Dp5ToPix,Dp5ToPix,Dp5ToPix,Dp5ToPix);
 
             //Grab DD/MM/YYYY
-            tv.setText(RID);
+            tv.setText(RID+""); //System.out.println("RID:" +RID);
+
+            LP.setMargins(0,(int) Math.ceil( 5 * getResources().getDisplayMetrics().density ),0,0);
+            tr.setBackgroundColor(ta.getColor(2,-1));
+
         }else{
-            System.out.println("DV running..");
+            //System.out.println("DV running..");
             tv.setBackgroundColor(ta.getColor(1,-1));
             tv.setTypeface(null, Typeface.BOLD);
 
             tv.setPadding((int) Math.ceil( 15 * getResources().getDisplayMetrics().density ),0,(int) Math.ceil( 5 * getResources().getDisplayMetrics().density ),0);
+            tv.setTag(""+tag);
 
-            tv.setText(title);
+            tv.setText(title+""); //System.out.println("Title:" +title);
+
+            tv.setOnClickListener(this::OpenNote);
         }
 
-        tr.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,TableRow.LayoutParams.WRAP_CONTENT));
-        tr.addView(tv,new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        tr.addView(tv,new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0));          //NEEDS WEIGHT TO DISPLAY?
+        tr.setPadding(10,10,10,10);
 
-        //todo not appearing
-        TableLayout mLayout = findViewById(R.id.home2DvTable);
-        mLayout.addView(tr);
+        tr.setLayoutParams( LP );
+        ((ViewGroup)findViewById(R.id.home2DvTable)).addView(tr);
+        //runOnUiThread(()->{mLayout.addView(tr); mLayout.invalidate(); mLayout.requestLayout();});
 
         ta.recycle();
         if(Changed){ DetailedViewSetup(title,tag); }
@@ -342,9 +348,8 @@ public class Home2 extends AppCompatActivity {
     }
 
     //programatic anim  https://stackoverflow.com/questions/38594677/how-to-make-animation-programmatically
-    private float TouchX=0, PCT=TouchX, DvOpen=PCT;  //todo MERGE BOTH TOUCH EVENTS? ALL AFFECTED NO DV
+    private float TouchX=0, PCT=TouchX, DvOpen=PCT;
     private boolean CustTouchEvent(View v,MotionEvent event) {
-        // !! views on top stop click event
         //https://developer.android.com/develop/ui/views/touch-and-input/gestures/detector#capture-touch-events-for-an-activity-or-view
 
         //System.out.println("event: "+event);
@@ -356,58 +361,70 @@ public class Home2 extends AppCompatActivity {
         //Only detects when starting from top of activity??
         ViewGroup Dv = findViewById(R.id.home2DvBg);
 
-        System.out.println("View: "+ getResources().getResourceEntryName(v.getId()) );
+        //System.out.println("View: "+ v.getClass().getName() );
 
         switch (event.getAction()) {
             case (MotionEvent.ACTION_DOWN): //System.out.println("Mdown");
-                TouchX = event.getX();
+                TouchX = event.getRawX();
                 break;
             case (MotionEvent.ACTION_MOVE):
                 //Compare     TODO place at pointer x coord?
-                System.out.println("Gx: "+event.getX()+" Tx:"+TouchX);
-                if(DvOpen==0) {
-                    PCT = ((event.getX() - TouchX) * (getResources().getDisplayMetrics().density) * 0.1f);
-                    PCT = (PCT > 100) ? 100 : PCT; //todo makes it flip between 100 and neg when removing
-                }else if (DvOpen==1){
-                    PCT = ((TouchX - event.getX()) * (getResources().getDisplayMetrics().density) * 0.1f);
-                    PCT = (PCT>100) ? 100 : PCT;
-                }
+                //System.out.println("Gx: " + event.getRawX() + " Tx:" + TouchX);
 
-                System.out.println(PCT+"%");
+                //Streamline into distance from 0 (far left) ??
 
-                 //Moving right => open DV
-                    //Do animation thing update     -- auto adds on screen before new translation ?? - overrides?
-
-                    Dv.setTranslationX(getResources().getDisplayMetrics().widthPixels * -1 + getResources().getDisplayMetrics().widthPixels / 100f * PCT);
+                if (DvOpen == 0) {
+                    PCT = ((event.getRawX() - TouchX) * (getResources().getDisplayMetrics().density) * 0.1f);
+                    PCT = (PCT > 100) ? 100 : PCT;
                     Dv.setAlpha(PCT / 100);
 
-                    //make neg percent go back for covering thing not straight off screen
+                        //0 = all on screen so *-1 hides it all.. then move it by percentage
+                    Dv.setTranslationX(getResources().getDisplayMetrics().widthPixels * -1 + getResources().getDisplayMetrics().widthPixels / 100f * PCT);
+                } else if (DvOpen == 1) {
+                    // *-1 doesnt work.. make it go from 100 to 0
+                    PCT = ((event.getRawX() - TouchX) * (getResources().getDisplayMetrics().density) * 0.1f) *-1;
+                    PCT = (PCT > 100) ? 100 : PCT;
+                    PCT = 100 - PCT; //Reverses PCT to go 100=>0
+                    Dv.setAlpha(PCT / 100);
+
+                        //  0 = on screen   -   by PCT of screen width
+                    Dv.setTranslationX(0 - getResources().getDisplayMetrics().widthPixels / 100f * (100-PCT));
+                }
+
+                //System.out.println("Dv open:" + DvOpen + " | " + PCT + "%");
+
+
+                //make neg percent go back for covering thing not straight off screen
 
                 break;
             case (MotionEvent.ACTION_UP): //System.out.println("Mup");
                 //If CurrX ~ = 100% .. new frag? new animation play else undo
-                if(DvOpen==0) {
+                if (DvOpen == 0) {
                     if (PCT >= 60) {
-                        PCT = 100; DvOpen=1;
+                        PCT = 100;
+                        DvOpen = 1;
 
                         Dv.setTranslationX(0);
-
+                        Dv.setAlpha(1);
                     } else {
                         PCT = 0;
                         //Undo anim..
                         Dv.setTranslationX(getResources().getDisplayMetrics().widthPixels * -1);
+                        Dv.setAlpha(0);
                     }
-                } else if (DvOpen==1) {
-                    /*
+                } else if (DvOpen == 1) {
                     if (PCT <= 30) {
-                        PCT = 0; DvOpen=0;
+                        PCT = 0;
+                        DvOpen = 0;
 
                         Dv.setTranslationX(getResources().getDisplayMetrics().widthPixels * -1);
+                        Dv.setAlpha(0);
                     } else {
                         PCT = 100;
                         //Undo anim..
                         Dv.setTranslationX(0);
-                    }*/
+                        Dv.setAlpha(1);
+                    }
                 }
                 break;
             default:

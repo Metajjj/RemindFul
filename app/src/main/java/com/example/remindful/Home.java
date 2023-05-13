@@ -72,6 +72,9 @@ public class Home extends AppCompatActivity {
                                         //Find resID via name
             ThemeNum = Themes.indexOf( getResources().getIdentifier(l, "style", getPackageName() ) );
 
+            //If theme doesnt exist i.e. changed name
+            ThemeNum = (Themes.get(ThemeNum) >= 0) ? ThemeNum : 0; //If exist, return it else make it start from 0  -- new theme auto written into file
+
         }catch (Exception e){ System.err.println("Err w bfr? "+e); }
 
         setTheme(Themes.get(ThemeNum)); //Have to set theme before layout
@@ -80,6 +83,7 @@ public class Home extends AppCompatActivity {
         //Have to set after layout
         ((TextView)findViewById(R.id.HomeTitle)).setText(
                 "RemindFul\n"+getResources().getResourceEntryName(Themes.get(ThemeNum))+" : "+ThemeNum+"/"+ (Themes.size()-1) );
+        //index = -1 | size = 13 ??
 
         Toast.makeText(this, "!!!RECOMMENDED TO PUT THIS APP's NOTIFICATIONS AS SILENT!!!", Toast.LENGTH_LONG).show();
 
