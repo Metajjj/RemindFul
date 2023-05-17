@@ -233,7 +233,7 @@ public class RemindFragment extends DialogFragment {
             return;
         }
 
-        System.out.println("CONFIRM REMIND");
+        //System.out.println("CONFIRM REMIND");
         SetupRemindWorker(Year.getText().toString() + Month.getText().toString() + Day.getText().toString() + Hour.getText().toString() + Min.getText().toString() + Sec.getText().toString());
     }
 

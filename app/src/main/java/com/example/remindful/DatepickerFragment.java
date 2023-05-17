@@ -17,7 +17,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-import java.text.MessageFormat;
 import java.util.Calendar;
 
 
@@ -52,7 +51,7 @@ public class DatepickerFragment extends DialogFragment {
         //getActivity().findViewById(R.id.PickerFragMenu).setLayoutParams(new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT));
 
         DP.init(0,0,0,(dp,Year,Month,Day)->{
-            System.out.println(MessageFormat.format("Y:{0}|M:{1}|D:{2}", Year,Month+1,Day));
+            //System.out.println(MessageFormat.format("Y:{0}|M:{1}|D:{2}", Year,Month+1,Day));
             ((TextView)getActivity().findViewById(R.id.RemFragDateYear)).setText(Year+"");
             ((TextView)getActivity().findViewById(R.id.RemFragDateMonth)).setText((Month+1)+"");
             ((TextView)getActivity().findViewById(R.id.RemFragDateDay)).setText(Day+"");

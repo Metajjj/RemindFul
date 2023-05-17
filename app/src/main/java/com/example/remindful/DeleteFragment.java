@@ -265,6 +265,7 @@ public class DeleteFragment extends DialogFragment {
         //System.out.println(Query);
         Toast.makeText(getContext(), "DELETED SELECTED!", Toast.LENGTH_SHORT).show();
 
+        //Has to stay as delete returns num of rows deleted as it deletes them
         System.out.println("Num of rows deleted: "+
         DH.getWritableDatabase().delete(DH.DBname,Query,
                 Args.toArray(new String[]{}))
@@ -273,7 +274,7 @@ public class DeleteFragment extends DialogFragment {
 
         for (ArrayList<String> IdTitleYmd : ToBeDel) {
             int ID = Integer.parseInt(IdTitleYmd.get(0)) +1;
-            System.out.println("Remove worker: id "+ ID);
+            //System.out.println("Remove worker: id "+ ID);
             new NotiActionHandler().onReceive(getContext(),new Intent(getContext().getApplicationContext(), DeleteFragment.class).putExtra("Code","CANCEL").putExtra("LinkageID",ID).putExtra("D1","RemindFulNoti"));
         }
     }

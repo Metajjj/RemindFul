@@ -12,6 +12,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -21,9 +24,30 @@ import java.util.Objects;
 public class NewNote extends AppCompatActivity {
     private String G_ID,G_YMDHMS; private Boolean DataExist=false;
 
+    private void GrabTheme(){
+        try {
+            new Home().SetupThemeList();
+
+            BufferedReader bfr = new BufferedReader( new FileReader( new File(getApplicationContext().getFilesDir(), "F")) );
+            String l = bfr.readLine();
+            //System.out.println(MessageFormat.format( "Read: {0} : ID: {1} | CurrThemeID: {2}", l, getResources().getIdentifier(l, "style", getPackageName() ) , Home.Themes.get(Home.ThemeNum) ));
+            bfr.close();
+
+            //Find resID via name
+            Home.ThemeNum = Home.Themes.indexOf( getResources().getIdentifier(l, "style", getPackageName() ) );
+
+            //If theme doesnt exist i.e. changed name
+            Home.ThemeNum = (Home.Themes.get(Home.ThemeNum) >= 0) ? Home.ThemeNum : 0; //If exist, return it else make it start from 0  -- new theme auto written into file
+
+        }catch (Exception e){ System.err.println("Err w bfr? "+e); }
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        setTheme(new Home().Themes.get(new Home().ThemeNum));
+        //Grab from file so that it works even if launched as activity
+        GrabTheme();
+
+        setTheme(Home.Themes.get(Home.ThemeNum));
 
         super.onCreate(savedInstanceState);
 

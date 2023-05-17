@@ -39,7 +39,7 @@ public class NotificationManagerCust {
             context.getSystemService(NotificationManager.class).createNotificationChannel(new NotificationChannel(NotiChannelID, NotiChannelID, NotificationManager.IMPORTANCE_DEFAULT));
         }
 
-        MainNotiUpdate(false);
+        MainNotiUpdate();
     }
 
     protected NotificationCompat.Builder NotificationBuilder(String Title, String SmallText , String ExpandText, @Nullable Object[] A1, @Nullable Object[] A2, @Nullable Object[] A3){
@@ -89,13 +89,13 @@ public class NotificationManagerCust {
 
         NotificationManagerCompat.from(context).notify(Tag,ID,NotiSetting.build());
 
-        MainNotiUpdate(false);
+        MainNotiUpdate();
     }
     protected void DestroyNotification(@Nullable String Tag, int ID) {
         NotificationManagerCompat.from(context).cancel(Tag, ID);
          //No error from being called on one that doesnt exist
 
-        MainNotiUpdate(false); //updates slowly??
+        MainNotiUpdate(); //updates slowly??
     }
 
     protected void DestroyAllNotifications(){
@@ -103,7 +103,7 @@ public class NotificationManagerCust {
 
     }
 
-    protected void MainNotiUpdate(boolean Destroyable){
+    protected void MainNotiUpdate(){
 
         //update main noti -- no deconstructors!
         if(ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_DENIED) { throw new Error("Permission missing!"); }
@@ -117,8 +117,8 @@ public class NotificationManagerCust {
         //Main Noti Settings
         NotificationCompat.Builder NBS = new NotificationCompat.Builder(context,NotiChannelID)
                 .setSmallIcon(R.drawable.cm) //Small Icon for noti that goes in top left
-                .setContentTitle( (Destroyable) ? "Swipe to Remove" : "Main Notification" ) //Noti title
-                .setContentText( (Destroyable) ? null : "Upcoming notifications/reminders (+ hidden): "+CurrNotes.size()) //Collapsed Noti txt
+                .setContentTitle( /*(Destroyable) ? "Swipe to Remove" :*/ "Main Notification" ) //Noti title
+                .setContentText( /*(Destroyable) ? null :*/ "Upcoming notifications/reminders (+ hidden): "+CurrNotes.size()) //Collapsed Noti txt
                 .setPriority(NotificationCompat.PRIORITY_HIGH) //Priority ?
                 //.setStyle(new NotificationCompat.BigTextStyle().bigText("Upcoming notifications/reminders: "+NumOfActiveNotis+"\nDON'T CLOSE APP FOR REMINDING TO WORK!")) //Expanded noti text
                 .setAutoCancel(false) //Anytap on noti = cancel/remove noti
@@ -129,7 +129,7 @@ public class NotificationManagerCust {
                 .addAction(0,"Show All",
                         PendingIntent.getBroadcast(context, Integer.MIN_VALUE,new Intent(context,NotiActionHandler.class).putExtra("D1","RemindFulMAINNoti").putExtra("Code","SHOWALL"),PendingIntent.FLAG_MUTABLE)
                 )
-                .setOngoing(! Destroyable) //Stops notification being swiped away
+                .setOngoing(true) //Stops notification being swiped away
         ;
 
         NotificationManagerCompat.from(context).notify(0,NBS.build());

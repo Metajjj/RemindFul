@@ -16,6 +16,8 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -28,9 +30,19 @@ public class Home2 extends AppCompatActivity {
     //CTRL SHIFT +   opens all brackets
     //CTRL SHIFT -   closes all brackets
 
+    private ActivityResultLauncher<String> ARL;
+    private void SetupPermGrab(){
+        ARL = registerForActivityResult(
+                new ActivityResultContracts.RequestPermission(),
+                result -> { }
+        );
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        setTheme(new Home().Themes.get(new Home().ThemeNum));
+        setTheme(Home.Themes.get(Home.ThemeNum));
+
+        SetupPermGrab();
 
         super.onCreate(savedInstanceState);
 
@@ -52,6 +64,16 @@ public class Home2 extends AppCompatActivity {
 
         DV.setTranslationX(getResources().getDisplayMetrics().widthPixels *-1 ); //Moves left and hides view
         DV.bringToFront(); //((ViewGroup)((ViewGroup)DV.getChildAt(1)).getChildAt(0)).removeAllViews();
+
+        /*
+        ARL.launch(Manifest.permission.KILL_BACKGROUND_PROCESSES);
+
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.KILL_BACKGROUND_PROCESSES) == PackageManager.PERMISSION_DENIED){
+            Snackbar s = Snackbar.make(BG,"OPTIONAL: enabling perm allows app to destroy itself via main notification",Snackbar.LENGTH_LONG);
+            TypedArray ta = this.obtainStyledAttributes(new int[]{R.attr.Text,R.attr.FragBackground});
+            s.setTextColor(ta.getColor(0,-1)); s.setBackgroundTint(ta.getColor(1,-1));
+            s.show();
+        }*/
     }
 
     //Setting custom anims for each activity fired
@@ -413,7 +435,7 @@ public class Home2 extends AppCompatActivity {
                         Dv.setAlpha(0);
                     }
                 } else if (DvOpen == 1) {
-                    if (PCT <= 30) {
+                    if (PCT <= 45) {
                         PCT = 0;
                         DvOpen = 0;
 
@@ -433,4 +455,5 @@ public class Home2 extends AppCompatActivity {
 
         return super.onTouchEvent(event);
     }
+
 }

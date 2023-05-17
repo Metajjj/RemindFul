@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,13 +28,26 @@ public class Home extends AppCompatActivity {
     public static ArrayList<Integer> Themes = new ArrayList<>(Arrays.asList(R.style.MainTheme));
     //MainTheme is default always present theme
 
-    public static int ThemeNum = 0;
+    public static int ThemeNum = 0; private static Toast toast = null;
 
     //Setting custom anims for each activity fired
     @Override
     public void startActivity(Intent i) { super.startActivity(i); overridePendingTransition(R.anim.activity_in,R.anim.activity_out); }
     @Override
     public void startActivity(Intent i, @Nullable Bundle o) { super.startActivity(i, o); overridePendingTransition(R.anim.activity_in,R.anim.activity_out); }
+
+    protected void SetupThemeList(){
+        if (Themes.size() <= 1) {
+            for (Field f : R.style.class.getDeclaredFields()) {
+                if(f.getName().equals("MainTheme")){ continue; }
+                //Avoids duplicating main theme
+
+                int i = Integer.MIN_VALUE;
+                try { i = f.getInt(null); } catch (Exception e) { }
+                if (i != Integer.MIN_VALUE) { Themes.add(i); }
+            }
+        }
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -41,16 +57,7 @@ public class Home extends AppCompatActivity {
 
         //new Handler().post(()-> {
             // if Themes isnt set up (first launch of app since killed) - setup
-            if (Themes.size() <= 1) {
-                for (Field f : R.style.class.getDeclaredFields()) {
-                    if(f.getName().equals("MainTheme")){ continue; }
-                    //Avoids duplicating main theme
-
-                    int i = Integer.MIN_VALUE;
-                    try { i = f.getInt(null); } catch (Exception e) { }
-                    if (i != Integer.MIN_VALUE) { Themes.add(i); }
-                }
-            }
+            SetupThemeList();
         //});
 
         if ( ! new File(getApplicationContext().getFilesDir(), "F").exists() ){
@@ -85,7 +92,10 @@ public class Home extends AppCompatActivity {
                 "RemindFul\n"+getResources().getResourceEntryName(Themes.get(ThemeNum))+" : "+ThemeNum+"/"+ (Themes.size()-1) );
         //index = -1 | size = 13 ??
 
-        Toast.makeText(this, "!!!RECOMMENDED TO PUT THIS APP's NOTIFICATIONS AS SILENT!!!", Toast.LENGTH_LONG).show();
+        if(toast != null){ toast.cancel(); } //cancel if toast exists
+        toast = Toast.makeText(this, "!!!RECOMMENDED TO PUT THIS APP's NOTIFICATIONS AS SILENT!!!", Toast.LENGTH_LONG); //makeText returns toast but .show makes it void
+        toast.show();
+        //Toast.makeText(this, "!!!RECOMMENDED TO PUT THIS APP's NOTIFICATIONS AS SILENT!!!", Toast.LENGTH_LONG).show();
 
         new NotificationManagerCust(getApplicationContext());
 
@@ -117,23 +127,12 @@ public class Home extends AppCompatActivity {
     @Override
     protected void onStart() {
 
-        findViewById(R.id.HomeTitle).setOnClickListener((v)->{
-            HomeLoadingHandler.removeCallbacksAndMessages(null);
-
-            ((TextView) v).setText("Theme switched!");
-
-            ThemeNum = (ThemeNum+1 >= Themes.size()) ? 0 : ++ThemeNum;
-
-            //Record theme
-            try {
-                FileWriter FW = new FileWriter( new File(getApplicationContext().getFilesDir(), "F") );
-                FW.write( getResources().getResourceEntryName(Themes.get(ThemeNum)) ); FW.flush(); FW.close();
-            }catch (Exception e){ System.err.println("File Err: "+e); }
-
-            startActivity(new Intent(this,Home.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-            overridePendingTransition(R.anim.theme_in,R.anim.theme_out);
-
-        });
+        ViewGroup vg = findViewById(R.id.HomeLayout);
+        vg.setOnTouchListener(this::GestureDetect); vg.setOnClickListener(null);    //Onclick interferes with onTouch
+        for(int i=0;i<vg.getChildCount();i++){
+            vg.getChildAt(i).setOnTouchListener(this::GestureDetect); vg.getChildAt(i).setOnClickListener(null);
+        }
+        findViewById(R.id.HomeTitle).setOnClickListener((v)->{ ChangeTheme(); });
 
         super.onStart();
 
@@ -147,5 +146,74 @@ public class Home extends AppCompatActivity {
 
         }, 3000);
         // */
+    }
+
+    private float initY=0;
+    private boolean GestureDetect(View v, MotionEvent e){
+        //System.out.println("GestureDetect");
+        float CurrY = e.getRawY();
+
+        //System.out.println("InitY: "+initY+" CurrY: "+CurrY);
+
+        switch (e.getAction()){
+            case MotionEvent.ACTION_DOWN:
+                initY = CurrY; break;
+            case MotionEvent.ACTION_MOVE:
+                //0 = top  -- Down : +1 | Up : -1
+                //System.out.println("CurrY: "+CurrY);
+
+                break;
+            case (MotionEvent.ACTION_UP):
+                //System.out.println("Mup");
+                //System.out.println("InitY: "+initY+" CurrY: "+CurrY);
+
+                //System.out.println("InitY: "+initY+" CurrY: "+CurrY);
+                if (Math.abs(initY-CurrY) >= 300){
+                    //Change theme
+
+                    ViewGroup vg = findViewById(R.id.HomeLayout); vg.setOnTouchListener(null);
+                    for(int i=0;i<vg.getChildCount();i++){
+                        vg.getChildAt(i).setOnTouchListener(null);
+                    }
+
+                    if (initY-CurrY < 0){
+                        //System.out.println("<0");
+                        ChangeTheme();
+                    }
+                    else{
+                        //System.out.println(">0");
+                        ChangeTheme(false);
+                    }
+
+                    vg.setOnTouchListener(this::GestureDetect);
+                    for(int i=0;i<vg.getChildCount();i++){
+                        vg.getChildAt(i).setOnTouchListener(this::GestureDetect);
+                    }
+                }
+
+                break;
+            default:break;
+        }
+
+        return super.onTouchEvent(e);
+    }
+
+    private void ChangeTheme(){ ChangeTheme(true); }
+    private void ChangeTheme(boolean incr){
+        HomeLoadingHandler.removeCallbacksAndMessages(null);
+
+        ((TextView) findViewById(R.id.HomeTitle)).setText("Theme switched!");
+
+        if(incr) { ThemeNum = (ThemeNum + 1 >= Themes.size()) ? 0 : ++ThemeNum; }
+        else{ ThemeNum = (ThemeNum - 1 < 0 ) ? Themes.size()-1 : --ThemeNum; }
+
+        //Record theme
+        try {
+            FileWriter FW = new FileWriter( new File(getApplicationContext().getFilesDir(), "F") );
+            FW.write( getResources().getResourceEntryName(Themes.get(ThemeNum)) ); FW.flush(); FW.close();
+        }catch (Exception e){ System.err.println("File Err: "+e); }
+
+        startActivity(new Intent(this,Home.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+        overridePendingTransition(R.anim.theme_in,R.anim.theme_out);
     }
 }

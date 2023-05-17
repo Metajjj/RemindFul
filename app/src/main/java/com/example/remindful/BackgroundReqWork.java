@@ -25,7 +25,7 @@ public class BackgroundReqWork extends Worker {
         //setForegroundAsync(getForegroundInfo()); //For expedite
         final DatabaseHandler DH = new DatabaseHandler(context);
 
-        System.out.println("Id: "+getId()+"\nWorker KvP: "+getInputData().getKeyValueMap());
+        //System.out.println("Id: "+getId()+"\nWorker KvP: "+getInputData().getKeyValueMap());
         //WORKS
 
         NotificationManagerCust NMC = new NotificationManagerCust(context);
@@ -49,7 +49,7 @@ public class BackgroundReqWork extends Worker {
             //StartActivity -- NewNote w data
             Looper.prepare();
 
-            System.out.println("Activity launch");
+            //System.out.println("Activity launch");
             context.getApplicationContext().startActivity(new Intent(context, NewNote.class).putExtra("i",  DH.CursorSorter(DH.getReadableDatabase().query(DH.DBname, null, DH.ID + " = ?", new String[]{String.valueOf(LinkID - 1)}, null, null, null)).get(0)
                             ).setComponent(new ComponentName(context.getPackageName(), NewNote.class.getName()))
                             .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

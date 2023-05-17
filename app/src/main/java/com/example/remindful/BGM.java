@@ -40,7 +40,7 @@ public class BGM extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         SetupPermGrabber();
 
-        setTheme(new Home().Themes.get(new Home().ThemeNum));
+        setTheme(Home.Themes.get(Home.ThemeNum));
 
         MediaBGM.setLooping(true); //Loop true for media
 
@@ -49,15 +49,11 @@ public class BGM extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).hide(); //Hides default header
         setContentView(R.layout.bgm);
 
-        Toast.makeText(this,"Needs permission to find and play your songs!",Toast.LENGTH_LONG).show();
+        Toast.makeText(this,"Needs permission to find and play your songs!",Toast.LENGTH_SHORT).show();
 
-        GrabPerms();
+        new Handler().postDelayed(()->{Toast.makeText(this,"May take time to load if a lot of songs!",Toast.LENGTH_SHORT).show();},4000);
 
         findViewById(R.id.BGM_URI).setOnClickListener(this::ShowFullPath);
-
-        new Handler().post(()->{
-            for (String fpath: FileList ) { SetupRow(fpath); }
-        });
     }
 
     //Setting custom anims for each activity fired
@@ -66,7 +62,7 @@ public class BGM extends AppCompatActivity {
     @Override
     public void startActivity(Intent i, @Nullable Bundle o) { super.startActivity(i, o); overridePendingTransition(R.anim.activity_in,R.anim.activity_out); }
 
-    ActivityResultLauncher<String> ARL;
+    private ActivityResultLauncher<String> ARL;
 
     private void SetupPermGrabber(){
         //New way of checking permission - has to be created before fragment is
@@ -76,9 +72,18 @@ public class BGM extends AppCompatActivity {
                     if (!res) {
                         //Not granted!
                         Toast.makeText(getApplicationContext(), "Need perm to work!", Toast.LENGTH_LONG).show();
+                    } else{
+                        Toast.makeText(getApplicationContext(), "May need to reload activity if first time enabling perm!", Toast.LENGTH_LONG).show();
                     }
                 }
         );
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        GrabPerms();  //Delays and bottlenecks activity from showing?
     }
 
     private void GrabPerms(){
@@ -96,15 +101,21 @@ public class BGM extends AppCompatActivity {
     private ArrayList<String> FileList = new ArrayList<>();
 
     private void GrabMusic(){
-        System.out.println(
-            Environment.getExternalStorageDirectory().toString() +"|"+ Environment.getRootDirectory()
-        );
+        //System.out.println( Environment.getExternalStorageDirectory().toString() +"|"+ Environment.getRootDirectory() );
+        new Handler().post(()->{
 
         GrabMfiles(Environment.getExternalStorageDirectory()); //Appears to get the general files
-        System.out.println(FileList.toString());
+        //System.out.println(FileList.toString());
         //FileList = new ArrayList<>();
         //GrabMfiles(Environment.getRootDirectory()); //Appears to access system reserved storage
         //System.out.println(FileList.toString());
+
+                //todo Figure out mainthread bottleneck - test on mum
+            for (String fpath: FileList ) {
+                new Handler().post(()-> //Individual handle for each setup removes bottleneck?
+                SetupRow(fpath) );
+            } //Moved from onCreate to not delay main thread
+        });
     }
 
     private void GrabMfiles(File F){
@@ -176,7 +187,7 @@ public class BGM extends AppCompatActivity {
         //Add to TL
         TR.addView(TV1,0);TR.addView(TV2,1); //TR alrdy has child ??????
         TableLayout TL = findViewById(R.id.BGM_Table);
-        TL.addView(TR); //TL alrdy has child ??????
+        TL.addView(TR);
 
         ta.recycle();
     }
@@ -234,7 +245,7 @@ public class BGM extends AppCompatActivity {
 
             if(MediaBGM.isPlaying()){
                 MediaBGM.stop(); MediaBGM.reset();
-                System.out.println("MP stop + reset");
+                //System.out.println("MP stop + reset");
             }
 
             //If isnt curr paused, prepare it!
@@ -243,7 +254,7 @@ public class BGM extends AppCompatActivity {
                     MediaBGM.reset();
 
                     MediaBGM.setDataSource(songLoc); MediaBGM.prepare();
-                    System.out.println("MP data source + prepare");
+                    //System.out.println("MP data source + prepare");
                     CurrSong=songLoc;
                     MediaBGM.start();
                 } catch (Exception e) {
@@ -251,14 +262,14 @@ public class BGM extends AppCompatActivity {
                 }
             }else{
                 MediaBGM.start(); //Continue if curr song
-                System.out.println("MP resume");
+                //System.out.println("MP resume");
             }
         }else{
             tv.setBackgroundResource(R.drawable.tri);
             //tv.setTextColor( ta.getColor(0,-1) );
             //Remove/pause song from media player
             MediaBGM.pause();
-            System.out.println("MP pause");
+            //System.out.println("MP pause");
         }
 
         ta.recycle();
@@ -273,12 +284,12 @@ public class BGM extends AppCompatActivity {
         for(Fragment Frag : getSupportFragmentManager().getFragments()) {
             //System.out.println("NumOfFrags: "+getSupportFragmentManager().getFragments().size()+" | Frag up: "+Frag.isAdded()+" | ID:"+Frag.getId());
             if (Frag.isVisible()){
-                System.out.println("REMOVING FRAG");
+                //System.out.println("REMOVING FRAG");
                 getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.frag_in,R.anim.frag_out).remove(Frag).commit();
                 return;
             }
         }
-        System.out.println("Backing activity");
+        //System.out.println("Backing activity");
         startActivity(new Intent(this, Home2.class));
         overridePendingTransition(R.anim.activity_in,R.anim.activity_out);
     }

@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class NotiActionHandler extends BroadcastReceiver {
+    //todo  ForegroundStart not working from lockscreen?
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -41,19 +42,27 @@ public class NotiActionHandler extends BroadcastReceiver {
 
             //Delete all background workers and Notis
             if(intent.getExtras().getString("Code").equals("CANCELALL")) {
-                NMC.DestroyAllNotifications();
-                WorkManager.getInstance(context).cancelAllWork();
+                NMC.DestroyAllNotifications(); //Only works within noti manager not outside
+
+                //Turning all R_TIME to null
+                ArrayList<HashMap<String, String>> Rnotes = DH.CursorSorter( DH.getReadableDatabase().query(DH.DBname,null,"`"+DH.R_TIME+"` IS NOT NULL",null,null,null,null) );
+                for(HashMap s : Rnotes){
+                    //System.out.println(s);
+                    ContentValues CV = new ContentValues(); CV.putNull(DH.R_TIME);
+                    DH.getWritableDatabase().update(DH.DBname,CV, "`"+DH.ID+"` = ?",new String[]{s.get(DH.ID)+""});
+                }
 
                 //KILL APP PROCESS (background)
                 new Handler().postDelayed(()->{
-
-                    if (IsAppForeground(context)){
-                        System.out.println("FOREGROUND APP");
-                    }else {
+                    if (IsAppForeground(context)){ /*System.out.println("FOREGROUND APP");*/ NMC.MainNotiUpdate(); }
+                    /*else {
                         System.out.println("BACKGROUND APP");
-                        NMC.MainNotiUpdate(true);
-                    }
+                        //NMC.MainNotiUpdate(true);
+                        //NotificationManagerCompat.from(context).cancelAll();
 
+                        //App stays in task/recent used apps - messes up theme
+                        //if ( ContextCompat.checkSelfPermission(context, Manifest.permission.KILL_BACKGROUND_PROCESSES) == PackageManager.PERMISSION_GRANTED ){  android.os.Process.killProcess(Process.myPid()); }
+                    }*/
                 },1000);
 
 
