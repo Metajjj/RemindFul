@@ -204,8 +204,10 @@ public class Home2 extends AppCompatActivity {
             NoteRow.addView(Notes3[i]); NoteTitle.addView(Titles3[i]);
         }
 
-        MainLayout.addView(NoteRow,new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        MainLayout.addView(NoteTitle,new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        runOnUiThread(()-> {
+            MainLayout.addView(NoteRow, new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            MainLayout.addView(NoteTitle, new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        });
     }
 
     private TextView[] SetupCols(String note, String title, String TagID){
@@ -253,6 +255,8 @@ public class Home2 extends AppCompatActivity {
 
         ArrayList<TextView[]> TVHldr = new ArrayList<>(); ArrayList<TextView> Notes=new ArrayList<>(),Titles=new ArrayList<>();
 
+        new Thread(()->{
+
         for( HashMap<String,String> s : notes ) {
             //System.out.println(s);
 
@@ -262,7 +266,7 @@ public class Home2 extends AppCompatActivity {
                     s.get(DH.YMDHMS)+"-"+s.get(DH.ID)
             ));
 
-            new Handler().post(()->DetailedViewSetup(s.get(DH.TITLE)+"",s.get(DH.YMDHMS)+"-"+s.get(DH.ID)));
+            new Thread(()->DetailedViewSetup(s.get(DH.TITLE)+"",s.get(DH.YMDHMS)+"-"+s.get(DH.ID))).start();
             //DetailedViewSetup(s.get(DH.TITLE)+"",s.get(DH.YMDHMS)+"-"+s.get(DH.ID));
         }
 
@@ -287,6 +291,8 @@ public class Home2 extends AppCompatActivity {
             //1,2,3 notes, titles 2?1?3?
             //new Home().WriteLine("CheckRows\n"+tv1.get(0).getText()+"|"+tv1.get(1).getText()+"\n"+tv2.get(0).getText()+"|"+tv2.get(1).getText());
         }
+
+        }).start();
 
         DH.close();
     }
@@ -335,8 +341,9 @@ public class Home2 extends AppCompatActivity {
         tr.setPadding(10,10,10,10);
 
         tr.setLayoutParams( LP );
-        ((ViewGroup)findViewById(R.id.home2DvTable)).addView(tr);
-        //runOnUiThread(()->{mLayout.addView(tr); mLayout.invalidate(); mLayout.requestLayout();});
+        runOnUiThread(()->{
+            ((ViewGroup)findViewById(R.id.home2DvTable)).addView(tr);
+        });
 
         ta.recycle();
         if(Changed){ DetailedViewSetup(title,tag); }

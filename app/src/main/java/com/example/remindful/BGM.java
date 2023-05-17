@@ -13,7 +13,6 @@ import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
@@ -49,9 +48,7 @@ public class BGM extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).hide(); //Hides default header
         setContentView(R.layout.bgm);
 
-        Toast.makeText(this,"Needs permission to find and play your songs!",Toast.LENGTH_SHORT).show();
-
-        new Handler().postDelayed(()->{Toast.makeText(this,"May take time to load if a lot of songs!",Toast.LENGTH_SHORT).show();},4000);
+        ((TextView)findViewById(R.id.BGM_title)).setText("Loading...");
 
         findViewById(R.id.BGM_URI).setOnClickListener(this::ShowFullPath);
     }
@@ -83,7 +80,7 @@ public class BGM extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        GrabPerms();  //Delays and bottlenecks activity from showing?
+        GrabPerms();
     }
 
     private void GrabPerms(){
@@ -100,22 +97,45 @@ public class BGM extends AppCompatActivity {
 
     private ArrayList<String> FileList = new ArrayList<>();
 
-    private void GrabMusic(){
+    private void GrabMusic() {
         //System.out.println( Environment.getExternalStorageDirectory().toString() +"|"+ Environment.getRootDirectory() );
-        new Handler().post(()->{
 
-        GrabMfiles(Environment.getExternalStorageDirectory()); //Appears to get the general files
-        //System.out.println(FileList.toString());
-        //FileList = new ArrayList<>();
-        //GrabMfiles(Environment.getRootDirectory()); //Appears to access system reserved storage
-        //System.out.println(FileList.toString());
+        new Thread(() -> {
+            //System.out.println("UI thread? "+ (Looper.getMainLooper().getThread() == Thread.currentThread()));
+            //is 2nd thread
 
-                //todo Figure out mainthread bottleneck - test on mum
-            for (String fpath: FileList ) {
-                new Handler().post(()-> //Individual handle for each setup removes bottleneck?
-                SetupRow(fpath) );
+        ///new Handler().post(() -> {
+
+            //try { Thread.sleep(2000); } catch (Exception e) { }
+
+            GrabMfiles(Environment.getExternalStorageDirectory()); //Appears to get the general files
+            //System.out.println(FileList.toString());
+            //FileList = new ArrayList<>();
+            //GrabMfiles(Environment.getRootDirectory()); //Appears to access system reserved storage
+            //System.out.println(FileList.toString());
+
+            //todo fix delay with updating UI from a lot of views added -- moving handler outside doesnt help
+            for (String fpath : FileList) {
+                ///new Handler().post(() -> { //Individual handle for each setup removes bottleneck
+
+                    //Handlers are main UI thread
+                    //System.out.println(Looper.getMainLooper().getThread() == Thread.currentThread());
+
+                runOnUiThread(()->{
+                    SetupRow(fpath);
+                    String s = "Loading...\n"+ (FileList.indexOf(fpath) + 1) + "/" + FileList.size();
+
+                    ((TextView)findViewById(R.id.BGM_title)).setText(s);
+                    //System.out.println(s);
+                });
+
+                try{ Thread.sleep(20); }catch (Exception e){}
+
+                ///});
             } //Moved from onCreate to not delay main thread
-        });
+        ///});
+            runOnUiThread(()->{((TextView)findViewById(R.id.BGM_title)).setText("Background Music");});
+        }).start();
     }
 
     private void GrabMfiles(File F){
@@ -185,7 +205,7 @@ public class BGM extends AppCompatActivity {
         TV2.setBackgroundResource( (CurrSong.equals(Txt)) ? R.drawable.octa : R.drawable.tri );
 
         //Add to TL
-        TR.addView(TV1,0);TR.addView(TV2,1); //TR alrdy has child ??????
+        TR.addView(TV1, 0); TR.addView(TV2, 1);
         TableLayout TL = findViewById(R.id.BGM_Table);
         TL.addView(TR);
 
@@ -212,7 +232,7 @@ public class BGM extends AppCompatActivity {
         dr.setBounds(0,0,C.getWidth(),C.getHeight());
         dr.draw(C);
 
-        new Handler().post(()->{System.gc();}); //Memory intensive when dealing with bitmaps  best to preemptively deallocate
+        new Thread(System::gc).start(); //Memory intensive when dealing with bitmaps  best to preemptively deallocate
 
         return Res;
     }
