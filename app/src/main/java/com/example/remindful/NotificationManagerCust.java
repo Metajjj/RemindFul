@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
@@ -31,7 +32,8 @@ public class NotificationManagerCust {
         //Check Perms
         if(ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_DENIED)
         {
-            throw new Error("Permission missing!");
+            Toast.makeText(context.getApplicationContext(), "Need perm for notis!", Toast.LENGTH_SHORT).show();
+
         }
 
         //Setting up NotiChannel for app if doesnt exist

@@ -1,7 +1,9 @@
 package com.example.remindful;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.res.TypedArray;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.MotionEvent;
@@ -11,6 +13,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -24,6 +28,23 @@ import java.util.Arrays;
 import java.util.Objects;
 
 public class Home extends AppCompatActivity {
+    private ActivityResultLauncher<String> ARL;
+
+    private void SetupPermGrabber(){
+        //New way of checking permission - has to be created before fragment is
+        ARL = registerForActivityResult(
+                new ActivityResultContracts.RequestPermission(),
+                res -> {
+                    if (!res) {
+                        //Not granted!
+                        Toast.makeText(getApplicationContext(), "Need perm for noti/reminding work!", Toast.LENGTH_LONG).show();
+                    }else{
+                        //Allowed
+                        new NotificationManagerCust(getApplicationContext());
+                    }
+                }
+        );
+    }
 
     public static ArrayList<Integer> Themes = new ArrayList<>(Arrays.asList(R.style.MainTheme));
     //MainTheme is default always present theme
@@ -43,7 +64,7 @@ public class Home extends AppCompatActivity {
                 //Avoids duplicating main theme
 
                 int i = Integer.MIN_VALUE;
-                try { i = f.getInt(null); } catch (Exception e) { }
+                try { i = f.getInt(null); } catch (Exception e) { Toast.makeText(getApplicationContext(),"SetupTheme Err:"+e,Toast.LENGTH_LONG).show(); }
                 if (i != Integer.MIN_VALUE) { Themes.add(i); }
             }
         }
@@ -51,6 +72,12 @@ public class Home extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        SetupPermGrabber();
+
+        //GrabPerm for Noti
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            ARL.launch(Manifest.permission.POST_NOTIFICATIONS); // Check/grab perm
+        }
 
         super.onCreate(savedInstanceState);
         Objects.requireNonNull(getSupportActionBar()).hide(); //Hides default header
@@ -67,6 +94,7 @@ public class Home extends AppCompatActivity {
                 FW.write( getResources().getResourceEntryName(Themes.get(ThemeNum)) ); FW.flush(); FW.close();
             } catch (Exception e) {
                 System.err.println("Err making new file in internal\n "+e);
+                Toast.makeText(getApplicationContext(),"MakeFile Err:"+e,Toast.LENGTH_LONG).show();
             }
         }
 
@@ -82,7 +110,8 @@ public class Home extends AppCompatActivity {
             //If theme doesnt exist i.e. changed name
             ThemeNum = (Themes.get(ThemeNum) >= 0) ? ThemeNum : 0; //If exist, return it else make it start from 0  -- new theme auto written into file
 
-        }catch (Exception e){ System.err.println("Err w bfr? "+e); }
+        }catch (Exception e){ Toast.makeText(getApplicationContext(),"ReadFile Err:"+e,Toast.LENGTH_LONG).show();
+            System.err.println("Err w bfr? "+e); }
 
         setTheme(Themes.get(ThemeNum)); //Have to set theme before layout
         setContentView(R.layout.home);
@@ -93,11 +122,10 @@ public class Home extends AppCompatActivity {
         //index = -1 | size = 13 ??
 
         if(toast != null){ toast.cancel(); } //cancel if toast exists
-        toast = Toast.makeText(this, "!!!RECOMMENDED TO PUT THIS APP's NOTIFICATIONS AS SILENT!!!", Toast.LENGTH_LONG); //makeText returns toast but .show makes it void
+        toast = Toast.makeText(this, "!!!RECOMMENDED TO PUT THIS APP's NOTIFICATIONS AS SILENT!!!", Toast.LENGTH_SHORT); //makeText returns toast but .show makes it void
         toast.show();
         //Toast.makeText(this, "!!!RECOMMENDED TO PUT THIS APP's NOTIFICATIONS AS SILENT!!!", Toast.LENGTH_LONG).show();
 
-        new NotificationManagerCust(getApplicationContext());
 
 
         //Get attr stuff
@@ -211,7 +239,9 @@ public class Home extends AppCompatActivity {
         try {
             FileWriter FW = new FileWriter( new File(getApplicationContext().getFilesDir(), "F") );
             FW.write( getResources().getResourceEntryName(Themes.get(ThemeNum)) ); FW.flush(); FW.close();
-        }catch (Exception e){ System.err.println("File Err: "+e); }
+        }catch (Exception e){
+            Toast.makeText(getApplicationContext(),"RecordTheme Err:"+e,Toast.LENGTH_LONG).show();
+            System.err.println("File Err: "+e); }
 
         startActivity(new Intent(this,Home.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
         overridePendingTransition(R.anim.theme_in,R.anim.theme_out);

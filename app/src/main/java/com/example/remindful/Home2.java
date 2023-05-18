@@ -194,6 +194,15 @@ public class Home2 extends AppCompatActivity {
                 ); //1,2,3 notes, titles
             }
         });
+
+        //Empty out DetailedView ((ViewGroup)findViewById(R.id.home2DvTable)).removeAllViews();
+        new Handler().post(()->{
+            TableLayout tl = findViewById(R.id.home2DvBg).findViewById(R.id.home2DvTable);
+            for(int i=2;i<tl.getChildCount();i++){
+                System.out.println(tl.getChildAt(i).getClass());
+                tl.removeViewAt(i);
+            }
+        });
     }
 
     private void AddTblRow(TextView[] Notes3, TextView[] Titles3){

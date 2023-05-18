@@ -100,6 +100,7 @@ public class BGM extends AppCompatActivity {
     private void GrabMusic() {
         //System.out.println( Environment.getExternalStorageDirectory().toString() +"|"+ Environment.getRootDirectory() );
 
+        //Using thread works better, runOnUiThread for handler type stuff
         new Thread(() -> {
             //System.out.println("UI thread? "+ (Looper.getMainLooper().getThread() == Thread.currentThread()));
             //is 2nd thread
@@ -114,7 +115,6 @@ public class BGM extends AppCompatActivity {
             //GrabMfiles(Environment.getRootDirectory()); //Appears to access system reserved storage
             //System.out.println(FileList.toString());
 
-            //todo fix delay with updating UI from a lot of views added -- moving handler outside doesnt help
             for (String fpath : FileList) {
                 ///new Handler().post(() -> { //Individual handle for each setup removes bottleneck
 

@@ -57,17 +57,26 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         super(c, "NoteList", null, 1);
     }
 
+    protected void ResetTable(SQLiteDatabase s) {
+        s.execSQL("DROP TABLE IF EXISTS `" + DBname + "`");
+
+        s.execSQL("CREATE TABLE `" + DBname + "` (`" + ID + "` INTEGER PRIMARY KEY NOT NULL, `" + YMDHMS + "` INT, `" + TITLE + "` TEXT, `"+NOTE+"` TEXT, `"+R_TIME+"` TEXT)");
+    }
+
     protected void ResetTable() {
-        DatabaseHandler.this.getWritableDatabase().execSQL("DROP TABLE IF EXISTS `" + DBname + "`");
-        DatabaseHandler.this.getWritableDatabase().execSQL("CREATE TABLE `" + DBname + "` (`" + ID + "` INTEGER PRIMARY KEY NOT NULL, `" + YMDHMS + "` INT, `" + TITLE + "` TEXT, `"+NOTE+"` TEXT, `"+R_TIME+"` TEXT)");
-        DatabaseHandler.this.getWritableDatabase().close();
+        this.getWritableDatabase().execSQL("DROP TABLE IF EXISTS `" + DBname + "`");
+
+        this.getWritableDatabase().execSQL("CREATE TABLE `" + DBname + "` (`" + ID + "` INTEGER PRIMARY KEY NOT NULL, `" + YMDHMS + "` INT, `" + TITLE + "` TEXT, `"+NOTE+"` TEXT, `"+R_TIME+"` TEXT)");
+
+        this.getWritableDatabase().close();
     }
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         //create db
         //sqLiteDatabase.execSQL("CREATE TABLE `" + DBname + "` (`" + ID + "` INTEGER PRIMARY KEY AUTOINCREMENT, `" + YMDHMS + "` INT, `" + TITLE + "` TEXT, `"+NOTE+"` TEXT, `"+R_TIME+"` TEXT)");
-        ResetTable();
+
+        ResetTable(sqLiteDatabase);
     }
 
     @Override

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -67,6 +68,8 @@ public class MenuFragment extends DialogFragment {
         {
             DatabaseHandler DH = new DatabaseHandler(context); DH.ResetTable(); DH.close();
             getActivity().findViewById(R.id.MenuFragBg).performClick();
+            ((TextView)getActivity().findViewById(R.id.home2ViewStyle)).setText("Alphabetical");
+            getActivity().findViewById(R.id.home2ViewStyle).performClick();
         });
 
         //BGM
