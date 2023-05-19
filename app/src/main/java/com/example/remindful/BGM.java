@@ -138,6 +138,7 @@ public class BGM extends AppCompatActivity {
         }).start();
     }
 
+    //todo sort so it only finds in "music" folders?
     private void GrabMfiles(File F){
         if(F.isDirectory() && F.listFiles() != null){
             for(File f : F.listFiles()){

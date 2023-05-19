@@ -108,7 +108,10 @@ public class NotificationManagerCust {
     protected void MainNotiUpdate(){
 
         //update main noti -- no deconstructors!
-        if(ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_DENIED) { throw new Error("Permission missing!"); }
+        if(ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_DENIED) {
+            Toast.makeText(context,"NEED NOTI PERM!",Toast.LENGTH_LONG).show();
+            return;
+        }
 
         //Get number of things w R_time (that are being reminded for)
         final DatabaseHandler DH = new DatabaseHandler(context);

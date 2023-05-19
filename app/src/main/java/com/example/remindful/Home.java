@@ -77,6 +77,8 @@ public class Home extends AppCompatActivity {
         //GrabPerm for Noti
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             ARL.launch(Manifest.permission.POST_NOTIFICATIONS); // Check/grab perm
+        }else{
+            new NotificationManagerCust(getApplicationContext());
         }
 
         super.onCreate(savedInstanceState);
