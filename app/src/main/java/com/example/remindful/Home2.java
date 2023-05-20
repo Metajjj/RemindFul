@@ -136,6 +136,18 @@ public class Home2 extends AppCompatActivity {
         ArrayList<HashMap<String,String>> catc = DH.CursorSorter( DH.getReadableDatabase().query(DH.DBname,null,null,null,null,null,sort) );
         //System.out.println("Catc: "+catc[0].equals(""));
 
+        //Empty out DetailedView each reload of notes
+        ((TableLayout)findViewById(R.id.home2DvTable)).removeAllViews(); //todo fix removing detailedview
+        /*new Handler().post(()->{
+            TableLayout tl = findViewById(R.id.home2DvBg).findViewById(R.id.home2DvTable);
+            for(int i=2;i<tl.getChildCount();i++){
+                tl.removeViewAt(i);
+            }
+            for(int i=2;i<tl.getChildCount();i++){
+                System.out.println( ((TextView)((TableRow) tl.getChildAt(i)).getChildAt(0)).getText()+"" );
+            }
+        });*/
+
         if(catc.size()==0){ NotesMissing(); }
         else{
             try {
@@ -192,15 +204,6 @@ public class Home2 extends AppCompatActivity {
                 AddTblRow(new TextView[]{Notes.get(i), Notes.get(i + 1), Notes.get(i + 2)},
                         new TextView[]{Titles.get(i), Titles.get(i + 1), Titles.get(i + 2)}
                 ); //1,2,3 notes, titles
-            }
-        });
-
-        //Empty out DetailedView ((ViewGroup)findViewById(R.id.home2DvTable)).removeAllViews();
-        new Handler().post(()->{
-            TableLayout tl = findViewById(R.id.home2DvBg).findViewById(R.id.home2DvTable);
-            for(int i=2;i<tl.getChildCount();i++){
-                System.out.println(tl.getChildAt(i).getClass());
-                tl.removeViewAt(i);
             }
         });
     }
@@ -275,7 +278,14 @@ public class Home2 extends AppCompatActivity {
                     s.get(DH.YMDHMS)+"-"+s.get(DH.ID)
             ));
 
-            new Thread(()->DetailedViewSetup(s.get(DH.TITLE)+"",s.get(DH.YMDHMS)+"-"+s.get(DH.ID))).start();
+                //New thread makes it fight for "changed" variable
+            Thread t = new Thread(()-> {
+                //System.out.println("Note #"+notes.indexOf(s)); //works fine
+                DetailedViewSetup(s.get(DH.TITLE)+"",s.get(DH.YMDHMS)+"-"+s.get(DH.ID));
+            });
+            t.start();  //.join makes it wait for prev thread of itself to finish before starting ?
+            try { t.join(); } catch (Exception e) { System.err.println(e); }
+
             //DetailedViewSetup(s.get(DH.TITLE)+"",s.get(DH.YMDHMS)+"-"+s.get(DH.ID));
         }
 
@@ -308,6 +318,7 @@ public class Home2 extends AppCompatActivity {
 
     private String RecentInputDate="";
     private void DetailedViewSetup(String title, String tag){
+        //somehow running too much
         boolean Changed=false;
         TypedArray ta = this.obtainStyledAttributes(new int[]{R.attr.Text,R.attr.NoteTextBorder, R.attr.DelHighlight});
         TableRow tr = new TableRow(this);
