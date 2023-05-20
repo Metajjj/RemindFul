@@ -324,7 +324,7 @@ public class Home2 extends AppCompatActivity {
         }).start();
 
         new Thread(() -> {
-            System.out.println("DV setting.."); //Skipping frames from this point ??  commenting out runonUI makes it skip before dv..
+            //System.out.println("DV setting.."); //Skipping frames from this point ??  commenting out runonUI makes it skip before dv..
             for (HashMap<String, String> s : notes) {
                 DetailedViewSetup(s.get(DH.TITLE) + "", s.get(DH.YMDHMS) + "-" + s.get(DH.ID));
             }
