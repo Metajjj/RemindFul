@@ -51,19 +51,26 @@ public class Home2 extends AppCompatActivity {
         setContentView(R.layout.home2);
 
         //Add touch listeners to all views for gestures
+        new Thread(()->{
+
         ViewGroup BG = ((ViewGroup)findViewById(R.id.home2Bg));
         BG.setOnTouchListener( this::CustTouchEvent );
         for(int i=0;i<BG.getChildCount();i++ ){
             BG.getChildAt(i).setOnTouchListener( this::CustTouchEvent );
         }
 
-        ViewGroup DV = findViewById(R.id.home2DvBg); DV.setOnClickListener(null); DV.setOnTouchListener(this::CustTouchEvent);
+        ViewGroup DV = findViewById(R.id.home2DvBg);
+            DV.setOnClickListener(null); DV.setOnTouchListener(this::CustTouchEvent);
         for(int i=0;i<DV.getChildCount();i++){ DV.getChildAt(i).setOnClickListener(null);
             DV.getChildAt(i).setOnTouchListener(this::CustTouchEvent);
         }
 
-        DV.setTranslationX(getResources().getDisplayMetrics().widthPixels *-1 ); //Moves left and hides view
-        DV.bringToFront(); //((ViewGroup)((ViewGroup)DV.getChildAt(1)).getChildAt(0)).removeAllViews();
+        runOnUiThread(()-> {
+            DV.setTranslationX(getResources().getDisplayMetrics().widthPixels * -1); //Moves left and hides view
+            DV.bringToFront(); //((ViewGroup)((ViewGroup)DV.getChildAt(1)).getChildAt(0)).removeAllViews();
+        });
+
+        }).start();
 
         /*
         ARL.launch(Manifest.permission.KILL_BACKGROUND_PROCESSES);
@@ -248,7 +255,7 @@ public class Home2 extends AppCompatActivity {
         TempParam = new TableRow.LayoutParams(0,ViewGroup.LayoutParams.WRAP_CONTENT,1);
         TvTitle.setGravity(Gravity.CENTER); TvTitle.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
-        TvTitle.setMaxLines(1);
+        TvTitle.setSingleLine(true); //TvTitle.setMaxLines(1); Spams max line height err
         TvTitle.setEllipsize(TextUtils.TruncateAt.END);
         TvTitle.setTypeface(null, Typeface.BOLD);
 
@@ -267,58 +274,70 @@ public class Home2 extends AppCompatActivity {
 
         ArrayList<TextView[]> TVHldr = new ArrayList<>(); ArrayList<TextView> Notes=new ArrayList<>(),Titles=new ArrayList<>();
 
-        new Thread(()->{
+        new Thread(()-> {
 
-        for( HashMap<String,String> s : notes ) {
-            //System.out.println(s);
+            for (HashMap<String, String> s : notes) {
+                //System.out.println(s);
+                runOnUiThread( ()-> {
+                    ((TextView) findViewById(R.id.home2Title)).setText("Loading..." + (notes.indexOf(s) + 1) + "/" + notes.size());
+                });
 
-            TVHldr.add(SetupCols(
-                    s.get(DH.NOTE)+"",
-                    s.get(DH.TITLE)+"",
-                    s.get(DH.YMDHMS)+"-"+s.get(DH.ID)
-            ));
+                TVHldr.add(SetupCols(
+                        s.get(DH.NOTE) + "",
+                        s.get(DH.TITLE) + "",
+                        s.get(DH.YMDHMS) + "-" + s.get(DH.ID)
+                ));
 
-                //New thread makes it fight for "changed" variable
-            Thread t = new Thread(()-> {
-                //System.out.println("Note #"+notes.indexOf(s)); //works fine
-                DetailedViewSetup(s.get(DH.TITLE)+"",s.get(DH.YMDHMS)+"-"+s.get(DH.ID));
-            });
-            t.start();  //.join makes it wait for prev thread of itself to finish before starting ?
-            try { t.join(); } catch (Exception e) { System.err.println(e); }
-
-            //DetailedViewSetup(s.get(DH.TITLE)+"",s.get(DH.YMDHMS)+"-"+s.get(DH.ID));
-        }
-
-        //Splits Cols into their rows/arrays
-        for(TextView[] Tv : TVHldr){ for(int i=0;i< Tv.length;i++){
-            switch (i%2){
-                case 0:
-                    Notes.add(Tv[i]);
-                    break;
-                default:
-                    Titles.add(Tv[i]);
-                    break;
+                //DetailedViewSetup(s.get(DH.TITLE)+"",s.get(DH.YMDHMS)+"-"+s.get(DH.ID));
             }
-        } }
 
-        for(int i=0;i<Notes.size();i+=3){
-            ArrayList<TextView> tv1 = new ArrayList<>(), tv2 = new ArrayList<>();
-            for(int j=i;j<Notes.indexOf( Notes.get(i) )+3;j++){
-                try{ tv1.add(Notes.get(j)); tv2.add(Titles.get(j)); } catch (Exception e){}
+            //Splits Cols into their rows/arrays
+            for (TextView[] Tv : TVHldr) {
+                for (int i = 0; i < Tv.length; i++) {
+                    switch (i % 2) {
+                        case 0:
+                            Notes.add(Tv[i]);
+                            break;
+                        default:
+                            Titles.add(Tv[i]);
+                            break;
+                    }
+                }
             }
-            AddTblRow( tv1.toArray(new TextView[tv1.size()]), tv2.toArray(new TextView[tv1.size()]) );
-            //1,2,3 notes, titles 2?1?3?
-            //new Home().WriteLine("CheckRows\n"+tv1.get(0).getText()+"|"+tv1.get(1).getText()+"\n"+tv2.get(0).getText()+"|"+tv2.get(1).getText());
-        }
+
+            for (int i = 0; i < Notes.size(); i += 3) {
+                ArrayList<TextView> tv1 = new ArrayList<>(), tv2 = new ArrayList<>();
+                for (int j = i; j < Notes.indexOf(Notes.get(i)) + 3; j++) {
+                    try {
+                        tv1.add(Notes.get(j));
+                        tv2.add(Titles.get(j));
+                    } catch (Exception e) {
+                    }
+                }
+                AddTblRow(tv1.toArray(new TextView[tv1.size()]), tv2.toArray(new TextView[tv1.size()]));
+                //1,2,3 notes, titles 2?1?3?
+                //new Home().WriteLine("CheckRows\n"+tv1.get(0).getText()+"|"+tv1.get(1).getText()+"\n"+tv2.get(0).getText()+"|"+tv2.get(1).getText());
+            }
+
+            runOnUiThread(()->{ ((TextView) findViewById(R.id.home2Title)).setText("RemindFul"); });
 
         }).start();
+
+        try {
+            new Thread(() -> {
+                System.out.println("DV setting.."); //Skipping frames ??
+                for (HashMap<String, String> s : notes) {
+                    DetailedViewSetup(s.get(DH.TITLE) + "", s.get(DH.YMDHMS) + "-" + s.get(DH.ID));
+                }
+            }).start();
+        }catch (Exception e){System.out.println("ERR: "+e);}
 
         DH.close();
     }
 
     private String RecentInputDate="";
     private void DetailedViewSetup(String title, String tag){
-        //somehow running too much
+
         boolean Changed=false;
         TypedArray ta = this.obtainStyledAttributes(new int[]{R.attr.Text,R.attr.NoteTextBorder, R.attr.DelHighlight});
         TableRow tr = new TableRow(this);
