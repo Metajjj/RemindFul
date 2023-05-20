@@ -52,18 +52,19 @@ public class NotiActionHandler extends BroadcastReceiver {
                     DH.getWritableDatabase().update(DH.DBname,CV, "`"+DH.ID+"` = ?",new String[]{s.get(DH.ID)+""});
                 }
 
-                //KILL APP PROCESS (background)
+                new Handler().post(()->{ if (IsAppForeground(context)){ System.out.println("FOREGROUND APP"); NMC.MainNotiUpdate(); } });
+                /*//KILL APP PROCESS (background)
                 new Handler().postDelayed(()->{
-                    if (IsAppForeground(context)){ /*System.out.println("FOREGROUND APP");*/ NMC.MainNotiUpdate(); }
-                    /*else {
+                    if (IsAppForeground(context)){ System.out.println("FOREGROUND APP"); NMC.MainNotiUpdate(); }
+                    else {
                         System.out.println("BACKGROUND APP");
                         //NMC.MainNotiUpdate(true);
                         //NotificationManagerCompat.from(context).cancelAll();
 
                         //App stays in task/recent used apps - messes up theme
                         //if ( ContextCompat.checkSelfPermission(context, Manifest.permission.KILL_BACKGROUND_PROCESSES) == PackageManager.PERMISSION_GRANTED ){  android.os.Process.killProcess(Process.myPid()); }
-                    }*/
-                },1000);
+                    }
+                },1000);*/
 
 
             } else if (intent.getExtras().getString("Code").equals("SHOWALL")) {

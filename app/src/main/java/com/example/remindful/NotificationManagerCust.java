@@ -119,6 +119,9 @@ public class NotificationManagerCust {
                 DH.getReadableDatabase().query(DH.DBname,new String[]{DH.ID,DH.TITLE,DH.R_TIME},DH.R_TIME+" IS NOT NULL",null,null,null,null)
         );
 
+        // IF no reminding.. doesnt need noti!
+        if (CurrNotes.size() <= 0 ){ return; }
+
         //Main Noti Settings
         NotificationCompat.Builder NBS = new NotificationCompat.Builder(context,NotiChannelID)
                 .setSmallIcon(R.drawable.cm) //Small Icon for noti that goes in top left
