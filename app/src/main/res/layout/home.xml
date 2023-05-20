@@ -28,8 +28,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ProgressBar
-        android:background="@drawable/roundbordernote"
+    <ImageView
+        android:background="@mipmap/ic_launcher_round"
         android:id="@+id/HomeProBar"
         android:layout_width="330dp"
         android:layout_height="401dp"

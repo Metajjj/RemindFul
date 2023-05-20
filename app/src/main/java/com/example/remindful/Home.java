@@ -9,7 +9,6 @@ import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -133,9 +132,10 @@ public class Home extends AppCompatActivity {
         TypedArray ta = this.obtainStyledAttributes(new int[]{R.attr.Interactable}); int ThemeTxtCol = ta.getColor(0,-1); ta.recycle();
 
         //Change progressbar colour without API err
+        /*
         ((ProgressBar)findViewById(R.id.HomeProBar)).getIndeterminateDrawable().setColorFilter(
                 ThemeTxtCol, android.graphics.PorterDuff.Mode.SRC_IN
-        );
+        );*/
 
     }
 

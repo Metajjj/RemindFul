@@ -323,14 +323,12 @@ public class Home2 extends AppCompatActivity {
 
         }).start();
 
-        try {
-            new Thread(() -> {
-                System.out.println("DV setting.."); //Skipping frames ??
-                for (HashMap<String, String> s : notes) {
-                    DetailedViewSetup(s.get(DH.TITLE) + "", s.get(DH.YMDHMS) + "-" + s.get(DH.ID));
-                }
+        new Thread(() -> {
+            System.out.println("DV setting.."); //Skipping frames from this point ??  commenting out runonUI makes it skip before dv..
+            for (HashMap<String, String> s : notes) {
+                DetailedViewSetup(s.get(DH.TITLE) + "", s.get(DH.YMDHMS) + "-" + s.get(DH.ID));
+            }
             }).start();
-        }catch (Exception e){System.out.println("ERR: "+e);}
 
         DH.close();
     }
@@ -380,9 +378,7 @@ public class Home2 extends AppCompatActivity {
         tr.setPadding(10,10,10,10);
 
         tr.setLayoutParams( LP );
-        runOnUiThread(()->{
-            ((ViewGroup)findViewById(R.id.home2DvTable)).addView(tr);
-        });
+        runOnUiThread(()->{ ((ViewGroup)findViewById(R.id.home2DvTable)).addView(tr); });
 
         ta.recycle();
         if(Changed){ DetailedViewSetup(title,tag); }
