@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -200,7 +201,14 @@ public class NewNote extends AppCompatActivity {
         String note=((TextView)findViewById(R.id.NewNoteNoteDetail)).getText().toString();
 
         ContentValues CV = new ContentValues(); CV.put(DH.TITLE,title);CV.put(DH.NOTE,note);CV.put(DH.YMDHMS,CalYMDHMS());
-        DH.getWritableDatabase().update(DH.DBname,CV,MessageFormat.format("{0}=? AND {1}=?",DH.ID,DH.YMDHMS),new String[]{G_ID,G_YMDHMS});
+        try {
+            DH.getWritableDatabase().update(DH.DBname, CV, MessageFormat.format("{0}=? AND {1}=?", DH.ID, DH.YMDHMS), new String[]{G_ID, G_YMDHMS});
+        } catch (Exception e){
+            System.out.println("UpdateErr: "+e);
+            Toast.makeText(getApplicationContext(), "UpdateErr: "+e, Toast.LENGTH_LONG).show();
+        }
+
+        Toast.makeText(getApplicationContext(), "Updated..", Toast.LENGTH_SHORT).show();
 
         DH.close();
     }
