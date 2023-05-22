@@ -80,6 +80,8 @@ public class BGM extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
+        //for(int i=1;i<((TableLayout)findViewById(R.id.BGM_Table)).getChildCount();i++){ ((TableLayout)findViewById(R.id.BGM_Table)).removeViewAt(i); }
+
         GrabPerms();
     }
 
@@ -92,7 +94,8 @@ public class BGM extends AppCompatActivity {
         }
         ARL.launch(Manifest.permission.READ_EXTERNAL_STORAGE);
 
-        GrabMusic();
+        //Avoids dupe songs from reentering app on BGM page
+        if (((TableLayout)findViewById(R.id.BGM_Table)).getChildCount() <=1){ GrabMusic(); }
     }
 
     private ArrayList<String> FileList = new ArrayList<>();
