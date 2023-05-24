@@ -40,6 +40,8 @@ public class Home2 extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        System.out.println("CREATE");
+
         setTheme(Home.Themes.get(Home.ThemeNum));
 
         SetupPermGrab();
@@ -91,6 +93,8 @@ public class Home2 extends AppCompatActivity {
 
     @Override
     protected void onStart() {
+        System.out.println("START"); //Theme disappearing after app open long neglected.. memory?
+
         super.onStart();
 
         findViewById(R.id.home2Menu).setOnClickListener(v-> Menu());

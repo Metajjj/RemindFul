@@ -200,15 +200,18 @@ public class NewNote extends AppCompatActivity {
         String title=((TextView)findViewById(R.id.NewNoteNoteTitle)).getText().toString();
         String note=((TextView)findViewById(R.id.NewNoteNoteDetail)).getText().toString();
 
-        ContentValues CV = new ContentValues(); CV.put(DH.TITLE,title);CV.put(DH.NOTE,note);CV.put(DH.YMDHMS,CalYMDHMS());
-        try {
-            DH.getWritableDatabase().update(DH.DBname, CV, MessageFormat.format("{0}=? AND {1}=?", DH.ID, DH.YMDHMS), new String[]{G_ID, G_YMDHMS});
-        } catch (Exception e){
-            System.out.println("UpdateErr: "+e);
-            Toast.makeText(getApplicationContext(), "UpdateErr: "+e, Toast.LENGTH_LONG).show();
-        }
+        String I = CalYMDHMS();
+        ContentValues CV = new ContentValues(); CV.put(DH.TITLE,title);CV.put(DH.NOTE,note);CV.put(DH.YMDHMS,I);
 
-        Toast.makeText(getApplicationContext(), "Updated..", Toast.LENGTH_SHORT).show();
+
+
+        //Toast.makeText(getApplicationContext(), "Updated "+
+                DH.getWritableDatabase().update(DH.DBname, CV, MessageFormat.format("{0}=? AND {1}=?", DH.ID, DH.YMDHMS), new String[]{G_ID, G_YMDHMS});
+        //+" rows...", Toast.LENGTH_SHORT).show();
+
+        G_YMDHMS=I;
+
+        Toast.makeText(getApplicationContext(), "Updated!", Toast.LENGTH_SHORT).show();
 
         DH.close();
     }
