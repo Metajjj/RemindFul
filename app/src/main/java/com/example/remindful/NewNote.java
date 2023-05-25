@@ -51,6 +51,9 @@ public class NewNote extends AppCompatActivity {
     }
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        //Grab from file so that it works even if launched as activity
+        GrabTheme();
+
         setTheme(Home.Themes.get(Home.ThemeNum));
 
         super.onCreate(savedInstanceState);
