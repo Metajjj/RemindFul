@@ -124,7 +124,7 @@ public class Home extends AppCompatActivity {
 
         //Have to set after layout
         ((TextView)findViewById(R.id.HomeTitle)).setText(
-                "RemindFul\n"+getResources().getResourceEntryName(Themes.get(ThemeNum))+" : "+ThemeNum+"/"+ (Themes.size()-1) );
+                getString(R.string.app_name)+"\n"+getResources().getResourceEntryName(Themes.get(ThemeNum))+" : "+ThemeNum+"/"+ (Themes.size()-1) );
         //index = -1 | size = 13 ??
 
         if(toast != null){ toast.cancel(); } //cancel if toast exists
