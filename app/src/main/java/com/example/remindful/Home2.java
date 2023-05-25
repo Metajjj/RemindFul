@@ -22,6 +22,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
@@ -36,6 +39,13 @@ public class Home2 extends AppCompatActivity {
                 new ActivityResultContracts.RequestPermission(),
                 result -> { }
         );
+    }
+
+    @Override
+    protected void onDestroy() {
+        DatabaseHandler dh = new DatabaseHandler(getApplicationContext());
+        dh.close();
+        super.onDestroy();
     }
 
     @Override
@@ -94,6 +104,14 @@ public class Home2 extends AppCompatActivity {
     @Override
     protected void onStart() {
         System.out.println("START"); //Theme disappearing after app open long neglected.. memory?
+
+        try {
+            BufferedReader bfr = new BufferedReader( new FileReader( new File(getApplicationContext().getFilesDir(), "F")) );
+            String l = bfr.readLine(); bfr.close();
+
+            //currtheme is manifest theme ?? how grab activity theme..
+            Toast.makeText(getApplicationContext(),"CurrTheme: " + getResources().getIdentifier(l,"style",getPackageName()) + "\nFileTheme: " + Home.Themes.get(Home.ThemeNum),Toast.LENGTH_LONG).show();
+        }catch (Exception e){ System.err.println("ERR: "+e);}
 
         super.onStart();
 

@@ -44,6 +44,12 @@ public class NewNote extends AppCompatActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        DatabaseHandler dh = new DatabaseHandler(getApplicationContext());
+        dh.close();
+        super.onDestroy();
+    }
+    @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         //Grab from file so that it works even if launched as activity
         GrabTheme();

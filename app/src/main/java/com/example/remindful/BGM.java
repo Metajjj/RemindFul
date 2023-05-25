@@ -36,6 +36,12 @@ import java.util.Objects;
 public class BGM extends AppCompatActivity {
 
     @Override
+    protected void onDestroy() {
+        DatabaseHandler dh = new DatabaseHandler(getApplicationContext());
+        dh.close();
+        super.onDestroy();
+    }
+    @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         SetupPermGrabber();
 
