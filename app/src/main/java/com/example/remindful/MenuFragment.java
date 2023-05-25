@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,6 +40,11 @@ public class MenuFragment extends DialogFragment {
             getParentFragmentManager().beginTransaction()
                     .setCustomAnimations(R.anim.frag_in, R.anim.frag_out)
                     .remove(MenuFragment.this).commit();
+
+            FrameLayout FL = getActivity().findViewById(R.id.home2FragHolder);
+            ((ViewGroup)FL.getParent()).removeView(FL); ((ViewGroup)getActivity().findViewById(R.id.home2Bg)).addView(FL,0);
+            //Pushes framelayout to back -- has to be index 0 so those next in line overwrite it
+
             startActivity(new Intent(context, Home2.class).setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP));
         } );
 

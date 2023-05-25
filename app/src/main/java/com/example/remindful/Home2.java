@@ -434,7 +434,7 @@ public class Home2 extends AppCompatActivity {
     }
 
     //programatic anim  https://stackoverflow.com/questions/38594677/how-to-make-animation-programmatically
-    private float TouchX=0, PCT=TouchX, DvOpen=PCT;
+    private float DvOpen=0, PCT=DvOpen, TouchX=PCT;
     private boolean CustTouchEvent(View v,MotionEvent event) {
         //https://developer.android.com/develop/ui/views/touch-and-input/gestures/detector#capture-touch-events-for-an-activity-or-view
 
@@ -449,15 +449,20 @@ public class Home2 extends AppCompatActivity {
 
         //System.out.println("View: "+ v.getClass().getName() );
 
+
+        //todo Trouble with scrolling + gesture swipe..
         switch (event.getAction()) {
             case (MotionEvent.ACTION_DOWN): //System.out.println("Mdown");
+                    // todo move overrides down?? when clicking from tablerow in scrollview
                 TouchX = event.getRawX();
+                System.err.println("T: "+TouchX);
                 break;
             case (MotionEvent.ACTION_MOVE):
                 //Compare     TODO place at pointer x coord?
                 //System.out.println("Gx: " + event.getRawX() + " Tx:" + TouchX);
 
-                //Streamline into distance from 0 (far left) ??
+                //Increase movement before appearing.. TX is 0 on first scroll ?? not possible
+                if ( Math.abs(event.getRawX() - TouchX) <  (15 * getResources().getDisplayMetrics().density) || TouchX==0 ){ break; } //todo fix
 
                 if (DvOpen == 0) {
                     PCT = ((event.getRawX() - TouchX) * (getResources().getDisplayMetrics().density) * 0.1f);
@@ -484,6 +489,15 @@ public class Home2 extends AppCompatActivity {
 
                 break;
             case (MotionEvent.ACTION_UP): //System.out.println("Mup");
+                System.err.println("Gx: " + event.getRawX() + " Tx:" + TouchX);
+
+                if ( Math.abs(event.getRawX() - TouchX) <  (15 * getResources().getDisplayMetrics().density) || TouchX==0 ) {
+                    System.out.println("Onclick!! v:"+v.getClass());
+                    v.performClick(); //ontouch interferes with click actions
+                    break;
+                }
+
+
                 //If CurrX ~ = 100% .. new frag? new animation play else undo
                 if (DvOpen == 0) {
                     if (PCT >= 60) {
@@ -514,10 +528,12 @@ public class Home2 extends AppCompatActivity {
                 }
                 break;
             default:
+                System.out.println("Diff motion: "+event);
                 break;
         }
 
-        return super.onTouchEvent(event);
+
+        return true;//super.onTouchEvent(event); //false stops event from continuing detection
     }
 
 }
