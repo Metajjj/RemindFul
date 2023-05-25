@@ -51,9 +51,6 @@ public class NewNote extends AppCompatActivity {
     }
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        //Grab from file so that it works even if launched as activity
-        GrabTheme();
-
         setTheme(Home.Themes.get(Home.ThemeNum));
 
         super.onCreate(savedInstanceState);
@@ -73,6 +70,18 @@ public class NewNote extends AppCompatActivity {
 
     @Override
     protected void onStart() {
+        try {
+            BufferedReader bfr = new BufferedReader( new FileReader( new File(getApplicationContext().getFilesDir(), "F")) );
+            String l = bfr.readLine(); bfr.close();
+
+            //currtheme is manifest theme ?? how grab activity theme..
+            if (getResources().getIdentifier(l,"style",getPackageName()) != Home.Themes.get(Home.ThemeNum)){
+                Toast.makeText(getApplicationContext(),"Theme lost, reloading!", Toast.LENGTH_SHORT).show();
+                recreate(); //Restart activity if theme not same  &  temp-saves changes to editText
+            }
+            //Toast.makeText(getApplicationContext(),"CurrTheme: " + getResources().getIdentifier(l,"style",getPackageName()) + "\nFileTheme: " + Home.Themes.get(Home.ThemeNum),Toast.LENGTH_LONG).show();
+        }catch (Exception e){ System.err.println("ERR: "+e);}
+
         super.onStart();
 
         findViewById(R.id.NewNoteCheckBox).setOnClickListener(this::Remind);
@@ -97,6 +106,7 @@ public class NewNote extends AppCompatActivity {
     private void Remind(View v){
         CheckBox b = (CheckBox)v;
         ((TextView)findViewById(R.id.NewNoteSave)).setText( (b.isChecked() ? "SAVE & REMIND" : "SAVE") );
+
     }
 
     protected String CalYMDHMS(){

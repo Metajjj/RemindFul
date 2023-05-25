@@ -29,7 +29,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -84,6 +86,18 @@ public class BGM extends AppCompatActivity {
 
     @Override
     protected void onStart() {
+        try {
+            BufferedReader bfr = new BufferedReader( new FileReader( new File(getApplicationContext().getFilesDir(), "F")) );
+            String l = bfr.readLine(); bfr.close();
+
+            //currtheme is manifest theme ?? how grab activity theme..
+            if (getResources().getIdentifier(l,"style",getPackageName()) != Home.Themes.get(Home.ThemeNum)){
+                Toast.makeText(getApplicationContext(),"Theme lost, reloading!", Toast.LENGTH_SHORT).show();
+                recreate(); //Restart activity if theme not same
+            }
+            //Toast.makeText(getApplicationContext(),"CurrTheme: " + getResources().getIdentifier(l,"style",getPackageName()) + "\nFileTheme: " + Home.Themes.get(Home.ThemeNum),Toast.LENGTH_LONG).show();
+        }catch (Exception e){ System.err.println("ERR: "+e);}
+
         super.onStart();
 
         //for(int i=1;i<((TableLayout)findViewById(R.id.BGM_Table)).getChildCount();i++){ ((TableLayout)findViewById(R.id.BGM_Table)).removeViewAt(i); }
