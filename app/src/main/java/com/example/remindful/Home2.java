@@ -441,7 +441,7 @@ public class Home2 extends AppCompatActivity {
         // v = first one that was touched-down
         //https://developer.android.com/develop/ui/views/touch-and-input/gestures/detector#capture-touch-events-for-an-activity-or-view
 
-        //System.out.println("event: "+event);
+        System.out.println("event: "+event);
         //System.out.println("X:"+event.getX()+" Y:"+event.getY()+" | "+getResources().getDisplayMetrics().widthPixels+":"+getResources().getDisplayMetrics().heightPixels);
         //System.out.println( "1dp = "+ 1 * getResources().getDisplayMetrics().density );
         //Y is greater as goes down , X is greater as goes right
@@ -454,8 +454,6 @@ public class Home2 extends AppCompatActivity {
 
         //System.out.println("View: "+ v.getClass().getName() );
 
-
-        //todo Trouble with scrolling + gesture swipe..
         switch (event.getAction()) {
             case (MotionEvent.ACTION_DOWN): //System.out.println("Mdown");
                 TouchX = event.getRawX(); TouchY=event.getRawY();
@@ -467,12 +465,15 @@ public class Home2 extends AppCompatActivity {
 
                 //Increase movement before appearing.. TX is 0 on first scroll ?? not possible
                 if( TouchY==0 && TouchX==0 ){ System.out.println("FALSE"); return false; } //ERRS
-                if ( Math.abs(event.getRawX() - TouchX) < 100 && Math.abs(event.getRawY() - TouchY) < 100) {
+                /*if ( Math.abs(event.getRawX() - TouchX) < 100 && Math.abs(event.getRawY() - TouchY) < 100) {
                     break;
-                }
-                else if (Math.abs(event.getRawX() - TouchX) < 300 && v.getClass() == ScrollView.class && Math.abs(event.getRawY() - TouchY) >= 300){
-                    //System.out.println("ScrollView drag");
+                }*/
+                        //todo swiping DV away err
+                else if (Math.abs(event.getRawX() - TouchX) < 200 && v.getClass() == ScrollView.class && Math.abs(event.getRawY() - TouchY) >= 1*getResources().getDisplayMetrics().density){
+                    System.out.println("ScrollView drag");
+                    //Has to return or drag wont work
                     return super.onTouchEvent(event); //return super for scroll innate touch-event to override my custom event
+                    //Make it so pct is 0 ? todo?
                 }
 
                 //not reaching here
@@ -503,10 +504,11 @@ public class Home2 extends AppCompatActivity {
             case (MotionEvent.ACTION_UP): //System.out.println("Mup");
                 System.err.println("Get: " + event.getRawX() + ":"+event.getRawY()+"\nTou: " + TouchX+":"+TouchY);
 
-                if ( Math.abs(event.getRawX() - TouchX) < 100 && Math.abs(event.getRawY() - TouchY) < 100) {
-                    //System.out.println("Onclick!! v:"+v.getClass());
+                if ( Math.abs(event.getRawX() - TouchX) <= 1*getResources().getDisplayMetrics().density && Math.abs(event.getRawY() - TouchY) <= 1*getResources().getDisplayMetrics().density) {
+                    System.out.println("Onclick!! v:"+v.getClass());
                     v.performClick(); //ontouch interferes with click actions
-                } else if (Math.abs(event.getRawX() - TouchX) < 300 && v.getClass() == ScrollView.class && Math.abs(event.getRawY() - TouchY) >= 300){
+                    return true;
+                } else if (Math.abs(event.getRawX() - TouchX) < 200 && v.getClass() == ScrollView.class && Math.abs(event.getRawY() - TouchY) >= 300){
                     System.out.println("ScrollView drag");
 
                     Dv.setTranslationX( (DvOpen==0) ? getResources().getDisplayMetrics().widthPixels * -1 : 0 );
@@ -548,8 +550,7 @@ public class Home2 extends AppCompatActivity {
                 break;
         }
 
-
-        return true;//super.onTouchEvent(event); //false stops event from continuing detection
+        return true;//return super.onTouchEvent(event); //false stops event from continuing detection
     }
 
 }
