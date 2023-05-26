@@ -11,6 +11,7 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -42,10 +43,10 @@ public class Home2 extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
+    protected void onStop() {
         DatabaseHandler dh = new DatabaseHandler(getApplicationContext());
         dh.close();
-        super.onDestroy();
+        super.onStop();
     }
 
     @Override
@@ -160,7 +161,7 @@ public class Home2 extends AppCompatActivity {
     private void TempLoad(String sort){
         DatabaseHandler DH = new DatabaseHandler(getApplicationContext());
 
-        ((TableLayout)findViewById(R.id.NewNoteTable)).removeAllViews();
+        ((TableLayout)findViewById(R.id.home2Table)).removeAllViews();
 
         ArrayList<HashMap<String,String>> catc = DH.CursorSorter( DH.getReadableDatabase().query(DH.DBname,null,null,null,null,null,sort) );
         //System.out.println("Catc: "+catc[0].equals(""));
@@ -238,7 +239,7 @@ public class Home2 extends AppCompatActivity {
     }
 
     private void AddTblRow(TextView[] Notes3, TextView[] Titles3){
-        TableLayout MainLayout = findViewById(R.id.NewNoteTable);
+        TableLayout MainLayout = findViewById(R.id.home2Table);
         TableRow NoteRow= new TableRow(Home2.this), NoteTitle = new TableRow(Home2.this);
         //Add table row.. put in notes.. etc for title..
         for(int i=0;i< Notes3.length;i++){
@@ -288,6 +289,7 @@ public class Home2 extends AppCompatActivity {
         TvNote.setTag(""+TagID); TvTitle.setTag(""+TagID);
         TvNote.setOnClickListener(this::OpenNote); TvTitle.setOnClickListener(this::OpenNote);
         TvNote.setOnLongClickListener(null); TvTitle.setOnLongClickListener(null);
+        TvNote.setOnTouchListener(this::CustTouchEvent); TvTitle.setOnTouchListener(this::CustTouchEvent);
         return new TextView[]{TvNote,TvTitle};
     }
 
@@ -434,8 +436,9 @@ public class Home2 extends AppCompatActivity {
     }
 
     //programatic anim  https://stackoverflow.com/questions/38594677/how-to-make-animation-programmatically
-    private float DvOpen=0, PCT=DvOpen, TouchX=PCT;
+    private float DvOpen=0, PCT=DvOpen, TouchX=PCT, TouchY=PCT;
     private boolean CustTouchEvent(View v,MotionEvent event) {
+        // v = first one that was touched-down
         //https://developer.android.com/develop/ui/views/touch-and-input/gestures/detector#capture-touch-events-for-an-activity-or-view
 
         //System.out.println("event: "+event);
@@ -447,23 +450,32 @@ public class Home2 extends AppCompatActivity {
         //Only detects when starting from top of activity??
         ViewGroup Dv = findViewById(R.id.home2DvBg);
 
+        //super.onTouchEvent(event); //Drags/scroll works as normal.. cant drag DV --- differentiate based on whever X or Y is > 300 first ?
+
         //System.out.println("View: "+ v.getClass().getName() );
 
 
         //todo Trouble with scrolling + gesture swipe..
         switch (event.getAction()) {
             case (MotionEvent.ACTION_DOWN): //System.out.println("Mdown");
-                    // todo move overrides down?? when clicking from tablerow in scrollview
-                TouchX = event.getRawX();
-                System.err.println("T: "+TouchX);
+                TouchX = event.getRawX(); TouchY=event.getRawY();
+                System.err.println(TouchX+":"+TouchY);
                 break;
             case (MotionEvent.ACTION_MOVE):
                 //Compare     TODO place at pointer x coord?
                 //System.out.println("Gx: " + event.getRawX() + " Tx:" + TouchX);
 
                 //Increase movement before appearing.. TX is 0 on first scroll ?? not possible
-                if ( Math.abs(event.getRawX() - TouchX) <  (15 * getResources().getDisplayMetrics().density) || TouchX==0 ){ break; } //todo fix
+                if( TouchY==0 && TouchX==0 ){ System.out.println("FALSE"); return false; } //ERRS
+                if ( Math.abs(event.getRawX() - TouchX) < 100 && Math.abs(event.getRawY() - TouchY) < 100) {
+                    break;
+                }
+                else if (Math.abs(event.getRawX() - TouchX) < 300 && v.getClass() == ScrollView.class && Math.abs(event.getRawY() - TouchY) >= 300){
+                    //System.out.println("ScrollView drag");
+                    return super.onTouchEvent(event); //return super for scroll innate touch-event to override my custom event
+                }
 
+                //not reaching here
                 if (DvOpen == 0) {
                     PCT = ((event.getRawX() - TouchX) * (getResources().getDisplayMetrics().density) * 0.1f);
                     PCT = (PCT > 100) ? 100 : PCT;
@@ -489,12 +501,16 @@ public class Home2 extends AppCompatActivity {
 
                 break;
             case (MotionEvent.ACTION_UP): //System.out.println("Mup");
-                System.err.println("Gx: " + event.getRawX() + " Tx:" + TouchX);
+                System.err.println("Get: " + event.getRawX() + ":"+event.getRawY()+"\nTou: " + TouchX+":"+TouchY);
 
-                if ( Math.abs(event.getRawX() - TouchX) <  (15 * getResources().getDisplayMetrics().density) || TouchX==0 ) {
-                    System.out.println("Onclick!! v:"+v.getClass());
+                if ( Math.abs(event.getRawX() - TouchX) < 100 && Math.abs(event.getRawY() - TouchY) < 100) {
+                    //System.out.println("Onclick!! v:"+v.getClass());
                     v.performClick(); //ontouch interferes with click actions
-                    break;
+                } else if (Math.abs(event.getRawX() - TouchX) < 300 && v.getClass() == ScrollView.class && Math.abs(event.getRawY() - TouchY) >= 300){
+                    System.out.println("ScrollView drag");
+
+                    Dv.setTranslationX( (DvOpen==0) ? getResources().getDisplayMetrics().widthPixels * -1 : 0 );
+                    return false;
                 }
 
 
@@ -528,7 +544,7 @@ public class Home2 extends AppCompatActivity {
                 }
                 break;
             default:
-                System.out.println("Diff motion: "+event);
+                System.out.println("Diff motion: "+event); //cancel
                 break;
         }
 
