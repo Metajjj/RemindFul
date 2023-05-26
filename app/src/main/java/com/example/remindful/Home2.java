@@ -457,23 +457,26 @@ public class Home2 extends AppCompatActivity {
         switch (event.getAction()) {
             case (MotionEvent.ACTION_DOWN): //System.out.println("Mdown");
                 TouchX = event.getRawX(); TouchY=event.getRawY();
-                System.err.println(TouchX+":"+TouchY);
+                //System.err.println(TouchX+":"+TouchY);
                 break;
             case (MotionEvent.ACTION_MOVE):
                 //Compare     TODO place at pointer x coord?
                 //System.out.println("Gx: " + event.getRawX() + " Tx:" + TouchX);
 
                 //Increase movement before appearing.. TX is 0 on first scroll ?? not possible
-                if( TouchY==0 && TouchX==0 ){ System.out.println("FALSE"); return false; } //ERRS
+                if( TouchY==0 && TouchX==0 ){ return false; } //ERR with updating touch sometimes
                 /*if ( Math.abs(event.getRawX() - TouchX) < 100 && Math.abs(event.getRawY() - TouchY) < 100) {
                     break;
                 }*/
                         //todo swiping DV away err
                 else if (Math.abs(event.getRawX() - TouchX) < 200 && v.getClass() == ScrollView.class && Math.abs(event.getRawY() - TouchY) >= 1*getResources().getDisplayMetrics().density){
-                    System.out.println("ScrollView drag");
+                    //System.out.println("ScrollView drag");
                     //Has to return or drag wont work
+
+                    Dv.setAlpha(0); Dv.setTranslationX(getResources().getDisplayMetrics().widthPixels * -1);
+                        //Forcefully hides DV
+
                     return super.onTouchEvent(event); //return super for scroll innate touch-event to override my custom event
-                    //Make it so pct is 0 ? todo?
                 }
 
                 //not reaching here
@@ -502,14 +505,14 @@ public class Home2 extends AppCompatActivity {
 
                 break;
             case (MotionEvent.ACTION_UP): //System.out.println("Mup");
-                System.err.println("Get: " + event.getRawX() + ":"+event.getRawY()+"\nTou: " + TouchX+":"+TouchY);
+                //System.err.println("Get: " + event.getRawX() + ":"+event.getRawY()+"\nTou: " + TouchX+":"+TouchY);
 
                 if ( Math.abs(event.getRawX() - TouchX) <= 1*getResources().getDisplayMetrics().density && Math.abs(event.getRawY() - TouchY) <= 1*getResources().getDisplayMetrics().density) {
-                    System.out.println("Onclick!! v:"+v.getClass());
+                    //System.out.println("Onclick!! v:"+v.getClass());
                     v.performClick(); //ontouch interferes with click actions
                     return true;
                 } else if (Math.abs(event.getRawX() - TouchX) < 200 && v.getClass() == ScrollView.class && Math.abs(event.getRawY() - TouchY) >= 300){
-                    System.out.println("ScrollView drag");
+                    //System.out.println("ScrollView drag");
 
                     Dv.setTranslationX( (DvOpen==0) ? getResources().getDisplayMetrics().widthPixels * -1 : 0 );
                     return false;
