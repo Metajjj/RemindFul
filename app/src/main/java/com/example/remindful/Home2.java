@@ -441,7 +441,7 @@ public class Home2 extends AppCompatActivity {
         // v = first one that was touched-down
         //https://developer.android.com/develop/ui/views/touch-and-input/gestures/detector#capture-touch-events-for-an-activity-or-view
 
-        System.out.println("event: "+event);
+        //System.out.println("event: "+event);
         //System.out.println("X:"+event.getX()+" Y:"+event.getY()+" | "+getResources().getDisplayMetrics().widthPixels+":"+getResources().getDisplayMetrics().heightPixels);
         //System.out.println( "1dp = "+ 1 * getResources().getDisplayMetrics().density );
         //Y is greater as goes down , X is greater as goes right
