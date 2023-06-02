@@ -170,7 +170,6 @@ public class Home extends AppCompatActivity {
 
         super.onStart();
 
-
         HomeLoadingHandler.postDelayed(() -> {
 
             startActivity(new android.content.Intent(this,Home2.class));
