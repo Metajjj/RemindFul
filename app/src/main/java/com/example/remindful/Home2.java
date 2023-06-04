@@ -64,7 +64,7 @@ public class Home2 extends AppCompatActivity {
         //Add touch listeners to all views for gestures
         new Thread(()->{
 
-        ViewGroup BG = ((ViewGroup)findViewById(R.id.home2Bg));
+        ViewGroup BG = findViewById(R.id.home2Bg);
         BG.setOnTouchListener( this::CustTouchEvent );
         for(int i=0;i<BG.getChildCount();i++ ){
             BG.getChildAt(i).setOnTouchListener( this::CustTouchEvent );
@@ -73,7 +73,7 @@ public class Home2 extends AppCompatActivity {
         ViewGroup DV = findViewById(R.id.home2DvBg);
             DV.setOnClickListener(null); DV.setOnTouchListener(this::CustTouchEvent);
         for(int i=0;i<DV.getChildCount();i++){ DV.getChildAt(i).setOnClickListener(null);
-            DV.getChildAt(i).setOnTouchListener(this::CustTouchEvent);
+            //DV.getChildAt(i).setOnTouchListener((v,e)->{ return super.onTouchEvent(e); });
         }
 
         runOnUiThread(()-> {
