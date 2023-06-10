@@ -4,6 +4,8 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.TextView;
@@ -87,9 +89,58 @@ public class NewNote extends AppCompatActivity {
 
         super.onStart();
 
+        TextView NND= findViewById(R.id.NewNoteNoteDetail), NNU = findViewById(R.id.NewNoteUndo), NNR = findViewById(R.id.NewNoteRedo);
+
         findViewById(R.id.NewNoteCheckBox).setOnClickListener(this::Remind);
         findViewById(R.id.NewNoteSave).setOnClickListener(this::Save);
+
+        //todo TextWatch => String Array for Undo button ?? -- Redo button too
+        TextWatcher T = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                //Record change.. -- make it a handler that cancels until few secs passed?
+
+                if( !UndoPressed || RedoPressed ){
+                    Undo.add(0,charSequence);
+                    NNU.setText( NNU.getText().subSequence(0,NNU.getText().length()-3) +"("+Undo.size()+")" );
+                }else if (UndoPressed){
+                    Redo.add(0, charSequence);
+                    NNR.setText( NNR.getText().subSequence(0,NNR.getText().length()-3) +"("+Redo.size()+")" );
+                }
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        };
+        NND.addTextChangedListener(T);
+
+        findViewById(R.id.NewNoteUndo).setOnClickListener((v)->{
+            UndoPressed=true;
+
+            NND.setText( Undo.get(0) );
+            Undo.remove(0);
+
+            //Throw out recent.. reduce size..
+
+            UndoPressed=false;
+        });
+
+        findViewById(R.id.NewNoteRedo).setOnClickListener((v)->{
+            RedoPressed=true;
+
+            NND.setText(Redo.get(0));
+            Redo.remove(0);
+
+            RedoPressed=false;
+        });
     }
+
+    private ArrayList<CharSequence> Undo = new ArrayList<>(), Redo = new ArrayList<>();
+    private Boolean UndoPressed=false,RedoPressed=false;
+    private Handler TxtWtch;
 
     private void DataExists(HashMap<String,String> S){
         DatabaseHandler DH = new DatabaseHandler(getApplicationContext());
