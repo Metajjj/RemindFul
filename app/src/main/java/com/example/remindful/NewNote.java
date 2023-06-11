@@ -1,5 +1,6 @@
 package com.example.remindful;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -79,98 +80,106 @@ public class NewNote extends AppCompatActivity {
     @Override
     protected void onStart() {
         try {
-            BufferedReader bfr = new BufferedReader( new FileReader( new File(getApplicationContext().getFilesDir(), "F")) );
-            String l = bfr.readLine(); bfr.close();
+            BufferedReader bfr = new BufferedReader(new FileReader(new File(getApplicationContext().getFilesDir(), "F")));
+            String l = bfr.readLine();
+            bfr.close();
 
             //currtheme is manifest theme ?? how grab activity theme..
-            if (getResources().getIdentifier(l,"style",getPackageName()) != Home.Themes.get(Home.ThemeNum)){
-                Toast.makeText(getApplicationContext(),"Theme lost, reloading!", Toast.LENGTH_SHORT).show();
+            if (getResources().getIdentifier(l, "style", getPackageName()) != Home.Themes.get(Home.ThemeNum)) {
+                Toast.makeText(getApplicationContext(), "Theme lost, reloading!", Toast.LENGTH_SHORT).show();
                 recreate(); //Restart activity if theme not same  &  temp-saves changes to editText
             }
             //Toast.makeText(getApplicationContext(),"CurrTheme: " + getResources().getIdentifier(l,"style",getPackageName()) + "\nFileTheme: " + Home.Themes.get(Home.ThemeNum),Toast.LENGTH_LONG).show();
-        }catch (Exception e){ System.err.println("ERR: "+e);}
+        } catch (Exception e) {
+            System.err.println("ERR: " + e);
+        }
 
         super.onStart();
 
         context = getApplicationContext();
 
-        T = Toast.makeText(context,"",Toast.LENGTH_SHORT);
+        T = Toast.makeText(context, "", Toast.LENGTH_SHORT);
 
-        TextView NND= findViewById(R.id.NewNoteNoteDetail), NNU = findViewById(R.id.NewNoteUndo), NNR = findViewById(R.id.NewNoteRedo);
+        TextView NND = findViewById(R.id.NewNoteNoteDetail), NNU = findViewById(R.id.NewNoteUndo), NNR = findViewById(R.id.NewNoteRedo);
 
         findViewById(R.id.NewNoteCheckBox).setOnClickListener(this::Remind);
         findViewById(R.id.NewNoteSave).setOnClickListener(this::Save);
 
-        //todo TextWatch => String Array for Undo button ?? -- Redo button too
+        NND.addTextChangedListener(
+                new TextWatcher() {
+                    @SuppressLint("SetTextI18n")
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                        //System.out.println("BTC:"+charSequence);
+                        //Record change.. -- make it a handler that cancels until few secs passed?
 
-        TextWatcher T = new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                System.out.println("BTC:"+charSequence);
-                //Record change.. -- make it a handler that cancels until few secs passed?
+                        if (cS == null) {
+                            cS = charSequence.subSequence(0, charSequence.length());
+                            //Has to substring else copies reference to value and isnt a clone/copy
+                        }
 
-                //todo add to cS always.. then reset on update.. else doesnt pickup proper
-                //todo disable interaction + buttons till handler updates?
-                if(cS==null) {
-                    cS = charSequence.subSequence(0, charSequence.length());
-                    //Has to substring else copies reference to value and isnt a clone/copy
+                        TxtWtch.removeCallbacksAndMessages(null);
+                        TxtWtch.postDelayed(() -> {
+                            if (!UndoPressed || RedoPressed) {
+                                Undo.add(0, cS);
+                            } else if (UndoPressed) {
+                                Redo.add(0, cS);
+                            }
+                            //Always update Txt
+                            NNU.setText(NNU.getText().subSequence(0, NNU.getText().toString().indexOf("(")+1) + "" + Undo.size() + ")");
+                            NNR.setText(NNR.getText().subSequence(0, NNR.getText().toString().indexOf("(")+1) +""+ Redo.size() + ")"
+                            );
+
+                            RedoPressed = false;
+                            UndoPressed = false;
+                            cS = null;
+                            //T.cancel(); T = Toast.makeText(NewNote.this, "Temp Recorded", Toast.LENGTH_SHORT); T.show();
+                        }, 400);
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                        //System.out.println("OTC:"+charSequence);
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable editable) {
+                        //System.out.println("ATC:"+editable);
+                    }
                 }
+        );
 
-                TxtWtch.removeCallbacksAndMessages(null);
-                TxtWtch.postDelayed(()->{
-                    System.out.println(MessageFormat.format(
-                            "UP:{0} RP:{1} | if:{2} || {3} => {4} | else if: {5} ",
-                            UndoPressed,RedoPressed,!UndoPressed,RedoPressed, !UndoPressed || RedoPressed, UndoPressed
-                    ));
-                if( !UndoPressed || RedoPressed ){
-                    Undo.add(0,cS);
-                }else if (UndoPressed){
-                    Redo.add(0, cS);
-                }
-                //Always update Txt
-                    NNU.setText( NNU.getText().subSequence(0,NNU.getText().length()-3) +"("+Undo.size()+")" );
-                    NNR.setText( NNR.getText().subSequence(0,NNR.getText().length()-3) +"("+Redo.size()+")" );
-
-                    RedoPressed=false; UndoPressed=false; cS=null;
-                    Toast.makeText(NewNote.this, "Temp Recorded", Toast.LENGTH_SHORT).show();
-                },800);
+        findViewById(R.id.NewNoteUndo).setOnClickListener((v) -> {
+            if (Undo.size() == 0 || UndoPressed) {
+                return;
             }
 
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                //System.out.println("OTC:"+charSequence);
-            }
+            UndoPressed = true;
 
-            @Override
-            public void afterTextChanged(Editable editable) {
-                //System.out.println("ATC:"+editable);
-            }
-        };
-        NND.addTextChangedListener(T);
-
-        findViewById(R.id.NewNoteUndo).setOnClickListener((v)->{
-            if(Undo.size()==0){ return; }
-
-            UndoPressed=true;
-
-            Toast.makeText(this, "Undoing action..\n"+Undo.get(0), Toast.LENGTH_SHORT).show();
-            NND.setText( Undo.get(0) );
+            T.cancel();
+            T = Toast.makeText(this, "Undoing action..", Toast.LENGTH_SHORT);
+            T.show();
+            NND.setText(Undo.get(0));
             Undo.remove(0);
 
-            NNU.setText( NNU.getText().subSequence(0,NNU.getText().length()-3) +"("+Undo.size()+")" );
+            NNU.setText(NNU.getText().subSequence(0, NNU.getText().length() - 3) + "(" + Undo.size() + ")");
             //Throw out recent.. reduce size..
         });
 
-        findViewById(R.id.NewNoteRedo).setOnClickListener((v)->{
-            if(Redo.size()==0){ return; }
+        findViewById(R.id.NewNoteRedo).setOnClickListener((v) -> {
+            if (Redo.size() == 0 || RedoPressed) {
+                return;
+            }
 
-            RedoPressed=true;
+            RedoPressed = true;
 
-            Toast.makeText(this, "Redoing action..", Toast.LENGTH_SHORT).show();
+            T.cancel();
+            T = Toast.makeText(this, "Redoing action..", Toast.LENGTH_SHORT);
+            T.show();
             NND.setText(Redo.get(0));
             Redo.remove(0);
 
-            NNR.setText( NNR.getText().subSequence(0,NNR.getText().length()-3) +"("+Redo.size()+")" );
+            NNR.setText(NNR.getText().subSequence(0, NNR.getText().length() - 3) + "(" + Redo.size() + ")");
         });
     }
 

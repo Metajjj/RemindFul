@@ -167,7 +167,7 @@ public class Home2 extends AppCompatActivity {
         //System.out.println("Catc: "+catc[0].equals(""));
 
         //Empty out DetailedView each reload of notes
-        ((TableLayout)findViewById(R.id.home2DvTable)).removeAllViews(); //todo fix removing detailedview
+        ((TableLayout)findViewById(R.id.home2DvTable)).removeAllViews();
         /*new Handler().post(()->{
             TableLayout tl = findViewById(R.id.home2DvBg).findViewById(R.id.home2DvTable);
             for(int i=2;i<tl.getChildCount();i++){
@@ -460,7 +460,7 @@ public class Home2 extends AppCompatActivity {
                 //System.err.println(TouchX+":"+TouchY);
                 break;
             case (MotionEvent.ACTION_MOVE):
-                //Compare     TODO place at pointer x coord?
+                //Compare
                 //System.out.println("Gx: " + event.getRawX() + " Tx:" + TouchX);
 
                 //Increase movement before appearing.. TX is 0 on first scroll ?? not possible
@@ -468,7 +468,7 @@ public class Home2 extends AppCompatActivity {
                 /*if ( Math.abs(event.getRawX() - TouchX) < 100 && Math.abs(event.getRawY() - TouchY) < 100) {
                     break;
                 }*/
-                        //todo swiping DV away err
+
                 else if (Math.abs(event.getRawX() - TouchX) < 200 && v.getClass() == ScrollView.class && Math.abs(event.getRawY() - TouchY) >= 1*getResources().getDisplayMetrics().density){
                     //System.out.println("ScrollView drag");
                     //Has to return or drag wont work

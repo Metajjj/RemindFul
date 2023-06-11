@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class NotiActionHandler extends BroadcastReceiver {
-    //todo  ForegroundStart not working from lockscreen? | might be me
+    //todo  ForegroundStart not working from lockscreen? | might be my settings
 
     @Override
     public void onReceive(Context context, Intent intent) {
